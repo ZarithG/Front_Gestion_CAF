@@ -1,0 +1,53 @@
+.headerContainer {
+    width: 100vw;
+    height: 11vh;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between; 
+    align-items: center;
+    background: var(--black-100, #000);
+    color: #fff;
+    top: 0;
+    position: fixed;
+    z-index: 2;
+    padding: 0 20px; 
+}
+
+.menumenuContainer{
+    padding-right: 10vh;
+}
+
+.menuList {
+    list-style: none; 
+    padding: 0; 
+    margin: 0; 
+    display: flex; 
+    margin-right: 3vh;
+}
+
+.menuItem {
+    margin: 0 1.5vh;
+    border: #fff;
+    
+}
+
+.menuItem a {
+    text-decoration: none; 
+    color: #fff; 
+}
+
+.menuItem a:hover {
+    color: #007BFF; 
+}
+
+.headerLogo {
+    width: 35vh; 
+    height: auto;
+    margin-right: 1vh; 
+}
+
+
+
+Label{
+    padding-right: 0.5vh;
+}

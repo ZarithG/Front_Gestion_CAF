@@ -1,0 +1,36 @@
+.HomePage{
+    padding-bottom: 0;
+    
+} 
+
+.HomeContainer{
+    padding: 0vh 2vh;
+    width: auto;
+    height: auto;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0 1vh;
+}
+
+.containerDescription{
+    padding-top: 1vh;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-bottom: 1vh;
+    gap: 8vh;
+    padding: 0 2vh;
+}
+
+.Description{
+    display: flex;
+    flex-direction: column;
+    text-align: justify;
+}
+
+.containerImages img {
+    align-items: center;
+    width: 40vh;
+}

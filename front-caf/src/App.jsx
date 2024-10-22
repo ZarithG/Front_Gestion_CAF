@@ -8,12 +8,12 @@ import NavMenu from './components/NavMenu';
 
 
 function App() {
-  const [currentPage, setCurrentPage] = useState(PAGES.INITIAL);
+  const [currentPage, setCurrentPage] = useState(PAGES.HOME);
   const [started, setStarted] = useState(false);
   
   const handleStart = () => {
     setStarted(true);
-    setCurrentPage(PAGES.HOME);
+    setCurrentPage(PAGES.INITIAL);
   };
 
   return started ?(
