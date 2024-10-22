@@ -4,7 +4,7 @@ export const USER_TYPE = {
 };
 
 export const SERVICES_BACK = {
-    GOOGLELOGIN: "http://localhost:8089/api/user/addUser"
+    GOOGLELOGIN: "http://localhost:9091/login/oauth2/code/google"
 }
 
 export const STATUS = {
