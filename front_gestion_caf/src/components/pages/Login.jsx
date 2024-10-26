@@ -21,28 +21,36 @@ const Login = () => {
         }
 
         try {
-            const response = await fetch('http://localhost:9091/auth/login', {
+            const response = await fetch('http://localhost:9093/auth/login', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
                 },
                 body: JSON.stringify({
-                    email: email,
+                    userName: email,
                     password: password
                 }),
             });
+            
+            if (!response.ok) {
+                if (response.status === 400) {
+                    setError('Credenciales incorrectas');
+                } else {
+                    setError('Hubo un error en el servidor');
+                }
+                return;
+            }
+    
+            const data = await response.json();
 
-            if (response.data.success) {
+    
+            if (data) {
                 navigate('/');  
             } else {
                 setError('Credenciales incorrectas');
             }
         } catch (error) {
-            if (error.response && error.response.status === 400) {
-                setError('Credenciales incorrectas');
-            } else {
-                setError('Hubo un error en el servidor');
-            }
+            setError('Hubo un error en el servidor');
         }
     };
 
