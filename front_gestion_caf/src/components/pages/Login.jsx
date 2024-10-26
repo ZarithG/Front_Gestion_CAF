@@ -21,7 +21,7 @@ const Login = () => {
         }
 
         try {
-            const response = await fetch('https://tu-backend-api.com/login', {
+            const response = await fetch('http://localhost:9091/auth/login', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -38,7 +38,11 @@ const Login = () => {
                 setError('Credenciales incorrectas');
             }
         } catch (error) {
-            setError('Hubo un error en el servidor');
+            if (error.response && error.response.status === 400) {
+                setError('Credenciales incorrectas');
+            } else {
+                setError('Hubo un error en el servidor');
+            }
         }
     };
 
