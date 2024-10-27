@@ -1,4 +1,3 @@
-import React, {useState, useEffect} from "react";
 import '../styles/Footer.css';
 import Logo from "../CAF-images/log_uptc_neg.png";
 
