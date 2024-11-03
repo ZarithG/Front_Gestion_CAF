@@ -1,4 +1,4 @@
-import React from "react";
+import React, {useEffect, useState} from "react";
 import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
 import { useRegFormContext } from "../../../providers/RegFormProvider";
@@ -8,12 +8,30 @@ import "./styles/TermsConditions.css";
 const TermsConditions = () => {
     const [, dispatch] = useRegFormContext();
     const navigate = useNavigate();
+    const [authToken, setAuthToken] = useState("");
 
     const {
         register,
         handleSubmit,
         formState: { errors, isValid },
     } = useForm({ mode: "onChange" });
+
+    useEffect(() => {
+        handleRedirect();
+    }, []);
+
+    const handleRedirect = () => {
+        const params = new URLSearchParams(window.location.search);
+        const token = params.get("token");
+        const authUserJson = params.get("authUser");
+
+        if (token) {            
+            const authUser = JSON.parse(decodeURIComponent(authUserJson)); // Decodifica y convierte a objeto
+            localStorage.setItem("authToken", token);
+            setAuthToken(token);
+            console.log(authUser);
+        }
+    };
 
     const onSubmit = (values) => {
         if (values.termsAccepted === "true") { 
