@@ -1,0 +1,105 @@
+.containerBodyScheduleShift {
+    display: flex;
+    flex-direction: column; /* Alinea los elementos verticalmente */
+    align-items: center; /* Centra los elementos horizontalmente */
+    justify-content: center; /* Centra los elementos verticalmente */
+    padding: 20px;
+
+}
+
+.flexContainer {
+    display: flex;
+    justify-content: flex-start;
+    align-items: flex-start;
+    
+    flex-wrap: wrap;
+}
+
+.verticalContainer {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-right: 20px;
+    flex: 1;
+}
+
+.containerCAFSelection,
+.containerShiftsAvailable {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+    max-width: 46vh;
+    margin: 1vh;
+    padding: 2vh;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    background-color: #fff;
+}
+
+.titleScheduleShift {
+    font-size: 2rem; 
+    color: #333; 
+    margin-bottom: 20px; 
+}
+
+.containerCAFSelection select,
+.containerShiftsAvailable select {
+    width: 100%;
+    padding: 10px;
+    margin-top: 10px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+}
+
+h2 {
+    margin: 0;
+    font-size: 1.2rem;
+    color: #333;
+}
+
+
+.descriptionCAF,
+.descriptionShiftsAvailable {
+    font-size: 0.9rem;
+    color: #555;
+    text-align: center;
+    margin-top: 5px;
+}
+
+
+.containerCalendar {
+    display: flex; 
+}
+
+.custom-calendar {
+    width: 45vh; 
+    border: none;
+    border-radius: 0rem;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.custom-calendar .react-calendar__navigation {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+}
+
+.custom-calendar .react-calendar__tile--now {
+    background: #007bff;
+    color: white;
+    border-radius: 0px;
+    
+}
+
+.custom-calendar .react-calendar__tile--active {
+    background: #0056b3;
+    color: white;
+    border-radius: 0px;
+}
+
+.custom-calendar .react-calendar__tile--hover {
+    background: #e0e0e0;
+    border-radius: 0px;
+}

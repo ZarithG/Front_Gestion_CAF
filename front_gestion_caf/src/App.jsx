@@ -25,7 +25,8 @@ function App() {
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
         <Route path="/registration" element={<RegisterForm />}>
-          <Route path="terms" element={<TermsConditions />} />          <Route path="emergenceContact" element={<EmergencyContact/>}/>
+          <Route path="terms" element={<TermsConditions />} />          
+          <Route path="emergenceContact" element={<EmergencyContact/>}/>
           <Route path="estate" element={<Estate/>}/>
           <Route path="information" element={<Information/>}/>
           <Route path="informedConsent" element={<InformedConsent/>}/>

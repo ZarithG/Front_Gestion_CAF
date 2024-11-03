@@ -2,6 +2,8 @@ import React from "react";
 import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
 import { useRegFormContext } from "../../../providers/RegFormProvider";
+import { MessagesError } from "../../gestion-caf/Messages";
+import "./styles/TermsConditions.css";
 
 const TermsConditions = () => {
     const [, dispatch] = useRegFormContext();
@@ -10,25 +12,24 @@ const TermsConditions = () => {
     const {
         register,
         handleSubmit,
-        formState: { isValid },
+        formState: { errors, isValid },
     } = useForm({ mode: "onChange" });
 
     const onSubmit = (values) => {
-        if (values.termsAccepted) { // Asegurarte de que los términos han sido aceptados
+        if (values.termsAccepted === "true") { 
             dispatch({ type: "SET_TERMS_CONDITIONS", data: values });
-            navigate('/registration/regulation'); // Ruta a la que quieres navegar
+            navigate('/registration/regulation'); 
         } else {
-            // Opcional: Manejar el caso donde no se aceptan los términos
-            alert("Debes aceptar los términos y condiciones para continuar.");
+            MessagesError("Debes aceptar los términos y condiciones para continuar.");
         }
     };
 
     return (
-        <div className="Register">
+        <div className="tcBody">
             <div className="containerTermsConditions">
-                <h2>Términos y condiciones</h2>
-                <p>POR FAVOR LEER ANTES DE DILIGENCIAR EL SIGUIENTE FORMULARIO</p>
-                <p>
+                <h2 className="tcTitle">Términos y condiciones</h2>
+                <p className="tcRead">POR FAVOR LEER ANTES DE DILIGENCIAR EL SIGUIENTE FORMULARIO</p>
+                <p className="tcInfo">
                     El formulario que usted está a punto de contestar se sujeta a
                     la política de tratamiento y protección de datos personales de
                     los titulares de la Universidad Pedagógica y Tecnológica de
@@ -47,27 +48,29 @@ const TermsConditions = () => {
                     <a href="http://www.uptc.edu.co/gel/habeas_data/">
                         http://www.uptc.edu.co/gel/habeas_data/
                     </a>
-                    .
                 </p>
                 <div className="containerForm">
-                    <form onSubmit={handleSubmit(onSubmit)}>
-                        <label>
+                    <form className="tcForm" onSubmit={handleSubmit(onSubmit)}>
+                        <label className="tcAccept">
                             Acepto términos y condiciones del manejo de la información*
                             <br />
-                            <input
+                            <input 
+                                className="tcInput"
                                 {...register("termsAccepted", { required: true })}
                                 type="radio"
-                                value="true" // Usar string "true"
+                                value="true" 
                             />
-                            <label>Si</label>
+                            <label className="tcLabel">Sí</label>
                             <br />
-                            <input
+                            <input 
+                                className="tcInput"
                                 {...register("termsAccepted", { required: true })}
                                 type="radio"
-                                value="false" // Usar string "false"
+                                value="false" 
                             />
-                            <label>No</label>
+                            <label className="tcLabel">No</label>
                             <br />
+                            {errors.termsAccepted && <span className="error">Debes seleccionar una opción.</span>}
                         </label>
                         <button type="submit" disabled={!isValid}>
                             Siguiente

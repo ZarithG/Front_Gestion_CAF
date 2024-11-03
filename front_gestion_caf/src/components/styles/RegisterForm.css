@@ -1,0 +1,29 @@
+.RegFormProvider {
+    padding-bottom: 0;
+    margin: 0;
+}
+
+.rfRegister {
+    padding: 1vh 2vh 7vh 2vh;
+    height: auto;
+    max-width: 1900px;
+    margin: 0 auto; 
+}
+
+.rfConteiner {
+    padding: 0vh 5vh ;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    
+}
+
+button{
+    background-color: #FFCC00;
+    color: black;
+    margin-top: 4vh;
+}
+
+button:hover{
+    background-color: #ffb700;
+}

@@ -1,0 +1,40 @@
+.rBody{
+    padding: 0;
+}
+
+.containerRegulation{
+    padding: 0;
+}
+
+.rTitle{
+    padding-bottom: 1vh;
+}
+
+.rInfo{
+    text-align: justify;
+    padding-bottom: 0;
+    font-size: 16px;
+}
+.containerFormRegulation{
+    padding: 0;
+    margin: 0 auto;
+    border-radius: 0;
+    height: auto;
+}
+.rAccept{
+    padding-bottom: 1vh;
+    margin-bottom: 2vh;
+
+}
+.rLabel{
+    font-size: 16px;
+    margin-top: 10vh;
+    padding-bottom: 10vh;
+}
+.rInput{
+    margin-top: 2vh;
+}
+.rForm{
+    padding: 0;
+    margin: 0;
+}

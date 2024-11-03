@@ -1,11 +1,13 @@
 .HomePage{
     padding-bottom: 0;
-    
+    height: 90vh;
+    width: auto;
+    padding-left: 5vh;
+    padding-right: 5vh;
 } 
 
 .HomeContainer{
     padding: 0vh 2vh;
-    width: auto;
     height: auto;
     display: flex;
     flex-direction: column;

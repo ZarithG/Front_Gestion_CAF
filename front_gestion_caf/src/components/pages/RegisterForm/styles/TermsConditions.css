@@ -1,0 +1,37 @@
+.containerTermsConditions{
+    padding: 0;
+}
+
+.tcTitle{
+    padding-bottom: 1vh;
+}
+
+.tcInfo{
+    text-align: justify;
+    padding-bottom: 0;
+    font-size: 16px;
+}
+.containerForm{
+    padding: 0;
+    margin: 0 auto;
+    border-radius: 0;
+    height: auto;
+}
+.tcAccept{
+    padding-bottom: 1vh;
+    margin-bottom: 1vh;
+}
+.tcLabel{
+    font-size: 16px;
+    padding-bottom: 0.5vh;
+    padding-left: 0;
+    margin: 0;
+}
+.tcInput{
+    margin: 0;
+    padding: 0;
+}
+.tcForm{
+    padding: 0;
+    margin: 0;
+}
