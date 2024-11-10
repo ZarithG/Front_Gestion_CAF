@@ -29,7 +29,7 @@ const Login = () => {
                     'Content-Type': 'application/json',
                 },
                 body: JSON.stringify({
-                    userName: email,
+                    userName: email ,
                     password: password
                 }),
             });
@@ -47,7 +47,7 @@ const Login = () => {
     
             if (data) {
                 MessagesSuccess('Inicio de sesión exitoso');
-                navigate('/');  
+                navigate('/registration/terms');  
             } else {
                 MessagesError('Credenciales incorrectas');
             }
@@ -57,6 +57,7 @@ const Login = () => {
     };
 
     const googleLogin = () => {
+        
         window.location.href = SERVICES_BACK.GOOGLELOGIN;
     };
 
@@ -91,9 +92,6 @@ const Login = () => {
                             <button onClick={googleLogin} type="button" className="google-button">
                                 Iniciar con Google <FcGoogle />
                             </button>
-                            <Link to="/register">
-                                <label className="registerName">Registrarse en el Sistema</label>
-                            </Link>
                         </div>
                     </form>
                 </div>

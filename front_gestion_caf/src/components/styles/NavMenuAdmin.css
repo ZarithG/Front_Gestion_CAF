@@ -1,0 +1,72 @@
+.menuNavContainer {
+    position: fixed;
+    top: 11vh;
+    height: 88vh;
+    width: 10vh;
+    background-color: #000;
+    color: #fff;
+    overflow: hidden;
+    transition: width 0.3s ease;
+    z-index: 2;
+}
+
+.menuNavContainer:hover {
+    width: 40vh;
+    overflow: visible;
+}
+
+.menuNavList {
+    padding: 0vh;
+}
+
+.menuNavItem {
+    position: relative;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 1vh;
+    padding: 1vh 0vh 1vh 4vh;
+    color: #fff;
+    text-decoration: none;
+    cursor: pointer;
+    transition: color 0.3s ease, background-color 0.3s ease, gap 0.3s ease;
+}
+
+.menuNavItem:hover {
+    color: #999;
+    background-color: #3d3d3d;
+}
+
+.LinkNav {
+    text-decoration: none;
+    color: inherit;
+}
+
+.menuNavItem > span {
+    font-weight: 700;
+    display: none;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.3s ease, visibility 0s 0.3s;
+}
+
+.menuNavContainer:hover .menuNavItem > span {
+    display: inline-block;
+    opacity: 1;
+    visibility: visible;
+    transition: opacity 0.3s ease, visibility 0s 0s;
+}
+
+.menuNavIcon {
+    width: 4vh;
+    height: 4vh;
+    padding-right: 5vh;
+    transition: width 0.3s, height 0.3s;
+}
+
+.menuNavMenuIcon {
+    width: 3.5vh;
+    height: 3.5vh;
+    padding-left: 3.5vh;
+    margin-bottom: 6vh;
+}

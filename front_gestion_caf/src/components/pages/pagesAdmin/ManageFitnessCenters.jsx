@@ -1,9 +1,6 @@
 import React, { useState } from "react";
-import "../styles/RegisterForm.css";
-import { Outlet, } from "react-router-dom";
-import RegFormProvider from "../../providers/RegFormProvider";
 
-const RegisterForm = () => {
+const ManageFitnessCenters = () => {
     return (
         <div className="asqConteiner">
             Gestionar Centros de Acondicionamiento
@@ -11,4 +8,4 @@ const RegisterForm = () => {
     );
 };
 
-export default RegisterForm;
+export default ManageFitnessCenters;

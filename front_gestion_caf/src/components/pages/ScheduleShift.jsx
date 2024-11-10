@@ -29,6 +29,17 @@ const ScheduleShift = () => {
         }
     };
 
+    // Custom navigation label
+    const renderNavigation = ({ date }) => {
+        return (
+            <div className="custom-navigation">
+                <span>
+                    {`${date.toLocaleString('default', { month: 'long' })} ${date.getFullYear()}`}
+                </span>
+            </div>
+        );
+    };
+
     return (
         <div className="containerBodyScheduleShift">
             <h1 className="titleScheduleShift">Agendar Turno</h1> 
@@ -68,7 +79,9 @@ const ScheduleShift = () => {
                         minDate={today} // Deshabilita los días pasados
                         maxDate={maxDate} // Limita la selección a una semana desde hoy
                         view="month" // Establece la vista en mes
-                        onActiveDateChange={() => {}}
+                        prevLabel={null} // Oculta el botón de mes anterior
+                        nextLabel={null} // Oculta el botón de mes siguiente
+                        renderNavigation={renderNavigation} // Personaliza la navegación
                     />
                 </div>
             </div>

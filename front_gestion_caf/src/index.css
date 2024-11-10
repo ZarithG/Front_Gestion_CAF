@@ -14,6 +14,7 @@ body {
 .section {
   position: absolute;
   top: 12vh;
+  
   left: 12vh;
   width: calc(100% - 12vh);
   height: 88vh;
@@ -26,3 +27,5 @@ body {
   background-color: red;
   color: #000000;
 }
+
+

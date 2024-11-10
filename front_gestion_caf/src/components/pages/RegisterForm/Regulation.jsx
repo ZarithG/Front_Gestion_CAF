@@ -18,7 +18,7 @@ const Regulation = () => {
     const onSubmit = (values) => {
         if (values.termsAccepted === "true") { 
             dispatch({ type: "SET_REGULATION", data: values });
-            navigate('/registration/estate');
+            navigate('/registration/medicalHistory');
         } else {
             MessagesError("Debes aceptar los términos y condiciones para continuar.");
         }

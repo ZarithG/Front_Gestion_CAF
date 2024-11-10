@@ -38,6 +38,13 @@ p {
     padding-top: 0;
     padding-bottom: 0;
 }
+.lbDataUsername{
+    padding: 1vh;
+    font-size: 2vh;
+    border: 1px solid #ddd;
+    border-radius: 0.5vh;
+    background-color: #cacaca;
+}
 
 .form-group {
     display: flex;
