@@ -30,30 +30,33 @@ const EmergencyContact = () => {
     const onSubmit = async (data) => {
         setError('');  
         try {
+            const token = "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJqdWFuLmFyY2hpbGEwNEB1cHRjLmVkdS5jbyIsIkF1dGhvcml0aWVzIjpbeyJpZCI6MSwicm9sZU5hbWUiOiJST0xFX1VTRVIifV0sImlhdCI6MTczMTM2OTU0MiwiZXhwIjoxNzMxMzczMTQyfQ.zqUW3gpHf1gTAUkvq2ISplA9YRtCmGZORsTEaw3I3KRDq1p7F-T48Zoq6UjA_C2it6mkQznuPXM8-p1W7OUuyA";
+        
             const response = await fetch(SERVICES_BACK.SAVEUSER, {
                 method: 'POST',
                 headers: {
+                    'Authorization': `Bearer ${token}`,
                     'Content-Type': 'application/json',
                 },
                 body: JSON.stringify({
-                    name: informationData.name + " " + informationData.lastname,
-                    email: information.email,
+                    name: "PRUEBA",
+                    email: "juan.archila04@uptc.edu.co",
                     documentType: "CC",
-                    documentNumber: informationData.document,
+                    documentNumber: "1002366272",
                     universityCode: "202111983",
-                    birthDate: informationData.birthDate,
-                    phoneNumber: informationData.phone,
-                    residenceAddress: informationData.address,
-                    userType: information.estamento,
+                    birthDate: "2024-11-06",
+                    phoneNumber: "3124377121",
+                    residenceAddress: "AV PRUEBA",
+                    userType: "STUDENT",
                     department: "Boyaca",
                     city: "Tunja",
                     emergencyContact: {
-                        name: emergencyContact.nameEmergencyContact,
-                        lastname: emergencyContact.lastNameEmergencyContact,
-                        phone: emergencyContact.phoneEmergencyContact,
-                        email: emergencyContact.emailEmergencyContact,
-                        relationship: emergencyContact.relationshipEmergencyContact,
-                        residenceAddress: emergencyContact.adressEmergencyContact,
+                        name: "MANUEL",
+                        lastname: "LOPEZ",
+                        phone: "321312412",
+                        email: "manuel@hm.com",
+                        relationship: "MADRE",
+                        residenceAddress: "test",
                         department: "Boyaca",
                         city: "Tunja"
                     },
@@ -67,9 +70,9 @@ const EmergencyContact = () => {
                         }
                     },
                     medicalInformation: {
-                        eps: information.eps,
-                        bloodGroup: information.bloodType,
-                        allergies: information.allergies
+                        eps: "MEDI PRUEBA",
+                        bloodGroup: "O-",
+                        allergies: "Ninguna"
                     }
                 })
             });
@@ -81,6 +84,8 @@ const EmergencyContact = () => {
                     MessagesError('Hubo un error en el servidor');
                 }
                 return;
+            }else{
+                console.log("Respuesta bien");
             }
 
             const dataResponse = await response.json();
@@ -93,6 +98,7 @@ const EmergencyContact = () => {
             }
         } catch (error) {
             MessagesError('Hubo un error en el servidor');
+            console.log("ERROR:" + error)
         }
 
         try {
@@ -102,8 +108,8 @@ const EmergencyContact = () => {
                     'Content-Type': 'application/json',
                 },
                 body: JSON.stringify({
-                    userName: userData.email,
-                    password: userData.password
+                    userName: "juan.archila04@uptc.edu.co",
+                    password: "1234567"
                 })
             });
 
@@ -114,13 +120,15 @@ const EmergencyContact = () => {
                     MessagesError('Hubo un error en el servidor');
                 }
                 return;
+            }else{
+                console.log("Respuesta bien");
             }
 
             const data = await response.json();
 
             if (data) {
                 MessagesSuccess('Inicio de sesión exitoso');
-                navigate('/');  
+                // navigate('/');  
             } else {
                 MessagesError('Credenciales incorrectas');
             }

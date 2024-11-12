@@ -6,12 +6,29 @@ import { FaHome } from "react-icons/fa";
 import { MdLogin, MdNotifications } from "react-icons/md";
 import { TbCalendarTime } from "react-icons/tb";
 import { GiNotebook } from "react-icons/gi";
-import { STATUS, USER_TYPE } from "../../constants/constants";
+import { STATUS, USER_TYPE, SERVICES_BACKR, SERVICES_BACK } from "../../constants/constants";
 
 const Header = ({
     status,
 }) => {
     const [roleName, setRoleName] = useState('');
+
+    const logout = async () => {
+        try {
+            const response = await fetch(SERVICES_BACK.LOGOUTAUTH, {
+                method: 'POST', // o 'GET' si tu endpoint está configurado para aceptar este método
+                credentials: 'include', // Esto es importante para enviar y recibir cookies
+            });
+    
+            if (response.ok) {
+                console.log('Logout successful');
+            } else {
+                console.error('Error during logout:', response.status);
+            }
+        } catch (error) {
+            console.error('Error:', error);
+        }
+    };
 
     useEffect(() => {
         const storedRoleName = localStorage.getItem("roleName");
@@ -71,6 +88,7 @@ const Header = ({
                                     localStorage.removeItem("userName");
                                     localStorage.removeItem("roleName");
                                     setRoleName(''); // Reinicia el estado de roleName
+                                    logout();
                                 }}>
                                     <label> Cerrar sesión </label>
                                     <MdLogin className="icons" />
