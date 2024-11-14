@@ -83,11 +83,11 @@ const Header = ({
                                 </Link>
                             </li>
                             <li className="menuItem">
-                                <Link className="Link" to="/logout" onClick={() => {
+                                <Link className="Link" to="/" onClick={() => {
                                     localStorage.removeItem("authToken");
                                     localStorage.removeItem("userName");
                                     localStorage.removeItem("roleName");
-                                    setRoleName(''); // Reinicia el estado de roleName
+                                    setRoleName(''); 
                                     logout();
                                 }}>
                                     <label> Cerrar sesión </label>

@@ -1,14 +1,14 @@
 import React, { useState } from "react";
-import "../styles/RegisterForm.css";
+import "./styles/PagesAdmin.css";
 import { Outlet, } from "react-router-dom";
-import RegFormProvider from "../../providers/RegFormProvider";
 
-const RegisterForm = () => {
+
+const DefineUserType = () => {
     return (
         <div className="asqConteiner">
-            Definir tipo de usuario
+            Asignar turnos y cupos
         </div>
     );
 };
 
-export default RegisterForm;
+export default DefineUserType;

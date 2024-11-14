@@ -1,0 +1,50 @@
+/*---------------  General  -------------------*/
+.containerBody {
+  max-width: 2000px;
+  margin-top: 2vh;
+  margin-bottom: 6vh;
+  margin-left: 10.5vh;
+}
+
+/*---------------  AssignShiftsQuotas  -------------------*/
+.turno-manager {
+  width: 300px;
+  margin: auto;
+}
+
+.day-section {
+  margin-top: 10px;
+  width: 100vh;
+}
+
+.day-toggle {
+  width: 80vh;
+  background-color: #ddd;
+  padding: 10px;
+  cursor: pointer;
+}
+
+.turnos-list {
+  padding: 10px;
+  
+}
+
+.tableAsSh {
+  width: 80vh;
+  padding: 10px;
+  justify-content: center;
+  border-collapse: collapse;
+}
+
+.thAsSh,
+.tdAsSh {
+  border: 1px solid #ccc;
+  padding: 8px;
+  text-align: center;
+}
+
+.buttomAsSh {
+  margin-top: 5px;
+  flex: auto;
+  flex-direction: row;
+}

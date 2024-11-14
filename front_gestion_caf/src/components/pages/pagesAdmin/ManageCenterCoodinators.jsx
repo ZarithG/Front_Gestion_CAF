@@ -1,14 +1,14 @@
 import React, { useState } from "react";
-import "../styles/RegisterForm.css";
+import "./styles/PagesAdmin.css";
 import { Outlet, } from "react-router-dom";
-import RegFormProvider from "../../providers/RegFormProvider";
 
-const RegisterForm = () => {
+
+const ManageCenterCoodinators = () => {
     return (
         <div className="asqConteiner">
-            Gestionar coordinadores
+            Asignar turnos y cupos
         </div>
     );
 };
 
-export default RegisterForm;
+export default ManageCenterCoodinators;

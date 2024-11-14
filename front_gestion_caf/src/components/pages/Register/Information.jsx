@@ -9,20 +9,19 @@ const Information = () => {
     const [submitted, setSubmitted] = useState(false); // Estado para controlar el envío
 
     const {
-        informationData,
-        userData
+        information,
+        estate
     } = state;
     const {
         register,
         handleSubmit,
-        formState: { errors, isValid },
+        formState: { errors, isValid,},
     } = useForm({ mode: "onChange" }); // Habilitar validación en cambios
 
     const onSubmit = (values) => {
-        setSubmitted(true); // Marcar que el formulario ha sido enviado
-
+        setSubmitted(true); // Marcar que el formulario ha si do enviado
         if (isValid) {
-            dispatch({ type: "SET_INFORMATION", data: values });
+            dispatch({ type: "SET_ESTATE", data: values });
             navigate("/register/emergenceContact");
         }
     };
@@ -48,6 +47,24 @@ const Information = () => {
                 </select>
                 {errors.estamento && <span className="error">Debes seleccionar un estamento.</span>}
                 </div>   
+
+                <div className="form-group">
+                    <label className="lbInItem">Semestre actual</label>
+                    <input type="text" {...register("actualSemester", { required: true })} />
+                    {submitted && errors.eps && <span className="error">Este campo es obligatorio.</span>}
+                </div>
+
+                <div className="form-group">
+                    <label className="lbInItem">Nombre del programa</label>
+                    <input type="text" {...register("programName", { required: true })} />
+                    {submitted && errors.eps && <span className="error">Este campo es obligatorio.</span>}
+                </div>
+
+                <div className="form-group">
+                    <label className="lbInItem">Facultad</label>
+                    <input type="text" {...register("facultyName", { required: true })} />
+                    {submitted && errors.eps && <span className="error">Este campo es obligatorio.</span>}
+                </div>
 
                 <div className="form-group">
                     <label className="lbInItem">EPS</label>

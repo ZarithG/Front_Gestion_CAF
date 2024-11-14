@@ -13,41 +13,43 @@ const NavMenuAdmin = () => {
     const [roleName, setRoleName] = useState(''); // Initialize roleName state
 
     return (
-        roleName === USER_TYPE.ADMIN && (
+        /*roleName === USER_TYPE.ADMIN && (*/
             <div className="menuNavContainer">
                 <ul className="menuNavList">
                     <MdMenu className="menuNavMenuIcon" />
                     <li className="menuNavItem">
-                        <Link className="LinkNav" to="/">
+                        <Link className="LinkNav" to="/admin/fitnessCenterDirector">
                             <FaUserTie className="menuNavIcon" />
                             <span>Director Bienestar</span>
                         </Link>
                     </li>
                     <li className="menuNavItem">
-                        <Link className="LinkNav" to="/scheduleShift">
+                        <Link className="LinkNav" to="/admin/fitnessCenterCoordinators">
                             <GrYoga className="menuNavIcon" />
                             <span>Coordinadores</span>
                         </Link>
                     </li>
                     <li className="menuNavItem">
-                        <Link className="LinkNav" to="/scheduleShift">
+                        <Link className="LinkNav" to="/admin/fitnessCenters">
                             <LuDumbbell className="menuNavIcon" />
                             <span>Gestionar CAF</span>
                         </Link>
                     </li>
                     <li className="menuNavItem">
-                        <Link className="LinkNav" to="/scheduleShift">
+                        <Link className="LinkNav" to="/admin/assignShiftsQuotas">
                             <IoMdCalendar className="menuNavIcon" />
                             <span>Gestionar Turnos</span>
                         </Link>
                     </li>
-                    <li className="menuNavItem" onClick={() => { }}>
-                        <FaUsers className="menuNavIcon" />
-                        <span>Usuarios CAF</span>
+                    <li className="menuNavItem">
+                        <Link className="LinkNav" to="/admin/fitnessCenterUser">
+                            <FaUsers className="menuNavIcon" />
+                            <span>Usuarios CAF</span>
+                        </Link>
                     </li>
                 </ul>
             </div>
-        )
+        /*)*/
     );
 };
 

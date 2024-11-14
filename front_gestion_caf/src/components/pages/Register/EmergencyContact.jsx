@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
 import { useRegContext } from "../../../providers/RegProvider";
@@ -9,16 +9,26 @@ const EmergencyContact = () => {
     const [error, setError] = useState('');
     const [state, dispatch] = useRegContext();
     const navigate = useNavigate();
+    const [storageToken, setToken] = useState('');
+    const [submitted, setSubmitted] = useState(false); // Estado para controlar el envío
+
 
     const {
         register,
         handleSubmit,
-        formState: { errors },
+        formState: { errors , isValid,},
     } = useForm({ mode: "onChange" });
+
+    useEffect(() => {
+        const storedToken = localStorage.getItem("authToken");
+        if (storedToken) {
+            setToken(storedToken);
+        }
+    }, []);
 
     const {
         information,
-        informationData,
+        estate,
         userData,
         emergencyContact,
     } = state;
@@ -27,10 +37,20 @@ const EmergencyContact = () => {
         MessagesError(message);
     };
 
-    const onSubmit = async (data) => {
+    const onSubmit = async (values) => {
         setError('');  
+        setSubmitted(true); // Marcar que el formulario ha si do enviado
+        if (isValid) {
+            dispatch({ type: "SET_EMERGENCY_CONTACT", data: values });
+            navigate("/register/emergenceContact");
+        }
+        console.log(information )
+        console.log(userData);
+        console.log(estate);
+        console.log(emergencyContact);
+        
         try {
-            const token = "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJqdWFuLmFyY2hpbGEwNEB1cHRjLmVkdS5jbyIsIkF1dGhvcml0aWVzIjpbeyJpZCI6MSwicm9sZU5hbWUiOiJST0xFX1VTRVIifV0sImlhdCI6MTczMTM2OTU0MiwiZXhwIjoxNzMxMzczMTQyfQ.zqUW3gpHf1gTAUkvq2ISplA9YRtCmGZORsTEaw3I3KRDq1p7F-T48Zoq6UjA_C2it6mkQznuPXM8-p1W7OUuyA";
+            const token = storageToken;
         
             const response = await fetch(SERVICES_BACK.SAVEUSER, {
                 method: 'POST',
@@ -39,24 +59,24 @@ const EmergencyContact = () => {
                     'Content-Type': 'application/json',
                 },
                 body: JSON.stringify({
-                    name: "PRUEBA",
-                    email: "juan.archila04@uptc.edu.co",
+                    name: information.name + information.lastName,
+                    email: information.email,
                     documentType: "CC",
-                    documentNumber: "1002366272",
+                    documentNumber: information.documentNumber,
                     universityCode: "202111983",
-                    birthDate: "2024-11-06",
-                    phoneNumber: "3124377121",
-                    residenceAddress: "AV PRUEBA",
+                    birthDate: information.birthDate,
+                    phoneNumber: information.phone,
+                    residenceAddress: information.address,
                     userType: "STUDENT",
                     department: "Boyaca",
                     city: "Tunja",
                     emergencyContact: {
-                        name: "MANUEL",
-                        lastname: "LOPEZ",
-                        phone: "321312412",
-                        email: "manuel@hm.com",
-                        relationship: "MADRE",
-                        residenceAddress: "test",
+                        name: emergencyContact.nameEmergencyContact,
+                        lastname: emergencyContact.lastNameEmergencyContact,
+                        phone: emergencyContact.phone,
+                        email: emergencyContact.emailEmergencyContact,
+                        relationship: emergencyContact.relationshipEmergencyContact,
+                        residenceAddress: emergencyContact.adressEmergencyContact,
                         department: "Boyaca",
                         city: "Tunja"
                     },
@@ -70,13 +90,13 @@ const EmergencyContact = () => {
                         }
                     },
                     medicalInformation: {
-                        eps: "MEDI PRUEBA",
-                        bloodGroup: "O-",
-                        allergies: "Ninguna"
+                        eps: estate.eps,
+                        bloodGroup: estate.bloodType,
+                        allergies: estate.allergies
                     }
                 })
             });
-            console.log(information, informationData, userData);
+            console.log(information, userData);
             if (!response.ok) {
                 if (response.status === 400) {
                     MessagesError('Credenciales incorrectas');
@@ -128,7 +148,7 @@ const EmergencyContact = () => {
 
             if (data) {
                 MessagesSuccess('Inicio de sesión exitoso');
-                // navigate('/');  
+                navigate('/');  
             } else {
                 MessagesError('Credenciales incorrectas');
             }
@@ -216,6 +236,21 @@ const EmergencyContact = () => {
                                 <span className="error">{errors.relationshipEmergencyContact.message}</span>
                             )}
                         </div>
+
+                        <select {...register("departmentEmergencyContact", { required: true })}>
+                            <option value="">Seleccione el departamento</option>
+                            <option value="Boyaca">Boyaxa</option>
+                            <option value="Cundinamarca">Cundinamarca</option>
+                            <option value="Antioquia">Antioquia</option>
+                        </select>
+
+                        <select {...register("cityEmergencyContact", { required: true })}>
+                            <option value="">Seleccione su ciudad</option>
+                            <option value="Tunja">Tunja</option>
+                            <option value="Toca">Toca</option>
+                            <option value="Boyaca">Boyaca</option>
+                            <option value="Sogamoso">Sogamoso</option>
+                        </select>
 
                         <button type="submit">Siguiente</button>
                     </form>

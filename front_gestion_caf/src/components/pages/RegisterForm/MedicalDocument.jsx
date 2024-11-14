@@ -34,7 +34,7 @@ const MedicalDocument = () => {
     };
 
     const handleNavigate = () => {
-        navigate('/nextPage'); // Cambia '/nextPage' por la ruta que desees
+        navigate('/'); 
     };
 
     return (

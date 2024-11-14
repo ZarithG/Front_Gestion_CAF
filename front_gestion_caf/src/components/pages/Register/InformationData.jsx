@@ -6,10 +6,10 @@ import { useRegContext } from "../../../providers/RegProvider";
 const InformationData = () => {
     const [authToken, setAuthToken] = useState("");
     const [userName, setUserName] = useState('');
-    const [, dispatch] = useRegContext();
+    const [state, dispatch] = useRegContext();
     const navigate = useNavigate();
     const [submitted, setSubmitted] = useState(false);
-
+    const {information} = state
     const [formData, setFormData] = useState({
         name: '',
         lastName: '',
@@ -59,7 +59,6 @@ const InformationData = () => {
         if (isValid) {
             // Guardar los datos generales en 'informationData'
             dispatch({ type: "SET_INFORMATION", data: values });
-
             // Guardar los datos del usuario (correo, nombre) en 'userData'
             const userData = {
                 email: values.email,
@@ -95,6 +94,14 @@ const InformationData = () => {
                             {submitted && errors.lastName && <span className="error">Este campo es obligatorio.</span>}
                         </div>
 
+                        <select {...register("documentType", { required: true })}>
+                            <option value="">Seleccione su estamento</option>
+                            <option value="CC">Cedula de Ciudadania</option>
+                            <option value="TI">Tarjeta de identidad</option>
+                            <option value="CE">Cedula de Extranjeria</option>
+                            <option value="PA">Pasaporte</option>
+                        </select>
+
                         <div className="form-group">
                             <label className="lbInItem">Número de documento de identidad</label>
                             <input type="text" {...register("documentNumber", { required: true })} />
@@ -129,10 +136,23 @@ const InformationData = () => {
                             <label className="lbInItem">Dirección</label>
                             <input type="text" {...register("address", { required: true })} />
                             {submitted && errors.address && <span className="error">Este campo es obligatorio.</span>}
-                        </div>
+                        </div>        
 
-                        
-                        <button type="submit">Siguiente</button>
+                        <select {...register("department", { required: true })}>
+                            <option value="">Seleccione el departamento</option>
+                            <option value="Boyaca">Boyaxa</option>
+                            <option value="Cundinamarca">Cundinamarca</option>
+                            <option value="Antioquia">Antioquia</option>
+                        </select>
+
+                        <select {...register("city", { required: true })}>
+                            <option value="">Seleccione su ciudad</option>
+                            <option value="Tunja">Tunja</option>
+                            <option value="Toca">Toca</option>
+                            <option value="Boyaca">Boyaca</option>
+                            <option value="Sogamoso">Sogamoso</option>
+                        </select>
+
                     </form>
                 </div>
             </div>
@@ -172,7 +192,7 @@ const InformationData = () => {
                             />
                             {errors.confirmPassword && <p>{errors.confirmPassword.message}</p>}
                         </div>
-                        <button type="submit" disabled={!isValid}>Guardar</button>
+                        <button type="submit">Guardar</button>
                     </form>
                 </div>
             </div>
