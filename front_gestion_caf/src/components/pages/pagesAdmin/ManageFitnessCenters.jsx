@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import "./styles/PagesAdmin.css";
+import "./styles/FormAdm.css";
 
 const ManageFitnessCenters = () => {
     const navigate = useNavigate();
@@ -54,6 +54,11 @@ const ManageFitnessCenters = () => {
         }
     };
 
+    const handleChangeCoordinador = () => {
+        navigate("/admin/fitnessCenterCoordinators/manage");
+    }
+
+
     const handleChange = (e) => {
         const { name, value } = e.target;
         setFormData((prevData) => ({
@@ -63,68 +68,74 @@ const ManageFitnessCenters = () => {
     };
 
     return (
-        <div className="contairnerBody">
-            <h1 className="InformationDataPageTitle">Datos Centro de Acondicionamiento Físico</h1>
+        <div className="containerBody">
+            <h1 className="InformationDataPageTitleFormAdm">Datos Centro de Acondicionamiento Físico</h1>
 
             {/* Información personal */}
-            <div className="containerPersonalInformation">
-                <h2>Información del CAF</h2>
-                <p>Datos de información</p>
+            <div className="containerPersonalInformationFormAdm">
                 <div className="containerForm">
+                    <h2 className="h2FormAdm">Información del CAF</h2>
+                    <p className="pFormAdm">Datos de información</p>
                     <form className="info-form" onSubmit={handleSubmit}>
-                        <div className="form-group">
-                            <label className="lbInItem">Nombre</label>
-                            <input
-                                type="text"
-                                name="name"
-                                value={formData.name}
-                                onChange={handleChange}
-                            />
-                            {submitted && errors.name && <span className="error">{errors.name}</span>}
-                        </div>
+                        <div className="informationCAFMaFiCe" >
+                            <div className="form-group-FormAdmHo">
+                                <label className="lbFormAdm">Nombre</label>
+                                <input
+                                    className="inMaFi"
+                                    type="text"
+                                    name="name"
+                                    value={formData.name}
+                                    onChange={handleChange}
+                                />
+                                {submitted && errors.name && <span className="error">{errors.name}</span>}
+                            </div>
 
-                        <div className="form-group">
-                            <label className="lbInItem">Número de Usuarios inscritos</label>
-                            <input
-                                type="text"
-                                name="lastName"
-                                value={formData.lastName}
-                                onChange={handleChange}
-                            />
-                            {submitted && errors.lastName && <span className="error">{errors.lastName}</span>}
+                            <div className="form-group-FormAdmHo">
+                                <label className="lbFormAdm">Número de Usuarios inscritos</label>
+                                <input
+                                    type="text"
+                                    name="numberOfUsers"
+                                    value={formData.lastName}
+                                    onChange={handleChange}
+                                />
+                                {submitted && errors.lastName && <span className="error">{errors.lastName}</span>}
+                            </div>
                         </div>
                         <div>
-                            <h2>Tipos de usuairios</h2>
-                            <p>Seleccione el rol de llos usuarios que pueden acceder al CAF</p>
-                            <div>
-                                <input
-                                    type="checkbox"
-                                    name="CAF"
-                                    value={formData.lastName}
-                                    onChange={handleChange}
-                                />
-                                <label className="lbInItem">Estudiante</label>
+                            <h2 className="h2FormAdm">Tipos de usuarios</h2>
+                            <p className="pFormAdm">Seleccione el rol de llos usuarios que pueden acceder al CAF</p>
+                            <div className="form-group-FormAdm-check">
+                                <div>
+                                    <input
+                                        className="check-Form-Adm"
+                                        type="checkbox"
+                                        name="CAF"
+                                        value={formData.lastName}
+                                        onChange={handleChange}
+                                    />
+                                    <label className="lbInItemMaFiCe">Estudiante</label>
+                                </div>
+                                <div>
+                                    <input
+                                        type="checkbox"
+                                        name="CAF"
+                                        value={formData.lastName}
+                                        onChange={handleChange}
+                                    />
+                                    <label className="lbInItemMaFiCe">Docente</label>
+                                </div>
+                                <div>
+                                    <input
+                                        type="checkbox"
+                                        name="CAF"
+                                        value={formData.lastName}
+                                        onChange={handleChange}
+                                    />
+                                    <label className="lbInItemMaFiCe">Funcionario</label>
+                                </div>
                             </div>
-                            <div>
-                                <input
-                                    type="checkbox"
-                                    name="CAF"
-                                    value={formData.lastName}
-                                    onChange={handleChange}
-                                />
-                                <label className="lbInItem">Docente</label>
-                            </div>
-                            <div>
-                                <input
-                                    type="checkbox"
-                                    name="CAF"
-                                    value={formData.lastName}
-                                    onChange={handleChange}
-                                />
-                                <label className="lbInItem">Funcionario</label>
-                            </div>
-                            <div className="form-group">
-                                <label className="lbInItem">Nombre</label>
+                            <div className="form-group-FormAdm">
+                                <label className="lbInItemMaFiCe">Nombre</label>
                                 <input
                                     type="text"
                                     name="name"
@@ -134,8 +145,8 @@ const ManageFitnessCenters = () => {
                                 {submitted && errors.name && <span className="error">{errors.name}</span>}
                             </div>
 
-                            <div className="form-group">
-                                <label className="lbInItem">Número de Usuarios inscritos</label>
+                            <div className="form-group-FormAdm">
+                                <label className="lbInItemMaFiCe">Número de Usuarios inscritos</label>
                                 <input
                                     type="text"
                                     name="lastName"
@@ -145,11 +156,11 @@ const ManageFitnessCenters = () => {
                                 {submitted && errors.lastName && <span className="error">{errors.lastName}</span>}
                             </div>
                         </div>
-                        <h2>Información del Coordinador encargado</h2>
-                        <button> Cambiar coordinador</button>
+                        <h2 className="h2MaFiCe">Información del Coordinador encargado</h2>
+                        <button onClick={handleChangeCoordinador}> Cambiar coordinador</button>
                         <p>Datos básicos del coordinador</p>
-                        <div className="form-group">
-                            <label className="lbInItem">Nombre</label>
+                        <div className="form-group-FormAdm">
+                            <label className="lbInItemMaFiCe">Nombre</label>
                             <input
                                 type="text"
                                 name="name"
@@ -159,8 +170,8 @@ const ManageFitnessCenters = () => {
                             {submitted && errors.name && <span className="error">{errors.name}</span>}
                         </div>
 
-                        <div className="form-group">
-                            <label className="lbInItem">Apellidos</label>
+                        <div className="form-group-FormAdm">
+                            <label className="lbInItemMaFiCe">Apellidos</label>
                             <input
                                 type="text"
                                 name="lastName"
@@ -169,8 +180,8 @@ const ManageFitnessCenters = () => {
                             />
                             {submitted && errors.lastName && <span className="error">{errors.lastName}</span>}
                         </div>
-                        <div className="form-group">
-                            <label className="lbInItem">Número de documento de identidad</label>
+                        <div className="form-group-FormAdm">
+                            <label className="lbInItemMaFiCe">Número de documento de identidad</label>
                             <input
                                 type="text"
                                 name="lastName"
@@ -179,8 +190,8 @@ const ManageFitnessCenters = () => {
                             />
                             {submitted && errors.lastName && <span className="error">{errors.lastName}</span>}
                         </div>
-                        <div className="form-group">
-                            <label className="lbInItem">Número de teléfono</label>
+                        <div className="form-group-FormAdm">
+                            <label className="lbInItemMaFiCe">Número de teléfono</label>
                             <input
                                 type="text"
                                 name="lastName"
@@ -189,8 +200,8 @@ const ManageFitnessCenters = () => {
                             />
                             {submitted && errors.lastName && <span className="error">{errors.lastName}</span>}
                         </div>
-                        <div className="form-group">
-                            <label className="lbInItem">Correo electrónico</label>
+                        <div className="form-group-FormAdm">
+                            <label className="lbInItemMaFiCe">Correo electrónico</label>
                             <input
                                 type="text"
                                 name="lastName"
@@ -199,7 +210,6 @@ const ManageFitnessCenters = () => {
                             />
                             {submitted && errors.lastName && <span className="error">{errors.lastName}</span>}
                         </div>
-                        <button>Guardar</button>
                     </form>
                 </div>
             </div>

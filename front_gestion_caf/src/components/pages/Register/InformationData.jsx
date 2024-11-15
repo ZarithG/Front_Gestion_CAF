@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
 import { useRegContext } from "../../../providers/RegProvider";
+import "../../styles/Register.css";
 
 const InformationData = () => {
     const [authToken, setAuthToken] = useState("");
@@ -9,7 +10,7 @@ const InformationData = () => {
     const [state, dispatch] = useRegContext();
     const navigate = useNavigate();
     const [submitted, setSubmitted] = useState(false);
-    const {information} = state
+    const { information } = state
     const [formData, setFormData] = useState({
         name: '',
         lastName: '',
@@ -72,117 +73,133 @@ const InformationData = () => {
     };
 
     return (
-        <div className="InformationData">
-            <h1 className="InformationDataPageTitle">Completar datos básicos</h1>
-
+        <div className="InformationDataRegister">
             {/* Información personal */}
             <div className="containerPersonalInformation">
-                <h2>Información personal</h2>
-                <p>Agregue sus datos personales para complementar el ingreso al sistema.</p>
-                <div className="containerForm">
+                <h2 className="h2Register">Información personal</h2>
+                <p className="pRegister">Agregue sus datos personales para complementar el ingreso al sistema.</p>
+                <div className="containerFormReg">
                     <form className="info-form" onSubmit={handleSubmit(onSubmit)}>
 
-                        <div className="form-group">
-                            <label className="lbInItem">Nombre</label>
-                            <input type="text" {...register("name", { required: true })} />
-                            {submitted && errors.name && <span className="error">Este campo es obligatorio.</span>}
+                        <div className="form-group-Reg">
+                            <label className="lbRegItem">Nombre</label>
+                            <input className="inpRegItem" type="text" {...register("name", { required: true })} />
+                            {submitted && errors.name && <p className="error">Este campo es obligatorio.</p>}
                         </div>
 
-                        <div className="form-group">
-                            <label className="lbInItem">Apellidos</label>
-                            <input type="text" {...register("lastName", { required: true })} />
-                            {submitted && errors.lastName && <span className="error">Este campo es obligatorio.</span>}
+                        <div className="form-group-Reg">
+                            <label className="lbRegItem">Apellidos</label>
+                            <input className="inpRegItem" type="text" {...register("lastName", { required: true })} />
+                            {submitted && errors.lastName && <p className="error">Este campo es obligatorio.</p>}
                         </div>
 
-                        <select {...register("documentType", { required: true })}>
-                            <option value="">Seleccione su estamento</option>
-                            <option value="CC">Cedula de Ciudadania</option>
-                            <option value="TI">Tarjeta de identidad</option>
-                            <option value="CE">Cedula de Extranjeria</option>
-                            <option value="PA">Pasaporte</option>
-                        </select>
-
-                        <div className="form-group">
-                            <label className="lbInItem">Número de documento de identidad</label>
-                            <input type="text" {...register("documentNumber", { required: true })} />
-                            {submitted && errors.document && <span className="error">Este campo es obligatorio.</span>}
+                        <div className="form-group-Reg">
+                            <label className="lbRegItem">Tipo de documento</label>
+                            <select className="sltRegItem" {...register("documentType", { required: true })}>
+                                <option value="">Seleccione su estamento</option>
+                                <option value="CC">Cedula de Ciudadania</option>
+                                <option value="TI">Tarjeta de identidad</option>
+                                <option value="CE">Cedula de Extranjeria</option>
+                                <option value="PA">Pasaporte</option>
+                            </select>
                         </div>
 
-                        <div className="form-group">
-                            <label className="lbInItem">Número de teléfono</label>
-                            <input type="text" {...register("phone", { required: true })} />
-                            {submitted && errors.phone && <span className="error">Este campo es obligatorio.</span>}
+                        <div className="form-group-Reg">
+                            <label className="lbRegItem">Número de documento de identidad</label>
+                            <input className="inpRegItem" type="text" {...register("documentNumber", { required: true })} />
+                            {submitted && errors.document && <p className="error">Este campo es obligatorio.</p>}
                         </div>
 
-                        <div className="form-group">
-                            <label className="lbInItem">Fecha de nacimiento</label>
-                            <input type="date" {...register("birthDate", { required: true })} />
-                            {submitted && errors.birthDate && <span className="error">Este campo es obligatorio.</span>}
+                        <div className="form-group-Reg">
+                            <label className="lbRegItem">Número de teléfono</label>
+                            <input className="inpRegItem" type="text" {...register("phone", { required: true })} />
+                            {submitted && errors.phone && <p className="error">Este campo es obligatorio.</p>}
                         </div>
 
-                        <div className="form-group">
-                            <label className="lbInItem">Correo Electrónico</label>
+                        <div className="form-group-Reg">
+                            <label className="lbRegItem">Código</label>
+                            <input className="inpRegItem" type="text" {...register("phone", { required: true })} />
+                            {submitted && errors.phone && <p className="error">Este campo es obligatorio.</p>}
+                        </div>
+
+                        <div className="form-group-Reg">
+                            <label className="lbRegItem">Fecha de nacimiento</label>
+                            <input className="inpRegItem" type="date" {...register("birthDate", { required: true })} />
+                            {submitted && errors.birthDate && <p className="error">Este campo es obligatorio.</p>}
+                        </div>
+
+                        <div className="form-group-Reg">
+                            <label className="lbRegItem">Correo Electrónico</label>
                             <input
                                 type="email"
                                 {...register('email')}
-                                className="lbDataUsername"
+                                className="inpEmailRegItem"
                                 value={formData.email}
                                 readOnly
-                            />                            
-                            
+                            />
+
                         </div>
 
-                        <div className="form-group">
-                            <label className="lbInItem">Dirección</label>
-                            <input type="text" {...register("address", { required: true })} />
-                            {submitted && errors.address && <span className="error">Este campo es obligatorio.</span>}
-                        </div>        
+                        <div className="form-group-Reg">
+                            <label className="lbRegItem">Dirección</label>
+                            <input className="inpRegItem" type="text" {...register("address", { required: true })} />
+                            {submitted && errors.address && <p className="error">{errors.password.message}Este campo es obligatorio.</p>}
 
-                        <select {...register("department", { required: true })}>
-                            <option value="">Seleccione el departamento</option>
-                            <option value="Boyaca">Boyaxa</option>
-                            <option value="Cundinamarca">Cundinamarca</option>
-                            <option value="Antioquia">Antioquia</option>
-                        </select>
+                        </div>
 
-                        <select {...register("city", { required: true })}>
-                            <option value="">Seleccione su ciudad</option>
-                            <option value="Tunja">Tunja</option>
-                            <option value="Toca">Toca</option>
-                            <option value="Boyaca">Boyaca</option>
-                            <option value="Sogamoso">Sogamoso</option>
-                        </select>
+                        <div className="form-group-Reg">
+                            <label className="lbRegItem">Departamento</label>
+                            <select className="sltRegItem"  {...register("department", { required: true })}>
+                                <option value="">Seleccione el departamento</option>
+                                <option value="Boyaca">Boyaxa</option>
+                                <option value="Cundinamarca">Cundinamarca</option>
+                                <option value="Antioquia">Antioquia</option>
+                            </select>
+                        </div>
 
+                        <div className="form-group-Reg">
+                            <label className="lbRegItem">Municipio</label>
+                            <select className="sltRegItem"  {...register("city", { required: true })}>
+                                <option value="">Seleccione su ciudad</option>
+                                <option value="Tunja">Tunja</option>
+                                <option value="Toca">Toca</option>
+                                <option value="Boyaca">Boyaca</option>
+                                <option value="Sogamoso">Sogamoso</option>
+                            </select>
+                        </div>
                     </form>
                 </div>
             </div>
 
             {/* Usuario y contraseña */}
-            <div className="containerUser">
-                <h2>Usuario y contraseña</h2>
-                <p>Tu usuario será el nombre y apellido registrado en el correo electrónico, elige una contraseña segura.</p>
-                <div className="containerForm">
-                    <form className="user-info-form" onSubmit={handleSubmit(onSubmit)}>
-                        <div className="form-group">
-                            <label>Usuario</label>
+            <div className="containerUserReg">
+                <h2 className="h2Register">Usuario y contraseña</h2>
+                <p className="pRegister">Tu usuario será el nombre y apellido registrado en el correo electrónico, elige una contraseña segura.</p>
+                <div className="containerFormReg">
+                    <form className="user-info-form-reg" onSubmit={handleSubmit(onSubmit)}>
+                        <div className="form-group-Reg">
+                            <label className="lbRegItem">Usuario</label>
                             <input
+                                className="inpEmailRegItem"
                                 type="text"
                                 value={formData.email}
                                 readOnly
                             />
                         </div>
-                        <div className="form-group">
-                            <label>Contraseña</label>
+                        <div className="form-group-Reg">
+                            <label className="lbRegItem">Contraseña</label>
                             <input
+                                className="inpRegItem"
                                 type="password"
                                 {...register('password', { required: "Este campo es obligatorio." })}
                                 onChange={(e) => setFormData({ ...formData, password: e.target.value })}
                             />
-                            {errors.password && <p>{errors.password.message}</p>}
+                            {errors.password && <p className="error">{errors.password.message}</p>}
                         </div>
-                        <div className="form-group">
-                            <label>Confirmación de la contraseña</label>
+                        <div className="form-group-Reg">
+                            <label className="lbRegItem" >Confirmación de la contraseña</label>
                             <input
+                                className="inpRegItem"
                                 type="password"
                                 {...register('confirmPassword', {
                                     required: "Este campo es obligatorio.",
@@ -190,9 +207,11 @@ const InformationData = () => {
                                 })}
                                 onChange={(e) => setFormData({ ...formData, confirmPassword: e.target.value })}
                             />
-                            {errors.confirmPassword && <p>{errors.confirmPassword.message}</p>}
+                            {errors.confirmPassword && <p className="error">{errors.confirmPassword.message}</p>}
                         </div>
-                        <button type="submit">Guardar</button>
+                        <div className="buttonContainer">
+                            <button className="buttonRegister" type="submit">Siguiente</button>
+                        </div>
                     </form>
                 </div>
             </div>
@@ -201,3 +220,5 @@ const InformationData = () => {
 };
 
 export default InformationData;
+
+

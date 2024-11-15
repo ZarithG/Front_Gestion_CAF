@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import "./styles/PagesAdmin.css";
+import "./styles/FormAdm.css";
 
 const ModifyCoordinators = () => {
     const navigate = useNavigate();
@@ -63,17 +63,18 @@ const ModifyCoordinators = () => {
     };
 
     return (
-        <div className="contairnerBody">
-            <h1 className="InformationDataPageTitle">Completar datos básicos</h1>
+        <div className="containerBody">
+            <h1 className="InformationDataPageTitleFormAdm">Gestión del Coordonador </h1>
 
             {/* Información personal */}
-            <div className="containerPersonalInformation">
-                <h2>Información personal</h2>
-                <p>Agregue sus datos personales para complementar el ingreso al sistema.</p>
-                <div className="containerForm">
+            <div className="containerPersonalInformationFormAdm">
+                <div className="containerFormAdm">
+                    <h2 className="h2FormAdm">Información personal</h2>
+                    <p className="pFormAdm">Modifique la información del coordinador</p>
+
                     <form className="info-form" onSubmit={handleSubmit}>
-                        <div className="form-group">
-                            <label className="lbInItem">Nombre</label>
+                        <div className="form-group-FormAdm">
+                            <label className="lbFormAdm">Nombre</label>
                             <input
                                 type="text"
                                 name="name"
@@ -83,8 +84,8 @@ const ModifyCoordinators = () => {
                             {submitted && errors.name && <span className="error">{errors.name}</span>}
                         </div>
 
-                        <div className="form-group">
-                            <label className="lbInItem">Apellidos</label>
+                        <div className="form-group-FormAdm">
+                            <label className="lbFormAdm">Apellidos</label>
                             <input
                                 type="text"
                                 name="lastName"
@@ -93,9 +94,10 @@ const ModifyCoordinators = () => {
                             />
                             {submitted && errors.lastName && <span className="error">{errors.lastName}</span>}
                         </div>
-                        <div>
-                            <label className="lbInItem">Tipo de documento</label>
+                        <div className="form-group-FormAdm">
+                            <label className="lbFormAdm">Tipo de documento</label>
                             <select
+                                className="sltFormAdmItem"
                                 name="documentType"
                                 value={formData.documentType}
                                 onChange={handleChange}
@@ -107,8 +109,8 @@ const ModifyCoordinators = () => {
                                 <option value="PA">Pasaporte</option>
                             </select>
                         </div>
-                        <div className="form-group">
-                            <label className="lbInItem">Número de documento de identidad</label>
+                        <div className="form-group-FormAdm">
+                            <label className="lbFormAdm">Número de documento de identidad</label>
                             <input
                                 type="text"
                                 name="documentNumber"
@@ -117,8 +119,8 @@ const ModifyCoordinators = () => {
                             />
                         </div>
 
-                        <div className="form-group">
-                            <label className="lbInItem">Número de teléfono</label>
+                        <div className="form-group-FormAdm">
+                            <label className="lbFormAdm">Número de teléfono</label>
                             <input
                                 type="text"
                                 name="phoneNumber"
@@ -127,8 +129,8 @@ const ModifyCoordinators = () => {
                             />
                         </div>
 
-                        <div className="form-group">
-                            <label className="lbInItem">Fecha de nacimiento</label>
+                        <div className="form-group-FormAdm">
+                            <label className="lbFormAdm">Fecha de nacimiento</label>
                             <input
                                 type="date"
                                 name="birthDate"
@@ -137,11 +139,11 @@ const ModifyCoordinators = () => {
                             />
                         </div>
 
-                        <div className="form-group">
-                            <label className="lbInItem">Correo Electrónico</label>
+                        <div className="form-group-FormAdm">
+                            <label className="lbFormAdm">Correo Electrónico</label>
                             <input
                                 type="email"
-                                className="lbDataUsername"
+                                className="inpEmailFormAdmItem"
                                 name="email"
                                 value={formData.email}
                                 onChange={handleChange}
@@ -149,32 +151,34 @@ const ModifyCoordinators = () => {
                             />
                         </div>
 
-                        <div className="form-group">
-                            <label className="lbInItem">Dirección</label>
+                        <div className="form-group-FormAdm">
+                            <label className="lbFormAdm">Dirección</label>
                             <input
                                 type="text"
                                 name="address"
                                 value={formData.address}
                                 onChange={handleChange}
+
                             />
                             {submitted && errors.address && <span className="error">{errors.address}</span>}
                         </div>
-                        <div>
-                            <label className="lbInItem">Departamento</label>
+                        <div className="form-group-FormAdm">
+                            <label className="lbFormAdm">Departamento</label>
                             <select
+                                className="sltFormAdmItem"
                                 name="department"
                                 value={formData.department}
-                                onChange={handleChange}
-                            >
+                                onChange={handleChange}>
                                 <option value="">Seleccione el departamento</option>
                                 <option value="Boyaca">Boyacá</option>
                                 <option value="Cundinamarca">Cundinamarca</option>
                                 <option value="Antioquia">Antioquia</option>
                             </select>
                         </div>
-                        <div>
-                            <label className="lbInItem">Municipio</label>
+                        <div className="form-group-FormAdm">
+                            <label className="lbFormAdm">Municipio</label>
                             <select
+                                className="sltFormAdmItem"
                                 name="city"
                                 value={formData.city}
                                 onChange={handleChange}
@@ -185,6 +189,9 @@ const ModifyCoordinators = () => {
                                 <option value="Boyaca">Boyacá</option>
                                 <option value="Sogamoso">Sogamoso</option>
                             </select>
+                        </div>
+                        <div className="containerButtonAdm">
+                        <button className="buttonFormAdm">Guardar</button>
                         </div>
                     </form>
                 </div>

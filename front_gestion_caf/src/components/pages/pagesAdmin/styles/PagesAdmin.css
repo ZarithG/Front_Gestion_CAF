@@ -2,11 +2,16 @@
 .containerBody {
   max-width: 2000px;
   margin-top: 2vh;
-  margin-bottom: 6vh;
+  margin-bottom: 8vh;
   margin-left: 10.5vh;
 }
 
 /*---------------  AssignShiftsQuotas  -------------------*/
+
+.InformationDataPageTitle{
+  padding-bottom: 0vh;
+}
+
 .turno-manager {
   width: 300px;
   margin: auto;
@@ -47,4 +52,36 @@
   margin-top: 5px;
   flex: auto;
   flex-direction: row;
+}
+
+
+
+/*---------------  ManageFitnessCenters  -------------------*/
+.containerCAFInformation {
+  margin-left: 0vh;
+}
+.h2MaFiCe{
+  font-size: 20px;
+  font-weight: bold;
+  padding-top: 4vh;
+}
+
+.lbInItemInMaFiCe {
+  flex-direction: column;
+}
+
+.informationCAFMaFiCe {
+  display: flex;
+  gap: 2vh; /* Espacio entre los campos */
+}
+
+.informationCAFMaFiCe {
+  display: flex;
+  align-items: center;
+  gap: 2vh;
+  padding-bottom: 2vh;
+}
+
+.form-group {
+  flex: 1; /* Para que cada campo ocupe la misma cantidad de espacio */
 }

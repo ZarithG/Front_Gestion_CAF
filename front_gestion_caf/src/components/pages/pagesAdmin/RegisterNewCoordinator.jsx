@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import "./styles/PagesAdmin.css";
+import "./styles/FormAdm.css";
 
 const RegisterNewCoordinator = () => {
     const navigate = useNavigate();
@@ -63,17 +63,18 @@ const RegisterNewCoordinator = () => {
     };
 
     return (
-        <div className="contairnerBody">
-            <h1 className="InformationDataPageTitle">Completar datos básicos</h1>
+        <div className="containerBody">
+            <h1 className="InformationDataPageTitleFormAdm">Completar datos básicos del coordinador</h1>
 
             {/* Información personal */}
             <div className="containerPersonalInformation">
-                <h2>Información personal</h2>
-                <p>Agregue sus datos personales para complementar el ingreso al sistema.</p>
-                <div className="containerForm">
+                <div className="containerFormAdm">
+                    <h2 className="h2FormAdm">Información personal</h2>
+                    <p className="pFormAdm">Modifique la información del coordinador</p>
+
                     <form className="info-form" onSubmit={handleSubmit}>
-                        <div className="form-group">
-                            <label className="lbInItem">Nombre</label>
+                        <div className="form-group-FormAdm">
+                            <label className="lbFormAdm">Nombre</label>
                             <input
                                 type="text"
                                 name="name"
@@ -83,8 +84,8 @@ const RegisterNewCoordinator = () => {
                             {submitted && errors.name && <span className="error">{errors.name}</span>}
                         </div>
 
-                        <div className="form-group">
-                            <label className="lbInItem">Apellidos</label>
+                        <div className="form-group-FormAdm">
+                            <label className="lbFormAdm">Apellidos</label>
                             <input
                                 type="text"
                                 name="lastName"
@@ -93,9 +94,10 @@ const RegisterNewCoordinator = () => {
                             />
                             {submitted && errors.lastName && <span className="error">{errors.lastName}</span>}
                         </div>
-                        <div>
-                            <label className="lbInItem">Tipo de documento</label>
+                        <div className="form-group-FormAdm">
+                            <label className="lbFormAdm">Tipo de documento</label>
                             <select
+                                className="sltFormAdmItem"
                                 name="documentType"
                                 value={formData.documentType}
                                 onChange={handleChange}
@@ -107,8 +109,8 @@ const RegisterNewCoordinator = () => {
                                 <option value="PA">Pasaporte</option>
                             </select>
                         </div>
-                        <div className="form-group">
-                            <label className="lbInItem">Número de documento de identidad</label>
+                        <div className="form-group-FormAdm">
+                            <label className="lbFormAdm">Número de documento de identidad</label>
                             <input
                                 type="text"
                                 name="documentNumber"
@@ -117,8 +119,8 @@ const RegisterNewCoordinator = () => {
                             />
                         </div>
 
-                        <div className="form-group">
-                            <label className="lbInItem">Número de teléfono</label>
+                        <div className="form-group-FormAdm">
+                            <label className="lbFormAdm">Número de teléfono</label>
                             <input
                                 type="text"
                                 name="phoneNumber"
@@ -127,8 +129,8 @@ const RegisterNewCoordinator = () => {
                             />
                         </div>
 
-                        <div className="form-group">
-                            <label className="lbInItem">Fecha de nacimiento</label>
+                        <div className="form-group-FormAdm">
+                            <label className="lbFormAdm">Fecha de nacimiento</label>
                             <input
                                 type="date"
                                 name="birthDate"
@@ -137,11 +139,11 @@ const RegisterNewCoordinator = () => {
                             />
                         </div>
 
-                        <div className="form-group">
-                            <label className="lbInItem">Correo Electrónico</label>
+                        <div className="form-group-FormAdm">
+                            <label className="lbFormAdm">Correo Electrónico</label>
                             <input
                                 type="email"
-                                className="lbDataUsername"
+                                className="inpEmailFormAdmItem"
                                 name="email"
                                 value={formData.email}
                                 onChange={handleChange}
@@ -149,55 +151,59 @@ const RegisterNewCoordinator = () => {
                             />
                         </div>
 
-                        <div className="form-group">
-                            <label className="lbInItem">Dirección</label>
+                        <div className="form-group-FormAdm">
+                            <label className="lbFormAdm">Dirección</label>
                             <input
                                 type="text"
                                 name="address"
                                 value={formData.address}
                                 onChange={handleChange}
+
                             />
                             {submitted && errors.address && <span className="error">{errors.address}</span>}
                         </div>
-                        <div>
-                        <label className="lbInItem">Departamento</label>
-                        <select
-                            name="department"
-                            value={formData.department}
-                            onChange={handleChange}
-                        >
-                            <option value="">Seleccione el departamento</option>
-                            <option value="Boyaca">Boyacá</option>
-                            <option value="Cundinamarca">Cundinamarca</option>
-                            <option value="Antioquia">Antioquia</option>
-                        </select>
+                        <div className="form-group-FormAdm">
+                            <label className="lbFormAdm">Departamento</label>
+                            <select
+                                className="sltFormAdmItem"
+                                name="department"
+                                value={formData.department}
+                                onChange={handleChange}>
+                                <option value="">Seleccione el departamento</option>
+                                <option value="Boyaca">Boyacá</option>
+                                <option value="Cundinamarca">Cundinamarca</option>
+                                <option value="Antioquia">Antioquia</option>
+                            </select>
                         </div>
-                        <div>
-                        <label className="lbInItem">Municipio</label>
-                        <select
-                            name="city"
-                            value={formData.city}
-                            onChange={handleChange}
-                        >
-                            <option value="">Seleccione su ciudad</option>
-                            <option value="Tunja">Tunja</option>
-                            <option value="Toca">Toca</option>
-                            <option value="Boyaca">Boyacá</option>
-                            <option value="Sogamoso">Sogamoso</option>
-                        </select>
+                        <div className="form-group-FormAdm">
+                            <label className="lbFormAdm">Municipio</label>
+                            <select
+                                className="sltFormAdmItem"
+                                name="city"
+                                value={formData.city}
+                                onChange={handleChange}
+                            >
+                                <option value="">Seleccione su ciudad</option>
+                                <option value="Tunja">Tunja</option>
+                                <option value="Toca">Toca</option>
+                                <option value="Boyaca">Boyacá</option>
+                                <option value="Sogamoso">Sogamoso</option>
+                            </select>
                         </div>
+                        
                     </form>
                 </div>
             </div>
 
             {/* Usuario y contraseña */}
-            <div className="containerUser">
-                <h2>Usuario y contraseña</h2>
-                <p>Tu usuario será el nombre y apellido registrado en el correo electrónico, elige una contraseña segura.</p>
-                <div className="containerForm">
-                    <form className="user-info-form" onSubmit={handleSubmit}>
-                        <div className="form-group">
-                            <label>Usuario</label>
+            <div className="containerUserFormAdm">
+                <div className="containerFormAdm">
+                    <h2 className="h2FormAdm">Usuario y contraseña</h2>
+                    <p className="pFormAdm">Tu usuario será el nombre y apellido registrado en el correo electrónico, elige una contraseña segura.</p>
+
+                    <form className="info-form" onSubmit={handleSubmit}>
+                        <div className="form-group-FormAdm">
+                            <label className="lbFormAdm">Usuario</label>
                             <input
                                 type="text"
                                 name="email"
@@ -206,8 +212,8 @@ const RegisterNewCoordinator = () => {
                                 readOnly
                             />
                         </div>
-                        <div className="form-group">
-                            <label>Contraseña</label>
+                        <div className="form-group-FormAdm">
+                            <label className="lbFormAdm">Contraseña</label>
                             <input
                                 type="password"
                                 name="password"
@@ -216,8 +222,8 @@ const RegisterNewCoordinator = () => {
                             />
                             {submitted && errors.password && <span className="error">{errors.password}</span>}
                         </div>
-                        <div className="form-group">
-                            <label>Confirmación de la contraseña</label>
+                        <div className="form-group-FormAdm">
+                            <label className="lbFormAdm">Confirmación de la contraseña</label>
                             <input
                                 type="password"
                                 name="confirmPassword"
@@ -226,7 +232,9 @@ const RegisterNewCoordinator = () => {
                             />
                             {submitted && errors.confirmPassword && <span className="error">{errors.confirmPassword}</span>}
                         </div>
-                        <button type="submit">Guardar</button>
+                        <div className="containerButtonAdm">
+                        <button className="buttonFormAdm">Guardar</button>
+                        </div>
                     </form>
                 </div>
             </div>

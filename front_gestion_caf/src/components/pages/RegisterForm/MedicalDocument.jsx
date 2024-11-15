@@ -1,121 +1,121 @@
-import React, { useState } from "react";
+import React from "react";
 import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
 import { useRegFormContext } from "../../../providers/RegFormProvider";
 
-const MedicalDocument = () => {
-    const [submitted, setSubmitted] = useState(false);
-    const [formData, setFormData] = useState(null);
-    const [state, dispatch] = useRegFormContext();
+const MedicalHistory = () => {
+    const [, dispatch] = useRegFormContext();
     const navigate = useNavigate();
-
-    const {
-        termsConditions,
-        regulation,
-        medicalHistory,
-        informedConsent,
-        information,
-        estate,  // Agregar estado del formulario de estamento
-        emergencyContact, // Agregar estado del formulario de contacto de emergencia
-    } = state;
 
     const {
         register,
         handleSubmit,
-        formState: { errors, isValid },
-    } = useForm({ mode: "onChange" });
+        watch,
+        formState: { isValid },
+    } = useForm({ mode: "onChange" }); // Enable validation on change
 
     const onSubmit = (values) => {
         if (isValid) {
-            dispatch({ type: 'SET_MEDICAL_DOCUMENT', data: values });
-            setFormData(values);
-            setSubmitted(true);
+            const hasAffirmativeAnswer = affirmativeAnswers;
+            dispatch({ type: 'SET_MEDICAL_HISTORY', data: { ...values, hasAffirmativeAnswer } });
+            navigate('/registration/informedConsent');
         }
     };
 
-    const handleNavigate = () => {
-        navigate('/'); 
-    };
+    // Watch for any "Yes" responses
+    const affirmativeAnswers = watch([
+        "medicalCondition",
+        "heartProblem",
+        "lungProblem",
+        "chestPain",
+        "unusualBreath",
+        "neurologicalDisease",
+        "muscleJointIssues",
+        "medicationHeart",
+        "otherIssues"
+    ]).includes("true");
 
     return (
         <div className="Register">
             <div className="containerPersonalInformation">
-                <h2>Carga de documento médico</h2>
-                <p>
-                    Por favor ingrese desde su cuenta institucional, descargue el reglamento y léalo cuidadosamente. Si está dispuesto a cumplir con lo estipulado, descargue el consentimiento informado y entréguelo totalmente diligenciado y firmado en el CAF donde se desea inscribir. Una vez revisado, le pondrán una estampilla al carnet, la cual es indispensable para el ingreso diario.
-                </p>
-
+                <h2>Formulario de valoración e Historia médica</h2>
+                <p>Las preguntas que encuentra a continuación hacen parte de un cuestionario
+                    adaptado del PARQ (Physical Activity Readiness Questionnaire), usado en la
+                    valoración de la aptitud para la realización de actividad física. Es indispensable que la información sea veraz para evitar futuros inconvenientes.</p>
                 <div className="containerForm">
-                    <form className="personal-info-form" onSubmit={handleSubmit(onSubmit)}>
-                        <div className="form-group">
-                            <input type="file" {...register("consentFile", { required: "Este campo es obligatorio." })} />
-                            {submitted && errors.consentFile && <span className="error">{errors.consentFile.message}</span>}
+                    <form className="user-info-form" onSubmit={handleSubmit(onSubmit)}>
+                        <div className="form-table">
+                            {/* Form questions */}
+                            {[
+                                {
+                                    question: "¿Le ha dicho su médico alguna vez que padece una enfermedad y que sólo debe hacer actividad física bajo prescripción médica?",
+                                    name: "medicalCondition"
+                                },
+                                {
+                                    question: "¿Ha sufrido o sufre actualmente algún problema cardiaco?",
+                                    name: "heartProblem"
+                                },
+                                {
+                                    question: "¿Ha sufrido o sufre actualmente algún problema respiratorio o enfermedad pulmonar?",
+                                    name: "lungProblem"
+                                },
+                                {
+                                    question: "¿Ha tenido molestias, dolor o presión en el pecho al realizar ejercicio?",
+                                    name: "chestPain"
+                                },
+                                {
+                                    question: "¿Presenta ahogo inusual, se siente cansado con facilidad, con excesiva fatiga al realizar actividad física leve?",
+                                    name: "unusualBreath"
+                                },
+                                {
+                                    question: "¿Tiene alguna enfermedad neurológica?",
+                                    name: "neurologicalDisease"
+                                },
+                                {
+                                    question: "¿Ha tenido o tiene problemas articulares, musculares u óseos que puedan empeorar o generen restricción para realizar actividad física?",
+                                    name: "muscleJointIssues"
+                                },
+                                {
+                                    question: "¿Toma algún medicamento para la tensión arterial o problema cardiaco?",
+                                    name: "medicationHeart"
+                                },
+                                {
+                                    question: "¿Existe algún problema o enfermedad no mencionada aquí que debiera confiarnos, para evitar imprevistos a la hora de realizar la actividad física?",
+                                    name: "otherIssues"
+                                },
+                            ].map((item, index) => (
+                                <div key={index} className="form-row">
+                                    <div className="form-question">
+                                        <label>{item.question}</label>
+                                    </div>
+                                    <div className="form-option">
+                                        <input {...register(item.name, { required: true })} type="radio" value="false" />
+                                        <label>No</label>
+                                    </div>
+                                    <div className="form-option">
+                                        <input {...register(item.name)} type="radio" value="true" />
+                                        <label>Si</label>
+                                    </div>
+                                </div>
+                            ))}
+
+                            {/* Additional Information Field */}
+                            {affirmativeAnswers && (
+                                <div className="F">
+                                    <label className="form-group">Si en la anterior sección contesto una o varias preguntas de forma afirmativa, por favor complemente su respuesta.</label>
+                                    <input type="text" {...register("additionalInfo")} placeholder="Escriba detalles aquí..." />
+                                </div>
+                            )}
                         </div>
+
                         <button type="submit" disabled={!isValid}>
                             Siguiente
                         </button>
                     </form>
                 </div>
-
-                {submitted && formData && (
-                    <div className="summary">
-                        <h3>Resultados del Formulario</h3>
-
-<h4>Términos y Condiciones</h4>
-<p>Aceptó términos y condiciones: {termsConditions.termsAccepted === "true" ? 'Sí' : 'No'}</p>
-
-<h4>Reglamento</h4>
-<p>Aceptó reglamento: {regulation.termsAccepted === "true" ? 'Sí' : 'No'}</p>
-
-<h4>Información Personal y de Salud</h4>
-<ul>
-    <li>Nombre: {information.name}</li>
-    <li>Apellidos: {information.lastName}</li>
-    <li>Número de documento: {information.document}</li>
-    <li>Número de teléfono: {information.phone}</li>
-    <li>Fecha de nacimiento: {information.birthDate}</li>
-    <li>Correo Electrónico: {information.email}</li>
-    <li>Dirección: {information.address}</li>
-    <li>EPS: {information.eps}</li>
-    <li>Grupo sanguíneo: {information.bloodType}</li>
-    <li>Alergias: {information.allergies || 'Ninguna'}</li>
-</ul>
-
-<h4>Consentimiento Informado</h4>
-<p>Archivo de consentimiento: {informedConsent.consentFile ? 'Archivo subido' : 'No se ha subido ningún archivo'}</p>
-
-<h4>Estamento</h4>
-<p>Estamento seleccionado: {estate.estamento}</p>
-
-<h4>Contacto de Emergencia</h4>
-<ul>
-    <li>Nombre: {emergencyContact.nameEmergencyContact}</li>
-    <li>Apellidos: {emergencyContact.lastNameEmergencyContact}</li>
-    <li>Número de teléfono: {emergencyContact.phoneEmergencyContact}</li>
-    <li>Correo Electrónico: {emergencyContact.emailEmergencyContact}</li>
-    <li>Dirección: {emergencyContact.adressEmergencyContact}</li>
-    <li>Parentesco: {emergencyContact.estamento}</li>
-</ul>
-
-<h4>Historial Médico</h4>
-<ul>
-    <li>Condición médica: {medicalHistory.medicalCondition === "true" ? 'Sí' : 'No'}</li>
-    <li>Problemas cardíacos: {medicalHistory.heartProblem === "true" ? 'Sí' : 'No'}</li>
-    <li>Problemas respiratorios: {medicalHistory.lungProblem === "true" ? 'Sí' : 'No'}</li>
-    <li>Dolor en el pecho: {medicalHistory.chestPain === "true" ? 'Sí' : 'No'}</li>
-    <li>Ahogo inusual: {medicalHistory.unusualBreath === "true" ? 'Sí' : 'No'}</li>
-    <li>Enfermedad neurológica: {medicalHistory.neurologicalDisease === "true" ? 'Sí' : 'No'}</li>
-    <li>Problemas articulares: {medicalHistory.muscleJointIssues === "true" ? 'Sí' : 'No'}</li>
-    <li>Medicamentos para el corazón: {medicalHistory.medicationHeart === "true" ? 'Sí' : 'No'}</li>
-    <li>Otros problemas: {medicalHistory.otherIssues === "true" ? 'Sí' : 'No'}</li>
-    <li>Información adicional: {medicalHistory.additionalInfo || 'Ninguna'}</li>
-</ul>
-                        <button onClick={handleNavigate}>Confirmar y continuar</button>
-                    </div>
-                )}
             </div>
         </div>
     );
 };
 
-export default MedicalDocument;
+export default MedicalHistory;

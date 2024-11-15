@@ -4,6 +4,7 @@ import { useNavigate } from "react-router-dom";
 import { useRegContext } from "../../../providers/RegProvider";
 import { MessagesError, MessagesSuccess } from '../../gestion-caf/Messages';
 import { SERVICES_BACK } from "../../../constants/constants";
+import "../../styles/Register.css";
 
 const EmergencyContact = () => {
     const [error, setError] = useState('');
@@ -16,7 +17,7 @@ const EmergencyContact = () => {
     const {
         register,
         handleSubmit,
-        formState: { errors , isValid,},
+        formState: { errors, isValid, },
     } = useForm({ mode: "onChange" });
 
     useEffect(() => {
@@ -38,20 +39,16 @@ const EmergencyContact = () => {
     };
 
     const onSubmit = async (values) => {
-        setError('');  
+        setError('');
         setSubmitted(true); // Marcar que el formulario ha si do enviado
         if (isValid) {
             dispatch({ type: "SET_EMERGENCY_CONTACT", data: values });
             navigate("/register/emergenceContact");
         }
-        console.log(information )
-        console.log(userData);
-        console.log(estate);
-        console.log(emergencyContact);
-        
+
         try {
             const token = storageToken;
-        
+
             const response = await fetch(SERVICES_BACK.SAVEUSER, {
                 method: 'POST',
                 headers: {
@@ -104,7 +101,7 @@ const EmergencyContact = () => {
                     MessagesError('Hubo un error en el servidor');
                 }
                 return;
-            }else{
+            } else {
                 console.log("Respuesta bien");
             }
 
@@ -112,7 +109,7 @@ const EmergencyContact = () => {
 
             if (dataResponse) {
                 MessagesSuccess('Inicio de sesión exitoso');
-                navigate('/');  
+                navigate('/');
             } else {
                 MessagesError('Credenciales incorrectas');
             }
@@ -140,7 +137,7 @@ const EmergencyContact = () => {
                     MessagesError('Hubo un error en el servidor');
                 }
                 return;
-            }else{
+            } else {
                 console.log("Respuesta bien");
             }
 
@@ -148,7 +145,7 @@ const EmergencyContact = () => {
 
             if (data) {
                 MessagesSuccess('Inicio de sesión exitoso');
-                navigate('/');  
+                navigate('/');
             } else {
                 MessagesError('Credenciales incorrectas');
             }
@@ -156,18 +153,19 @@ const EmergencyContact = () => {
             MessagesError('Hubo un error en el servidor');
         }
     };
-    
-    return (
-        <div className="Register">
-            <div className="containerPersonalInformation">
-                <h2>Contacto de emergencia</h2>
-                <p>Agregue sus datos de contacto de emergencia los cuales son indispensables para informar en caso de una eventualidad.</p>
 
-                <div className="containerForm">
-                    <form className="personal-info-form" onSubmit={handleSubmit(onSubmit)}>
-                        <div className="form-group">
-                            <label>Nombre</label>
+    return (
+        <div className="InformationDataRegister">
+            <div className="containerPersonalInformation">
+                <h2 className="h2Register">Contacto de emergencia</h2>
+                <p className="pRegister">Agregue sus datos de contacto de emergencia los cuales son indispensables para informar en caso de una eventualidad.</p>
+
+                <div className="containerFormReg">
+                    <form className="info-form" onSubmit={handleSubmit(onSubmit)}>
+                        <div className="form-group-Reg">
+                            <label className="lbRegItem">Nombre</label>
                             <input
+                                className="inpRegItem"
                                 type="text"
                                 {...register('nameEmergencyContact', { required: "Este campo es obligatorio." })}
                             />
@@ -176,9 +174,10 @@ const EmergencyContact = () => {
                             )}
                         </div>
 
-                        <div className="form-group">
-                            <label>Apellidos</label>
+                        <div className="form-group-Reg">
+                            <label className="lbRegItem">Apellidos</label>
                             <input
+                                className="inpRegItem"
                                 type="text"
                                 {...register('lastNameEmergencyContact', { required: "Este campo es obligatorio." })}
                             />
@@ -187,9 +186,10 @@ const EmergencyContact = () => {
                             )}
                         </div>
 
-                        <div className="form-group">
-                            <label>Número de teléfono</label>
+                        <div className="form-group-Reg">
+                            <label className="lbRegItem">Número de teléfono</label>
                             <input
+                                className="inpRegItem"
                                 type="text"
                                 {...register('phoneEmergencyContact', { required: "Este campo es obligatorio." })}
                             />
@@ -198,9 +198,10 @@ const EmergencyContact = () => {
                             )}
                         </div>
 
-                        <div className="form-group">
-                            <label>Correo Electrónico</label>
+                        <div className="form-group-Reg">
+                            <label className="lbRegItem">Correo Electrónico</label>
                             <input
+                                className="inpRegItem"
                                 type="email"
                                 {...register('emailEmergencyContact', { required: "Este campo es obligatorio." })}
                             />
@@ -209,9 +210,10 @@ const EmergencyContact = () => {
                             )}
                         </div>
 
-                        <div className="form-group">
-                            <label>Dirección</label>
+                        <div className="form-group-Reg">
+                            <label className="lbRegItem">Dirección</label>
                             <input
+                                className="inpRegItem"
                                 type="text"
                                 {...register('adressEmergencyContact', { required: "Este campo es obligatorio." })}
                             />
@@ -220,9 +222,10 @@ const EmergencyContact = () => {
                             )}
                         </div>
 
-                        <div className="form-group">
-                            <label>Parentesco</label>
+                        <div className="form-group-Reg">
+                            <label className="lbRegItem">Parentesco</label>
                             <select
+                                className="sltRegItem"
                                 {...register("relationshipEmergencyContact", { required: "Debes seleccionar un parentesco." })}
                             >
                                 <option value="">Seleccione su parentesco</option>
@@ -236,23 +239,30 @@ const EmergencyContact = () => {
                                 <span className="error">{errors.relationshipEmergencyContact.message}</span>
                             )}
                         </div>
-
-                        <select {...register("departmentEmergencyContact", { required: true })}>
-                            <option value="">Seleccione el departamento</option>
-                            <option value="Boyaca">Boyaxa</option>
-                            <option value="Cundinamarca">Cundinamarca</option>
-                            <option value="Antioquia">Antioquia</option>
-                        </select>
-
-                        <select {...register("cityEmergencyContact", { required: true })}>
-                            <option value="">Seleccione su ciudad</option>
-                            <option value="Tunja">Tunja</option>
-                            <option value="Toca">Toca</option>
-                            <option value="Boyaca">Boyaca</option>
-                            <option value="Sogamoso">Sogamoso</option>
-                        </select>
-
-                        <button type="submit">Siguiente</button>
+                        <div className="form-group-Reg">
+                            <label className="lbRegItem">Departamento</label>
+                            <select className="sltRegItem"
+                                {...register("departmentEmergencyContact", { required: true })}>
+                                <option value="">Seleccione el departamento</option>
+                                <option value="Boyaca">Boyaxa</option>
+                                <option value="Cundinamarca">Cundinamarca</option>
+                                <option value="Antioquia">Antioquia</option>
+                            </select>
+                        </div>
+                        <div className="form-group-Reg">
+                            <label className="lbRegItem">Municipio</label>
+                            <select className="sltRegItem"
+                                {...register("cityEmergencyContact", { required: true })}>
+                                <option value="">Seleccione su ciudad</option>
+                                <option value="Tunja">Tunja</option>
+                                <option value="Toca">Toca</option>
+                                <option value="Boyaca">Boyaca</option>
+                                <option value="Sogamoso">Sogamoso</option>
+                            </select>
+                        </div>
+                        <div className="buttonContainer">
+                            <button className="buttonRegister" type="submit">Guardar</button>
+                        </div>
                     </form>
                 </div>
             </div>

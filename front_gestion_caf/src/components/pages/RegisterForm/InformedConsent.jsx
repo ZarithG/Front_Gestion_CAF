@@ -4,23 +4,29 @@ import { useNavigate } from "react-router-dom";
 import { useRegFormContext } from "../../../providers/RegFormProvider";
 
 const InformedConsent = () => {
-    const [, dispatch] = useRegFormContext();
+    const [state, dispatch] = useRegFormContext();
     const navigate = useNavigate();
-    const [submitted, setSubmitted] = useState(false); // Estado para controlar el envío
+    const [submitted, setSubmitted] = useState(false);
 
     const {
         register,
         handleSubmit,
         formState: { errors, isValid },
-    } = useForm({ mode: "onChange" }); 
+    } = useForm({ mode: "onChange" });
 
     const onSubmit = (values) => {
-        setSubmitted(true); // Marcar que el formulario ha sido enviado
+        setSubmitted(true);
 
-        // Solo redirigir si es válido
         if (isValid) {
             dispatch({ type: 'SET_INFORMED_CONSENT', data: values });
-            navigate('/registration/medicalDocument');
+            
+            // Verificar si debe ir a MedicalDocument
+            if (state.hasAffirmativeAnswer) {
+                navigate('/registration/medicalDocument');
+            } else {
+                // Redirigir a la siguiente ruta deseada si no es necesario el MedicalDocument
+                navigate('/registration/completion');
+            }
         }
     };
 

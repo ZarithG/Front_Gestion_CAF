@@ -8,7 +8,7 @@ const Register = () => {
         <div className="rfConteiner">
             <RegProvider>
                 <div className="rfRegister">
-                    <h1 className="RegisterPageTitle">Inscripción de usuarios</h1>
+                <h1 className="InformationDataPageTitle">Completar datos básicos</h1>
                     <Outlet />
                 </div>
             </RegProvider>

@@ -28,4 +28,9 @@ body {
   color: #000000;
 }
 
-
+button{
+  display: flex;
+  padding-left: 10vh;
+  align-items: center;
+  justify-content: center;
+}

@@ -1,0 +1,130 @@
+.body-containerBody {
+    /*    background-color: #4CAF50;*/
+    margin-left: auto;
+    margin-right: auto;
+    width: 90%;
+    /*  padding: 10px;*/
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    border-collapse: collapse;
+}
+
+.table-content, .containerSearch, .search-bar-field {
+    width: auto;
+    padding: 10px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-collapse: collapse;
+}
+
+.register-new-button-container {
+    justify-content: center;
+    align-items: center;
+    flex-direction: row;
+}
+
+.search-bar-field {
+    flex-direction: column;
+    margin-right: 3vh;
+}
+
+.register-new-button {
+    height: auto;
+    width: auto;
+    margin: 10px;
+    font-size: 20px;
+}
+
+.search-bar-field-icon {
+    width: 100%;
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+}
+
+.search-bar-input {
+    width: 100%;
+    padding: 12px 20px;
+    border: 1px solid #f2f2f2;
+    border-radius: 10px;
+    margin: 8px 0;
+    box-sizing: border-box;
+    background-color: #f2f2f2;
+}
+
+.search-icon {
+    font-size: 30px;
+}
+
+
+/*---------------  Table  -------------------*/
+.table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.table-header, .table-cell {
+    border: 1px solid transparent;
+    padding: 8px;
+    text-align: center;
+}
+
+
+.table-header:nth-child(1), .table-cell:nth-child(1) {
+    min-width: 10px;
+    max-width: 40px;
+}
+
+.table-header:nth-child(2), .table-cell:nth-child(2) {
+    min-width: 15px;
+}
+
+.table-header:nth-child(3), .table-cell:nth-child(3) {
+    min-width: 20px;
+}
+
+.table-header:nth-child(4), .table-cell:nth-child(4) {
+    min-width: 25px;
+}
+
+.table-header:nth-child(5), .table-cell:nth-child(5) {
+    min-width: 30px;
+}
+
+.table-header-head {
+    background-color: #ededed;
+    font-size: calc(100% + 4px); /* Aumenta el tamaño de la letra en 4px */
+}
+
+.button-container {
+    display: flex;
+    justify-content: center;
+    margin-top: 5px;
+}
+
+.button-container button {
+    margin: 0 5px;
+    font-size: 16px;
+}
+
+.status {
+    display: inline-block;
+    color: white;
+    font-weight: bold;
+    text-align: center;
+    border-radius: 20px; /* Bordes redondeados */
+    font-size: 14px;
+    width: 100px; /* Ajusta el ancho según sea necesario */
+    padding: 5px 0; /* Ajusta el padding según sea necesario */
+    margin: 0 auto; /* Centra el elemento */
+}
+
+.status-active {
+    background-color: #28a745; /* Verde */
+}
+
+.status-inactive {
+    background-color: #dc3545; /* Rojo */
+}
