@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect} from "react";
 import Calendar from 'react-calendar';
 import 'react-calendar/dist/Calendar.css'; // Importa los estilos básicos de react-calendar
 import "../styles/SheduleShift.css";
@@ -11,6 +11,8 @@ const ScheduleShift = () => {
     const today = new Date();
     const maxDate = new Date(today);
     maxDate.setDate(today.getDate());
+
+    
 
     const handleScheduleShift = async (e) => {
         e.preventDefault();
@@ -48,11 +50,11 @@ const ScheduleShift = () => {
                     <div className="containerCAFSelection">
                         <h2 className="titleCAF">CAF</h2>
                         <p className="descriptionCAF">Seleccione el CAF en el cual desee agendar un turno.</p>
-                        <select>
+                        {/* <select>
                             <option value="tunja">Tunja</option>
                             <option value="Sogamoso">Salud</option>
                             <option value="Seccional Salud">Seccional Salud</option>
-                        </select>
+                        </select> */}
                     </div>
                     <div className="containerShiftsAvailable">
                         <h2 className="titleShiftsAvailable">Turnos Disponibles</h2>
