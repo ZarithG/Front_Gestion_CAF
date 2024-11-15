@@ -18,34 +18,76 @@
 }
 
 .day-section {
-  margin-top: 10px;
   width: 100vh;
+  padding: 0;
+}
+
+.containerDays{
+  display: flex;
+  align-items: center;
+  justify-items: center;
+  flex-direction: column;
 }
 
 .day-toggle {
-  width: 80vh;
+  width: 100%;
   background-color: #ddd;
-  padding: 10px;
+  margin: 0;
+  margin-top: 5px;
+  margin-bottom: 5px;
   cursor: pointer;
 }
 
 .turnos-list {
   padding: 10px;
-  
+  display: flex;
+  flex-direction: column;
 }
 
 .tableAsSh {
-  width: 80vh;
-  padding: 10px;
+  width: 100%;
   justify-content: center;
   border-collapse: collapse;
+  align-items: center;
+  display: flex;
+  flex-direction: column;
+  
 }
 
-.thAsSh,
-.tdAsSh {
-  border: 1px solid #ccc;
+.thbutton{
+  width: 12%;
+}
+
+.tdbutton{
+  width: 9%;
+}
+
+.thAsSh{
   padding: 8px;
   text-align: center;
+  width: 100%;
+  margin: 0;
+  padding: 0;
+}
+.tdAsSh {
+  padding: 8px;
+  text-align: center;
+  width: 100%;
+  margin: 0;
+  padding: 0;
+}
+
+
+th{
+  width: 23%;
+}
+td{
+  width: 20%;
+}
+
+.trAsSh{
+  border: 1px rgb(216, 216, 216) solid;
+  width: 100vh;
 }
 
 .buttomAsSh {
@@ -54,7 +96,22 @@
   flex-direction: row;
 }
 
-
+.containerButtons{
+  display: flex;
+  justify-content: center;
+  margin: 5px;
+  
+}
+.containerButtonNewShift{
+  display: flex;
+  justify-content: center;
+  margin: 5px;
+}
+.containerButtons button{
+  margin: 0 5px;
+  padding: 4px;
+  font-size: 16px;
+}
 
 /*---------------  ManageFitnessCenters  -------------------*/
 .containerCAFInformation {

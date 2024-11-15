@@ -2,6 +2,8 @@ import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import TurnoModal from "../../Admin/TurnoModal";
 import "./styles/PagesAdmin.css";
+import { MdDelete } from "react-icons/md";
+import { FaEdit } from "react-icons/fa";
 
 const initialTurnos = {
     LUNES: [{ id: "T1", inicio: "6:40 am", fin: "7:40 am", cupos: 40 }],
@@ -67,7 +69,7 @@ const AssignShiftsQuotas = () => {
             <div>
                 <h2>CAF</h2>
                 <p>Selecciona el día de la semana y añade los turnos disponibles y los cupos</p>
-                <div>
+                <div className="containerDays">
                     {Object.keys(turnos).map((day) => (
                         <div key={day} className="day-section">
                             <button onClick={() => toggleDay(day)} className="day-toggle">
@@ -82,25 +84,29 @@ const AssignShiftsQuotas = () => {
                                                 <th>Hora inicio</th>
                                                 <th>Hora fin</th>
                                                 <th>Cupos</th>
-                                                <th>Acciones</th>
+                                                <th className="thbutton">Acciones</th>
                                             </tr>
                                         </thead>
-                                        <tbody>
+                                        <tbody className="tdAsSh">
                                             {turnos[day].map((turno, index) => (
-                                                <tr key={turno.id}>
+                                                <tr className="trAsSh" key={turno.id}>
                                                     <td>{turno.id}</td>
                                                     <td>{turno.inicio}</td>
                                                     <td>{turno.fin}</td>
                                                     <td>{turno.cupos}</td>
-                                                    <td>
-                                                        <button onClick={() => editTurno(index)}>Editar</button>
-                                                        <button onClick={() => removeTurno(day, index)}>🗑</button>
+                                                    <td className="tdbutton">
+                                                        <div className="containerButtons">
+                                                        <button className="buttonAssign" onClick={() => editTurno(index)}><FaEdit/></button>
+                                                        <button className="buttonAssign" onClick={() => removeTurno(day, index)}><MdDelete/></button>
+                                                        </div>
                                                     </td>
                                                 </tr>
                                             ))}
                                         </tbody>
                                     </table>
+                                    <div className="containerButtonNewShift">
                                     <button onClick={() => addTurno(day)}>Añadir turno</button>
+                                    </div>
                                 </div>
                             )}
                         </div>
