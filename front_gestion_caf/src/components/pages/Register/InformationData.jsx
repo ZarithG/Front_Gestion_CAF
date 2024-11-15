@@ -11,6 +11,7 @@ const InformationData = () => {
     const navigate = useNavigate();
     const [submitted, setSubmitted] = useState(false);
     const { information } = state
+
     const [formData, setFormData] = useState({
         name: '',
         lastName: '',
@@ -36,11 +37,11 @@ const InformationData = () => {
 
     const handleRedirect = () => {
         const params = new URLSearchParams(window.location.search);
-        const token = params.get("token");
         const authUserJson = params.get("authUser");
+        const authUser = JSON.parse(decodeURIComponent(authUserJson));
+        const token = authUser.token.token;
 
         if (token) {
-            const authUser = JSON.parse(decodeURIComponent(authUserJson));
             localStorage.setItem("authToken", token);
             setAuthToken(token);
 

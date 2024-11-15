@@ -1,10 +1,14 @@
-import React from "react";
+import React , {useState, useEffect} from "react";
 import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
 import { useRegFormContext } from "../../../providers/RegFormProvider";
+import { SERVICES_BACK } from "../../../constants/constants";
 
 const MedicalHistory = () => {
     const [, dispatch] = useRegFormContext();
+    const [storedToken, setToken] = useState("");
+    const [error, setError] = useState("");
+    const [questions, setQuestions] = useState("");
     const navigate = useNavigate();
 
     const {
@@ -13,6 +17,32 @@ const MedicalHistory = () => {
         watch,
         formState: { isValid },
     } = useForm({ mode: "onChange" }); // Enable validation on change
+
+    useEffect(() => {
+        const fetchQuestions = async () => {
+            try {
+                const token = localStorage.getItem("authToken");
+                console.log(token)
+                const response = await fetch(
+                    SERVICES_BACK.GETALLQUESTIONS,
+                    {
+                        method: 'GET',
+                        headers: {
+                            'Authorization': `Bearer ${token}`,
+                            credentials: 'include',
+                        }
+                    }
+                );
+                
+                const data = await response.json();
+                setQuestions(data);
+            } catch (error) {
+                setError(error.message); 
+            }
+        };
+
+        fetchQuestions();
+    }, []);
 
     const onSubmit = (values) => {
         if (isValid) {
@@ -45,58 +75,25 @@ const MedicalHistory = () => {
                     <form className="user-info-form" onSubmit={handleSubmit(onSubmit)}>
                         <div className="form-table">
                             {/* Form questions */}
-                            {[
-                                {
-                                    question: "¿Le ha dicho su médico alguna vez que padece una enfermedad y que sólo debe hacer actividad física bajo prescripción médica?",
-                                    name: "medicalCondition"
-                                },
-                                {
-                                    question: "¿Ha sufrido o sufre actualmente algún problema cardiaco?",
-                                    name: "heartProblem"
-                                },
-                                {
-                                    question: "¿Ha sufrido o sufre actualmente algún problema respiratorio o enfermedad pulmonar?",
-                                    name: "lungProblem"
-                                },
-                                {
-                                    question: "¿Ha tenido molestias, dolor o presión en el pecho al realizar ejercicio?",
-                                    name: "chestPain"
-                                },
-                                {
-                                    question: "¿Presenta ahogo inusual, se siente cansado con facilidad, con excesiva fatiga al realizar actividad física leve?",
-                                    name: "unusualBreath"
-                                },
-                                {
-                                    question: "¿Tiene alguna enfermedad neurológica?",
-                                    name: "neurologicalDisease"
-                                },
-                                {
-                                    question: "¿Ha tenido o tiene problemas articulares, musculares u óseos que puedan empeorar o generen restricción para realizar actividad física?",
-                                    name: "muscleJointIssues"
-                                },
-                                {
-                                    question: "¿Toma algún medicamento para la tensión arterial o problema cardiaco?",
-                                    name: "medicationHeart"
-                                },
-                                {
-                                    question: "¿Existe algún problema o enfermedad no mencionada aquí que debiera confiarnos, para evitar imprevistos a la hora de realizar la actividad física?",
-                                    name: "otherIssues"
-                                },
-                            ].map((item, index) => (
-                                <div key={index} className="form-row">
-                                    <div className="form-question">
-                                        <label>{item.question}</label>
+                            {questions.length > 0 ? (
+                                questions.map((item, index) => (
+                                    <div key={index} className="form-row">
+                                        <div className="form-question">
+                                            <label>{item.question}</label>
+                                        </div>
+                                        <div className="form-option">
+                                            <input {...register(item.name, { required: true })} type="radio" value="false" />
+                                            <label>No</label>
+                                        </div>
+                                        <div className="form-option">
+                                            <input {...register(item.name)} type="radio" value="true" />
+                                            <label>Si</label>
+                                        </div>
                                     </div>
-                                    <div className="form-option">
-                                        <input {...register(item.name, { required: true })} type="radio" value="false" />
-                                        <label>No</label>
-                                    </div>
-                                    <div className="form-option">
-                                        <input {...register(item.name)} type="radio" value="true" />
-                                        <label>Si</label>
-                                    </div>
-                                </div>
-                            ))}
+                                ))
+                            ) : (
+                                <div>No se encontraron preguntas.</div>
+                            )}
 
                             {/* Additional Information Field */}
                             {affirmativeAnswers && (

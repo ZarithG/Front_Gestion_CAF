@@ -119,10 +119,13 @@ const EmergencyContact = () => {
         }
 
         try {
+            const token = storageToken;
+
             const response = await fetch(SERVICES_BACK.PASSWORDAUTH, {
                 method: 'POST',
                 headers: {
-                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}`,
+                    'Content-Type': 'application/json'
                 },
                 body: JSON.stringify({
                     userName: "juan.archila04@uptc.edu.co",

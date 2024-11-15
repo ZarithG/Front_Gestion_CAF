@@ -37,11 +37,13 @@ import Information from "../../../components/pages/Register/Information";
 
 import ProtectedRoute from "../../../components/gestion-caf/ProtectedRoute";
 import NotFound from "../../../components/pages/NotFound";
+import { USER_TYPE } from "../../../constants/constants";
 
 const AppRoutes = () => {
     return (
         <>
             <Routes>
+                <Route path="/scheduleShift" element={<ScheduleShift/>}/>
                 <Route path="/" element={<Home />} />
                 <Route path="/login" element={<Login />} />
                 <Route path="/register" element={<Register />}>
@@ -59,7 +61,8 @@ const AppRoutes = () => {
 
                 {/* Rutas protegidas según el rol */}
                 <Route path="/admin">
-                    <Route path="assignShiftsQuotas" element={<AssignShiftsQuotas />} />
+                    <Route path="assignShiftsQuotas" 
+                    element={ <ProtectedRoute requiredRole={USER_TYPE.ADMIN}> <AssignShiftsQuotas /> </ProtectedRoute>} />
                     <Route path="defineUserType" element={<DefineUserType />} />
                     <Route path="fitnessCenterUser" element={<FitnessCenterUser />} />
                     <Route path="fitnessCenterUser/modify" element={<ModifyUserData />} />

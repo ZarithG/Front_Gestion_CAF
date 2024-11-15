@@ -16,8 +16,8 @@ const Header = ({
     const logout = async () => {
         try {
             const response = await fetch(SERVICES_BACK.LOGOUTAUTH, {
-                method: 'POST', // o 'GET' si tu endpoint está configurado para aceptar este método
-                credentials: 'include', // Esto es importante para enviar y recibir cookies
+                method: 'POST',
+                credentials: 'include',
             });
     
             if (response.ok) {
@@ -35,7 +35,7 @@ const Header = ({
         if (storedRoleName) {
             setRoleName(storedRoleName);
         }
-    }, []);
+    }, [status]);
     
     return (
         <div className="headerContainer">

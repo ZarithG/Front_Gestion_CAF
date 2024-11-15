@@ -18,38 +18,37 @@ const Home = () => {
     });
 
     useEffect(() => {
-        handleRedirect();
         const storedUserName = localStorage.getItem("userName");
-        const storedRoleName = localStorage.getItem("roleName");
+        handleRedirect();
 
-        if (storedUserName) {
+        if (storedUserName) {    
             setUserName(storedUserName);
             setFormData(prevData => ({
                 ...prevData,
                 email: storedUserName
             }));
         }
-
-        if (storedRoleName) {
-            setRoleName(storedRoleName);
-        }
     }, []);
 
     const handleRedirect = () => {
         const params = new URLSearchParams(window.location.search);
-        const token = params.get("token");
-        const authUserJson = params.get("authUser");
-
-        if (token) {
+        if (params){
+            const authUserJson = params.get("authUser");
             const authUser = JSON.parse(decodeURIComponent(authUserJson));
-            localStorage.setItem("authToken", token);
-            setAuthToken(token);
-
-            const userName = authUser.userName;
-            const roleName = authUser.roles[0]?.roleName;
-
-            localStorage.setItem("userName", userName);
-            localStorage.setItem("roleName", roleName); // Guarda el rol en el localStorage
+            console.log(authUser)
+            
+            // const token = authUser.token.token;
+    
+            // if (token) {
+            //     localStorage.setItem("authToken", token);
+            //     setAuthToken(token);
+    
+            //     const userName = authUser.userName;
+            //     const roleName = authUser.roles[0]?.roleName;
+    
+            //     localStorage.setItem("userName", userName);
+            //     localStorage.setItem("roleName", roleName);
+            // }
         }
     };
 
