@@ -13,8 +13,6 @@ const InformationData = () => {
     const { information } = state
 
     const [formData, setFormData] = useState({
-        name: '',
-        lastName: '',
         document: '',
         phone: '',
         email: '',
@@ -23,7 +21,6 @@ const InformationData = () => {
     });
 
     useEffect(() => {
-        handleRedirect();
         const storedUserName = localStorage.getItem("userName");
 
         if (storedUserName) {
@@ -32,6 +29,8 @@ const InformationData = () => {
                 ...prevData,
                 email: storedUserName
             }));
+        }else{
+            handleRedirect();
         }
     }, []);
 
@@ -78,22 +77,9 @@ const InformationData = () => {
             {/* Información personal */}
             <div className="containerPersonalInformation">
                 <h2 className="h2Register">Información personal</h2>
-                <p className="pRegister">Agregue sus datos personales para complementar el ingreso al sistema.</p>
+                <p className="pRegister">Agregue sus datos personales para terminar de completar su registro en el sistema.</p>
                 <div className="containerFormReg">
                     <form className="info-form" onSubmit={handleSubmit(onSubmit)}>
-
-                        <div className="form-group-Reg">
-                            <label className="lbRegItem">Nombre</label>
-                            <input className="inpRegItem" type="text" {...register("name", { required: true })} />
-                            {submitted && errors.name && <p className="error">Este campo es obligatorio.</p>}
-                        </div>
-
-                        <div className="form-group-Reg">
-                            <label className="lbRegItem">Apellidos</label>
-                            <input className="inpRegItem" type="text" {...register("lastName", { required: true })} />
-                            {submitted && errors.lastName && <p className="error">Este campo es obligatorio.</p>}
-                        </div>
-
                         <div className="form-group-Reg">
                             <label className="lbRegItem">Tipo de documento</label>
                             <select className="sltRegItem" {...register("documentType", { required: true })}>

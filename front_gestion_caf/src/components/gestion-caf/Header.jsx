@@ -1,17 +1,19 @@
 import React, { useEffect, useState } from "react";
 import '../styles/Header.css';
-import { Link } from "react-router-dom"; 
+import { Link, useNavigate } from "react-router-dom"; 
 import Logo from "../CAF-images/log_uptc_neg.png";
 import { FaHome } from "react-icons/fa";
 import { MdLogin, MdNotifications } from "react-icons/md";
 import { TbCalendarTime } from "react-icons/tb";
 import { GiNotebook } from "react-icons/gi";
+import { MessagesError, MessagesSuccess } from "../gestion-caf/Messages";
 import { STATUS, USER_TYPE, SERVICES_BACKR, SERVICES_BACK } from "../../constants/constants";
 
 const Header = ({
     status,
 }) => {
     const [roleName, setRoleName] = useState('');
+    const navigate = useNavigate();
 
     const logout = async () => {
         try {
@@ -37,6 +39,31 @@ const Header = ({
         }
     }, [status]);
     
+    const isUserVerified = async () =>{
+        try {
+            const token = localStorage.getItem("authToken");
+            const response = await fetch(SERVICES_BACK.GET_IS_USER_VERIFIED  + localStorage.getItem("userName"), {
+              method: "GET",
+              headers: {
+                "Content-Type": "application/json",
+                'Authorization': `Bearer ${token}`,
+                credentials: 'include',
+              }
+            });
+            if (response.status == 200) {
+                if(!response.body.locked){
+                    navigate("/register/informationData");
+                }
+            }else{
+                MessagesError("Hubo un error en el servidor");
+            }
+        } catch (error) {
+            console.log(error)
+            MessagesError("Hubo un error en el servidor");
+        }
+        
+    };
+
     return (
         <div className="headerContainer">
             <img className="headerLogo" src={Logo} alt="Logo UPTC" />
@@ -59,17 +86,36 @@ const Header = ({
                     {/* Mostrar opciones específicas para usuarios con rol USER */}
                     {roleName === USER_TYPE.USER && (
                         <>
-                            <li className="menuItem">
-                                <Link className="Link" to="/registration/terms">
+                            <li className="menuItem" onClick={async (e) => {
+                                e.preventDefault();
+                                
+                                const isVerified = await isUserVerified();
+                                if (!isVerified) {
+                                    navigate('/register/informationData');
+                                }else{
+                                    navigate('/registration/terms');
+                                }
+                            }}>
+                                <span className="Link">
                                     <label> Inscribirse </label>
                                     <GiNotebook className="icons" />
-                                </Link>
+                                </span>
                             </li>
-                            <li className="menuItem">
-                                <Link className="Link" to="/scheduleShift">
+                            
+                            <li className="menuItem" onClick={async (e) => {
+                                e.preventDefault();
+                                
+                                const isVerified = await isUserVerified();
+                                if (!isVerified) {
+                                    navigate('/register/informationData');
+                                }else{
+                                    navigate('/scheduleShift');
+                                }
+                            }}>
+                                <span className="Link">
                                     <label> Agendar turno </label>
                                     <TbCalendarTime className="icons" />
-                                </Link>
+                                </span>
                             </li>
                         </>
                     )}

@@ -17,6 +17,8 @@ export const SERVICES_BACK = {
     SAVEUSER: 'http://localhost:9093/user/save',
     GETALLQUESTIONS: 'http://localhost:9093/caf/question/all',
     GET_USER_ACTIVE_INSCRIPTION: 'http://localhost:9093/caf/inscription/all/',
+
+    GET_IS_USER_VERIFIED: 'http://localhost:9093/auth/isUserVerified/'
 }
 
 export const STATUS = {

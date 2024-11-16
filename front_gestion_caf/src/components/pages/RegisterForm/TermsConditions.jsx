@@ -1,15 +1,19 @@
-import React from "react";
+import React, {useEffect}from "react";
 import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
 import { useRegFormContext } from "../../../providers/RegFormProvider";
 import { MessagesError } from "../../gestion-caf/Messages";
 import "./styles/TermsConditions.css";
+import { SERVICES_BACK } from "../../../constants/constants";
 
 const TermsConditions = () => {
     const [, dispatch] = useRegFormContext();
     const navigate = useNavigate();
 
-
+    useEffect(() => {
+        isUserVerified();
+    }, []);
+    
     const {
         register,
         handleSubmit,
@@ -24,6 +28,31 @@ const TermsConditions = () => {
         } else {
             MessagesError("Debes aceptar los términos y condiciones para continuar.");
         }
+    };
+
+    const isUserVerified = async () =>{
+        try {
+            const token = localStorage.getItem("authToken");
+            const response = await fetch(SERVICES_BACK.GET_IS_USER_VERIFIED  + localStorage.getItem("userName"), {
+              method: "GET",
+              headers: {
+                "Content-Type": "application/json",
+                'Authorization': `Bearer ${token}`,
+                credentials: 'include',
+              }
+            });
+            if (response.status == 200) {
+                if(!response.body.locked){
+                    navigate("/register/informationData");
+                }
+            }else{
+                MessagesError("Hubo un error en el servidor");
+            }
+        } catch (error) {
+            console.log(error)
+            MessagesError("Hubo un error en el servidor");
+        }
+        
     };
 
     return (
