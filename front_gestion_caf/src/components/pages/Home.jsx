@@ -7,26 +7,14 @@ const Home = () => {
     const [authToken, setAuthToken] = useState("");
     const [userName, setUserName] = useState('');
     const [roleName, setRoleName] = useState('');
-    const [formData, setFormData] = useState({
-        name: '',
-        lastName: '',
-        document: '',
-        phone: '',
-        email: '',
-        password: '',
-        confirmPassword: '',
-    });
 
     useEffect(() => {
         const storedUserName = localStorage.getItem("userName");
-        handleRedirect();
-
+        
         if (storedUserName) {    
             setUserName(storedUserName);
-            setFormData(prevData => ({
-                ...prevData,
-                email: storedUserName
-            }));
+        }else{
+            handleRedirect();
         }
     }, []);
 
@@ -35,20 +23,19 @@ const Home = () => {
         if (params){
             const authUserJson = params.get("authUser");
             const authUser = JSON.parse(decodeURIComponent(authUserJson));
-            console.log(authUser)
             
-            // const token = authUser.token.token;
+            const token = authUser.token.token;
     
-            // if (token) {
-            //     localStorage.setItem("authToken", token);
-            //     setAuthToken(token);
+            if (token) {
+                localStorage.setItem("authToken", token);
+                setAuthToken(token);
     
-            //     const userName = authUser.userName;
-            //     const roleName = authUser.roles[0]?.roleName;
+                const userName = authUser.userName;
+                const roleName = authUser.roles[0]?.roleName;
     
-            //     localStorage.setItem("userName", userName);
-            //     localStorage.setItem("roleName", roleName);
-            // }
+                localStorage.setItem("userName", userName);
+                localStorage.setItem("roleName", roleName);
+            }
         }
     };
 

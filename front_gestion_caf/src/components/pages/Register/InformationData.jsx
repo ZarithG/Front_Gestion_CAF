@@ -152,7 +152,7 @@ const InformationData = () => {
                             <label className="lbRegItem">Departamento</label>
                             <select className="sltRegItem"  {...register("department", { required: true })}>
                                 <option value="">Seleccione el departamento</option>
-                                <option value="Boyaca">Boyaxa</option>
+                                <option value="Boyaca">Boyacá</option>
                                 <option value="Cundinamarca">Cundinamarca</option>
                                 <option value="Antioquia">Antioquia</option>
                             </select>
