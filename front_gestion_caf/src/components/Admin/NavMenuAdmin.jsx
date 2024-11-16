@@ -22,26 +22,31 @@ const NavMenuAdmin = () => {
     }, []);
 
     return (
-        roleName !== USER_TYPE.USER && (
+        roleName !== USER_TYPE.USER && roleName !== "" && (
             <div
                 className={`menuNavContainer ${isExpanded ? "expanded" : "collapsed"}`}
                 onMouseEnter={handleMouseEnter}
                 onMouseLeave={handleMouseLeave}
             >
+
                 <MdMenu className="menuNavMenuIcon" />
                 <ul className="menuNavList">
-                    <li className="menuNavItem">
-                        <Link className="LinkNav" to="/admin/fitnessCenterDirector">
-                            <FaUserTie className="menuNavIcon" />
-                            {isExpanded && <span>Director Bienestar</span>}
-                        </Link>
-                    </li>
+                    {roleName === USER_TYPE.ADMIN && (
+                        <li className="menuNavItem">
+                            <Link className="LinkNav" to="/admin/fitnessCenterDirector">
+                                <FaUserTie className="menuNavIcon" />
+                                {isExpanded && <span>Director Bienestar</span>}
+                            </Link>
+                        </li>
+                    )}
+                    {(roleName === USER_TYPE.DIRECTOR || roleName === USER_TYPE.ADMIN) && (
                     <li className="menuNavItem">
                         <Link className="LinkNav" to="/admin/fitnessCenterCoordinators">
                             <GrYoga className="menuNavIcon" />
                             {isExpanded && <span>Coordinadores</span>}
                         </Link>
                     </li>
+                    )}
                     <li className="menuNavItem">
                         <Link className="LinkNav" to="/admin/fitnessCenters">
                             <LuDumbbell className="menuNavIcon" />
