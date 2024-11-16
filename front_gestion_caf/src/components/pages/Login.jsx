@@ -51,7 +51,7 @@ const Login = () => {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          userName: email,
+          userName: email+"@uptc.edu.co",
           password: password,
         }),
       });
