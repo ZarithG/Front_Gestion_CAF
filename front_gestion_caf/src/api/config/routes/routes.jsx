@@ -25,6 +25,7 @@ import UserDataDetail from "../../../components/pages/pagesAdmin/UserDataDetail"
 import FitnessCenterCoordinators from "../../../components/pages/pagesAdmin/FitnessCenterCoordinators";
 import ManageCenterCoodinators from "../../../components/pages/pagesAdmin/ManageCenterCoodinators";
 import ModifyCoordinators from "../../../components/pages/pagesAdmin/ModifyCoordinators";
+import ViewCoordinators from "../../../components/pages/pagesAdmin/ViewCoordinator";
 import RegisterNewCoordinator from "../../../components/pages/pagesAdmin/RegisterNewCoordinator";
 
 import ManageFitnessCenters from "../../../components/pages/pagesAdmin/ManageFitnessCenters";
@@ -62,7 +63,7 @@ const AppRoutes = () => {
                 {/* Rutas protegidas según el rol */}
                 <Route path="/admin">
                     <Route path="assignShiftsQuotas" 
-                    element={ <ProtectedRoute requiredRole={USER_TYPE.ADMIN}> <AssignShiftsQuotas /> </ProtectedRoute>} />
+                    element= {<AssignShiftsQuotas />} />
                     <Route path="defineUserType" element={<DefineUserType />} />
                     <Route path="fitnessCenterUser" element={<FitnessCenterUser />} />
                     <Route path="fitnessCenterUser/modify" element={<ModifyUserData />} />
@@ -75,6 +76,7 @@ const AppRoutes = () => {
                     <Route path="fitnessCenterCoordinators/manage" element={<ManageCenterCoodinators />} />
                     <Route path="fitnessCenterCoordinators/modify" element={<ModifyCoordinators />} />
                     <Route path="fitnessCenterCoordinators/registerNew" element={<RegisterNewCoordinator />} />
+                    <Route path="fitnessCenterCoordinators/view" element={<ViewCoordinators/>} />
 
                     <Route path="registerAttendance" element={<RegisterAttendance />} />
                     <Route path="fitnessCenters" element={<FitnessCenters />} />

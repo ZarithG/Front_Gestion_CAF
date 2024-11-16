@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import "./styles/FormAdm.css";
 
-const ModifyCoordinators = () => {
+const ViewCoordinators = () => {
     const navigate = useNavigate();
     const [isActive, setIsActive] = useState(true);
 
@@ -83,19 +83,14 @@ const ModifyCoordinators = () => {
                         <h2 className="h2FormAdm">Rol del usuario</h2>
                         <div className="containerGeneralUser">
                             <div className="containerRolUser">
-                                <div className="RolOption"><input name="role" type="radio" value="ADMIN_COORDINATOR" onChange={handleChange} /><label>Coodinador</label></div>
-                                <div className="RolOption"><input name="role" type="radio" value="ADMIN_DIRECTOR" onChange={handleChange} /><label>Director</label></div>
-                                <div className="RolOption"><input name="role" type="radio" value="ADMIN_USER" onChange={handleChange} /><label>Usuario</label></div>
+                                <div className="RolOption">
+                                    <label className="lbFormAdm">Coodinador</label>
+                                    <input name="role" type="text" readOnly/>
+                                </div>
                             </div>
                             <div className="RolEstatus">
-                                <label>Estado</label>
+                                <label className="lbFormAdm">Estado</label>
                                 <input type="text" placeholder="Activo" readOnly />
-                            </div>
-                            <div className="RolButtonStatus">
-                                <button onClick={toggleActiveState}>
-                                    {isActive ? "Inactivar" : "Activar"}
-                                </button>
-                                <button>Eliminar</button>
                             </div>
                         </div>
                         <div className="form-group-FormAdm">
@@ -225,4 +220,4 @@ const ModifyCoordinators = () => {
     );
 };
 
-export default ModifyCoordinators;
+export default ViewCoordinators;

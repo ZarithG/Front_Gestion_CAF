@@ -25,10 +25,7 @@ const FitnessCenterCoordinators = () => {
     };
 
     const removeUser = (index) => {
-        if (window.confirm("¿Estás seguro de que deseas eliminar este coordinador?")) {
-            const updatedUsers = users.filter((_, i) => i !== index);
-            setUsers(updatedUsers);
-        }
+        navigate("/admin/fitnessCenterCoordinators/view")
     };
 
     const newUser = () => {

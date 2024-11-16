@@ -28,7 +28,7 @@
     padding-bottom: 2vh;
 }
 
-.form-group-FormAdmHo{
+.form-group-FormAdmHo {
     display: flex;
     flex-direction: column;
 }
@@ -188,5 +188,71 @@ select.sltFormAdmItem {
     display: flex;
     align-items: center;
     justify-content: center;
+}
 
+
+.containerGeneralUser {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: row;
+}
+
+.RolOption {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: row;
+}
+
+.containerRolUser {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: row;
+}
+
+.RolEstatus {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    padding: 2vh;
+}
+
+.RolEstatus label{
+    font: bold;
+    margin-bottom: 0.5vh;
+    font-size: 2vh;
+    padding-top: 2vh;
+    justify-content: left;
+}
+
+.RolEstatus input{
+    width: 150px;
+    height: 20px;
+    size: 14px;
+    padding: 1vh;
+    border-radius: 8px;
+    border: #909090 1px solid;
+    margin: 0 0;
+}
+
+.RolButtonStatus {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+
+}
+
+.RolButtonStatus button {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    width: 100px;
+    height: 30px;
+    padding: 1vh;
+    margin: 1vh;
 }
