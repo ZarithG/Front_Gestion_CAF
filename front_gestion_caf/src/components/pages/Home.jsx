@@ -20,25 +20,27 @@ const Home = () => {
 
     const handleRedirect = () => {
         const params = new URLSearchParams(window.location.search);
-        if (params){
+        if (params) {
             const authUserJson = params.get("authUser");
-            const authUser = JSON.parse(decodeURIComponent(authUserJson));
-            
-            const token = authUser.token.token;
     
-            if (token) {
-                localStorage.setItem("authToken", token);
-                setAuthToken(token);
+            if (authUserJson) {
+                const authUser = JSON.parse(decodeURIComponent(authUserJson));
     
-                const userName = authUser.userName;
-                const roleName = authUser.roles[0]?.roleName;
+                if (authUser && authUser.token && authUser.token.token) {
+                    const token = authUser.token.token;
+                    localStorage.setItem("authToken", token);
+                    setAuthToken(token);
     
-                localStorage.setItem("userName", userName);
-                localStorage.setItem("roleName", roleName);
+                    const userName = authUser.userName;
+                    const roleName = authUser.roles[0]?.roleName;
+    
+                    localStorage.setItem("userName", userName);
+                    localStorage.setItem("roleName", roleName);
+                }
             }
         }
     };
-
+    
     return (
         <div className="HomePage">
             <div className="HomeContainer">
