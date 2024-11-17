@@ -1,40 +1,66 @@
-.rBody{
+.rBody {
     padding: 0;
 }
 
-.containerRegulation{
+.containerRegulation {
     padding: 0;
 }
 
-.rTitle{
+.rTitle {
     padding-bottom: 1vh;
 }
 
-.rInfo{
+.rInfo {
     text-align: justify;
     padding-bottom: 0;
     font-size: 16px;
 }
-.containerFormRegulation{
+
+.containerFormRegulation {
     padding: 0;
     margin: 0 auto;
     border-radius: 0;
     height: auto;
 }
-.rAccept{
+
+.rAccept {
     padding-bottom: 1vh;
     margin-bottom: 2vh;
 
 }
-.rLabel{
+
+.rLabel {
     font-size: 16px;
     margin-top: 10vh;
     padding-bottom: 10vh;
 }
-.rInput{
+
+.rInput {
     margin-top: 2vh;
 }
-.rForm{
+
+.rForm {
     padding: 0;
     margin: 0;
 }
+
+.regTexInf {
+    display: flex;
+    align-content: center;
+    justify-content: center;
+}
+
+.GenRegCont {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+}
+
+.GenRegCont{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+}
+
