@@ -19,11 +19,13 @@ const Login = () => {
 
   const handleRedirect = (data) => {
     const token = data.token.token
+    const authUserJson = data;
 
     if (token) {
       const authUser = data;
       localStorage.setItem("authToken", token); // Guardamos el token
       setAuthToken(token);
+
       const userName = authUser.userName;
       const roleName = authUser.roles[0]?.roleName; // Extraemos el rol
       console.log(roleName)
@@ -56,7 +58,7 @@ const Login = () => {
       });
 
       console.log(response)
-      if (response.status != 200) {
+      if (!response.status == 200) {
         if (response.status === 400) {
           MessagesError("Credenciales incorrectas");
         } else {
