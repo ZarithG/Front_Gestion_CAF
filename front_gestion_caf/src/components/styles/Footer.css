@@ -12,6 +12,11 @@
     bottom: 0;
     z-index: 100;
     padding: 0 5vh;
+    transition: transform 0.3s ease-in-out; /* Transición para ocultar el footer */
+}
+
+.FooterContainer.hidden {
+    transform: translateY(100%); /* Mueve el footer fuera de la pantalla */
 }
 
 .FooterContainers {

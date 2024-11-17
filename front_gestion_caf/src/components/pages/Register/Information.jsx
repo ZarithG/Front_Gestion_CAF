@@ -1,13 +1,19 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
 import { useRegContext } from "../../../providers/RegProvider";
 import "../../styles/Register.css";
+import { SERVICES_BACK } from "../../../constants/constants";
 
 
 const Information = () => {
     const [state, dispatch] = useRegContext();
     const navigate = useNavigate();
+    const [programs, setPrograms] = useState([]);
+    const [faculty, setFaculty] = useState([]);
+
+    const [error, setError] = useState("");
+
     const [submitted, setSubmitted] = useState(false); // Estado para controlar el envío
 
     const {
@@ -22,11 +28,39 @@ const Information = () => {
 
     const onSubmit = (values) => {
         setSubmitted(true); // Marcar que el formulario ha si do enviado
+        console.log(information, estate)
         if (isValid) {
             dispatch({ type: "SET_ESTATE", data: values });
             navigate("/register/emergenceContact");
         }
     };
+
+    useEffect(() => {
+        console.log(faculty);
+        const fetchPrograms = async () => {
+            try {
+
+                const token = localStorage.getItem("authToken");
+                const response = await fetch(
+                    SERVICES_BACK.GET_PROGRAMS,
+                    {
+                        method: 'GET',
+                        headers: {
+                            'Authorization': `Bearer ${token}`,
+                            credentials: 'include',
+                        }
+                    }
+                );
+                const data = await response.json();
+                setPrograms(data);
+            } catch (error) {
+                setError(error.message);
+            }
+        };
+
+        fetchPrograms();
+
+    }, []);
 
     return (
         <div className="InformationDataRegister">
@@ -41,7 +75,7 @@ const Information = () => {
                                 <label className="lbRegItem">Estamento</label>
                                 <select className="sltRegItem" {...register("estamento", { required: true })}>
                                     <option value="">Seleccione su estamento</option>
-                                    <option value="estudiante">Estudiante</option>
+                                    <option value="STUDENT">Estudiante</option>
                                     <option value="profesor">Profesor</option>
                                     <option value="administrativo">Administrativo</option>
                                     <option value="externo">Externo</option>
@@ -57,15 +91,38 @@ const Information = () => {
 
                             <div className="form-group-Reg">
                                 <label className="lbRegItem">Nombre del programa</label>
-                                <input className="inpRegItem" type="text" {...register("programName", { required: true })} />
-                                {submitted && errors.eps && <span className="error">Este campo es obligatorio.</span>}
+                                <select
+                                    className="sltRegItem"
+                                    {...register("programName", { required: "Seleccione un programa." })}
+                                    onChange={(e) => {
+                                        const selectedProgram = programs.find((p) => p.id === parseInt(e.target.value, 10));
+                                        setFaculty(selectedProgram ? selectedProgram.facultyDTO : "");
+                                    }}
+                                >
+                                    <option value="">Seleccione un Programa</option>
+                                    {programs.map((program) => (
+                                        <option key={program.id} value={program.id}>
+                                            {program.programName}
+                                        </option>
+                                    ))}
+                                </select>
+
                             </div>
 
                             <div className="form-group-Reg">
                                 <label className="lbRegItem">Facultad</label>
-                                <input className="inpRegItem" type="text" {...register("facultyName", { required: true })} />
-                                {submitted && errors.eps && <span className="error">Este campo es obligatorio.</span>}
+                                <select className="sltRegItem" {...register("faculty", { required: true })}>
+                                    <option value="">Seleccione su Facultad</option>
+                                    {/* Verifica si faculty está disponible y muestra el nombre de la facultad */}
+                                    {faculty && faculty.facultyName ? (
+                                        <option value={faculty.id}>{faculty.facultyName}</option>
+                                    ) : (
+                                        <option value="">Cargando Facultad...</option>
+                                    )}
+                                </select>
+                                
                             </div>
+
                         </div>
                         <div className="containerFormReg">
                             <h2 className="h2Register">Información de Salud</h2>

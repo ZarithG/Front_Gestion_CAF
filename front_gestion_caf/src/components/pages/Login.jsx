@@ -5,17 +5,17 @@ import LogoBienestar from "../../components/CAF-images/logoBienestar.png";
 import { Link, useNavigate } from "react-router-dom";
 import { FcGoogle } from "react-icons/fc";
 import { SERVICES_BACK } from "../../constants/constants";
-import { Toaster } from "sonner"; // Importa Toaster si aún no lo tienes aquí
+import { Toaster } from "sonner"; 
 import Header from "../gestion-caf/Header";
 
 const Login = () => {
-    const [authToken, setAuthToken] = useState("");
-    const [userName, setUserName] = useState("");
-    const [email, setEmail] = useState("");
-    const [password, setPassword] = useState("");
-    const [token, setToken] = useState("");
-    const [error, setError] = useState("");
-    const navigate = useNavigate();
+  const [authToken, setAuthToken] = useState("");
+  const [userName, setUserName] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [token, setToken] = useState("");
+  const [error, setError] = useState("");
+  const navigate = useNavigate();
 
   const handleRedirect = (data) => {
     const token = data.token.token
@@ -23,17 +23,18 @@ const Login = () => {
 
     if (token) {
       const authUser = data;
-      localStorage.setItem("authToken", token);
+      localStorage.setItem("authToken", token); // Guardamos el token
       setAuthToken(token);
 
       const userName = authUser.userName;
-      const roleName = authUser.roles[0]?.roleName;
+      const roleName = authUser.roles[0]?.roleName; // Extraemos el rol
       console.log(roleName)
 
-      localStorage.setItem("userName", userName);
-      localStorage.setItem("roleName", roleName);
+      localStorage.setItem("userName", userName); // Guardamos el nombre del usuario
+      localStorage.setItem("roleName", roleName); // Guardamos el rol
     }
   };
+
 
   const handleLogin = async (e) => {
     e.preventDefault();
@@ -51,11 +52,11 @@ const Login = () => {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          userName: email+"@uptc.edu.co",
+          userName: email + "@uptc.edu.co",
           password: password,
         }),
       });
-    
+
       console.log(response)
       if (!response.status == 200) {
         if (response.status === 400) {
@@ -67,7 +68,7 @@ const Login = () => {
       }
 
       const data = await response.json();
-    
+
       if (data) {
         handleRedirect(data);
         const storedUserName = localStorage.getItem("userName");
@@ -82,8 +83,8 @@ const Login = () => {
         MessagesError("Credenciales incorrectas");
       }
     } catch (error) {
-        console.log(error)
-        MessagesError("Hubo un error en el servidor");
+      console.log(error)
+      MessagesError("Hubo un error en el servidor");
     }
   };
 

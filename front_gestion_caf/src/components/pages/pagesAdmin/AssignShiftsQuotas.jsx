@@ -96,7 +96,7 @@ const AssignShiftsQuotas = () => {
                                                     <td>{turno.cupos}</td>
                                                     <td className="tdbutton">
                                                         <div className="containerButtons">
-                                                        {/* <button className="buttonAssign" onClick={() => editTurno(index)}><FaEdit/></button> */}
+                                                        <button className="buttonAssign" onClick={() => editTurno(index)}><FaEdit/></button>
                                                         <button className="buttonAssign" onClick={() => removeTurno(day, index)}><MdDelete/></button>
                                                         </div>
                                                     </td>

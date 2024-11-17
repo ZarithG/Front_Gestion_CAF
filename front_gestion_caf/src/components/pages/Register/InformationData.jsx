@@ -3,6 +3,7 @@ import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
 import { useRegContext } from "../../../providers/RegProvider";
 import "../../styles/Register.css";
+import { SERVICES_BACK } from "../../../constants/constants";
 
 const InformationData = () => {
     const [authToken, setAuthToken] = useState("");
@@ -10,7 +11,10 @@ const InformationData = () => {
     const [state, dispatch] = useRegContext();
     const navigate = useNavigate();
     const [submitted, setSubmitted] = useState(false);
+    const [error, setError] = useState("");
     const { information } = state
+    const [departments, setDepartments] = useState([]);
+    const [cities, setCities] = useState([]);
 
     const [formData, setFormData] = useState({
         document: '',
@@ -29,9 +33,34 @@ const InformationData = () => {
                 ...prevData,
                 email: storedUserName
             }));
-        }else{
+        } else {
             handleRedirect();
         }
+
+
+        const fetchDeparments = async () => {
+            try {
+
+                const token = localStorage.getItem("authToken");
+                const response = await fetch(
+                    SERVICES_BACK.GET_DEPARTMETS,
+                    {
+                        method: 'GET',
+                        headers: {
+                            'Authorization': `Bearer ${token}`,
+                            credentials: 'include',
+                        }
+                    }
+                );
+                const data = await response.json();
+                setDepartments(data);
+            } catch (error) {
+                setError(error.message);
+            }
+        };
+
+        fetchDeparments();
+
     }, []);
 
     const handleRedirect = () => {
@@ -66,8 +95,7 @@ const InformationData = () => {
                 password: values.password,
             };
             dispatch({ type: "SET_USERDATA", data: userData });
-
-            // Redirigir a la siguiente página
+            
             navigate("/register/information");
         }
     };
@@ -83,7 +111,7 @@ const InformationData = () => {
                         <div className="form-group-Reg">
                             <label className="lbRegItem">Tipo de documento</label>
                             <select className="sltRegItem" {...register("documentType", { required: true })}>
-                                <option value="">Seleccione su estamento</option>
+                                <option value="">Seleccione su tipo de documento</option>
                                 <option value="CC">Cedula de Ciudadania</option>
                                 <option value="TI">Tarjeta de identidad</option>
                                 <option value="CE">Cedula de Extranjeria</option>
@@ -105,7 +133,7 @@ const InformationData = () => {
 
                         <div className="form-group-Reg">
                             <label className="lbRegItem">Código</label>
-                            <input className="inpRegItem" type="text" {...register("phone", { required: true })} />
+                            <input className="inpRegItem" type="text" {...register("code", { required: true })} />
                             {submitted && errors.phone && <p className="error">Este campo es obligatorio.</p>}
                         </div>
 
@@ -136,22 +164,39 @@ const InformationData = () => {
 
                         <div className="form-group-Reg">
                             <label className="lbRegItem">Departamento</label>
-                            <select className="sltRegItem"  {...register("department", { required: true })}>
-                                <option value="">Seleccione el departamento</option>
-                                <option value="Boyaca">Boyacá</option>
-                                <option value="Cundinamarca">Cundinamarca</option>
-                                <option value="Antioquia">Antioquia</option>
+                            <select
+                                className="sltRegItem"
+                                {...register("department", { required: true })}
+                                onChange={(e) => {
+                                    const selectedDepartmentId = parseInt(e.target.value, 10); // Obtén el id del departamento seleccionado
+                                    const selectedDepartment = departments.find(dept => dept.id === selectedDepartmentId); // Encuentra el departamento correspondiente
+                                    if (selectedDepartment) {
+                                        setCities(selectedDepartment.cities); // Guarda las ciudades del departamento seleccionado
+                                    }
+                                }}
+                            >
+                                {departments.length > 0 ? (
+                                    departments.map((item) => (
+                                        <option key={item.id} value={item.id}>{item.name}</option> // Usa el id como valor
+                                    ))
+                                ) : (
+                                    <option value="">Cargando Departamentos...</option>
+                                )}
                             </select>
+
                         </div>
 
                         <div className="form-group-Reg">
                             <label className="lbRegItem">Municipio</label>
                             <select className="sltRegItem"  {...register("city", { required: true })}>
                                 <option value="">Seleccione su ciudad</option>
-                                <option value="Tunja">Tunja</option>
-                                <option value="Toca">Toca</option>
-                                <option value="Boyaca">Boyaca</option>
-                                <option value="Sogamoso">Sogamoso</option>
+                                {cities.length > 0 ? (
+                                    cities.map((item, index) => (
+                                        <option key={index} value={item.id}>{item.name}</option>
+                                    ))
+                                ) : (
+                                    <option value="">Cargando Municipio...</option>
+                                )}
                             </select>
                         </div>
                     </form>

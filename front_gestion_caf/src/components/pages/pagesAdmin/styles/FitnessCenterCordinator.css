@@ -10,6 +10,32 @@
     border-collapse: collapse;
 }
 
+.Turn-Shift{
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+}
+.containerViewShift{
+    display: flex;
+    flex-direction: column;
+    width: 50vh;
+    
+}
+
+.containerViewShift h1{
+    padding-bottom: 0vh;
+    margin: 0;
+    font-size: 15px;
+    color: grey;
+}
+
+.containerViewShift p{
+    font-size: 22px;
+    font-weight: bold;
+    
+}
+
 .table-content, .containerSearch, .search-bar-field {
     width: auto;
     padding: 10px;
@@ -127,4 +153,16 @@
 
 .status-inactive {
     background-color: #dc3545; /* Rojo */
+}
+
+.ContainerTurno{ 
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.ContainerTurno button{ 
+    padding-left: 0;
+    padding-right: 0;
+    width: 35vh;
 }

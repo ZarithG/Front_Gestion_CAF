@@ -18,7 +18,9 @@ export const SERVICES_BACK = {
     GETALLQUESTIONS: 'http://localhost:9093/caf/question/all',
     GET_USER_ACTIVE_INSCRIPTION: 'http://localhost:9093/caf/inscription/all/',
 
-    GET_IS_USER_VERIFIED: 'http://localhost:9093/auth/isUserVerified/'
+    GET_IS_USER_VERIFIED: 'http://localhost:9093/auth/isUserVerified/',
+    GET_DEPARTMETS: 'http://localhost:9093/user/departments',
+    GET_PROGRAMS: 'http://localhost:9093/user/programs' ,
 }
 
 export const STATUS = {

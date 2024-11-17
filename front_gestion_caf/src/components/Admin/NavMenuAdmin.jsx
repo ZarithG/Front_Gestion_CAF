@@ -11,14 +11,32 @@ import { USER_TYPE } from "../../constants/constants";
 const NavMenuAdmin = () => {
     const [isExpanded, setIsExpanded] = useState(false); // Estado para controlar si el menú está expandido o comprimido
     const [roleName, setRoleName] = useState(""); // Estado para almacenar el rol del usuario    
+
     const handleMouseEnter = () => setIsExpanded(true); // Expande el menú cuando el puntero entra
     const handleMouseLeave = () => setIsExpanded(false); // Comprime el menú cuando el puntero sale
 
     useEffect(() => {
-        const storedRoleName = localStorage.getItem("roleName"); // Obtener el rol del usuario desde localStorage
+        // Escucha los cambios de 'roleName' en localStorage
+        const storedRoleName = localStorage.getItem("roleName");
         if (storedRoleName) {
-            setRoleName(storedRoleName); // Si existe el rol, se establece en el estado
+            setRoleName(storedRoleName);
         }
+
+        // Si el usuario cambia su rol después de iniciar sesión o de navegar, actualizamos
+        const handleStorageChange = () => {
+            const updatedRoleName = localStorage.getItem("roleName");
+            if (updatedRoleName) {
+                setRoleName(updatedRoleName);
+            }
+        };
+
+        // Agregamos un event listener para detectar los cambios en el localStorage
+        window.addEventListener("storage", handleStorageChange);
+
+        // Limpiamos el event listener cuando el componente se desmonte
+        return () => {
+            window.removeEventListener("storage", handleStorageChange);
+        };
     }, []);
 
     return (
@@ -28,7 +46,6 @@ const NavMenuAdmin = () => {
                 onMouseEnter={handleMouseEnter}
                 onMouseLeave={handleMouseLeave}
             >
-
                 <MdMenu className="menuNavMenuIcon" />
                 <ul className="menuNavList">
                     {roleName === USER_TYPE.ADMIN && (
@@ -40,12 +57,12 @@ const NavMenuAdmin = () => {
                         </li>
                     )}
                     {(roleName === USER_TYPE.DIRECTOR || roleName === USER_TYPE.ADMIN) && (
-                    <li className="menuNavItem">
-                        <Link className="LinkNav" to="/admin/fitnessCenterCoordinators">
-                            <GrYoga className="menuNavIcon" />
-                            {isExpanded && <span>Coordinadores</span>}
-                        </Link>
-                    </li>
+                        <li className="menuNavItem">
+                            <Link className="LinkNav" to="/admin/fitnessCenterCoordinators">
+                                <GrYoga className="menuNavIcon" />
+                                {isExpanded && <span>Coordinadores</span>}
+                            </Link>
+                        </li>
                     )}
                     <li className="menuNavItem">
                         <Link className="LinkNav" to="/admin/fitnessCenters">

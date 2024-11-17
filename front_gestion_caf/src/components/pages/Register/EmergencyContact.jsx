@@ -12,6 +12,8 @@ const EmergencyContact = () => {
     const navigate = useNavigate();
     const [storageToken, setToken] = useState('');
     const [submitted, setSubmitted] = useState(false); // Estado para controlar el envío
+    const [departments, setDepartments] = useState([]);
+    const [cities, setCities] = useState([]);
 
 
     const {
@@ -25,6 +27,30 @@ const EmergencyContact = () => {
         if (storedToken) {
             setToken(storedToken);
         }
+
+        const fetchDeparments = async () => {
+            try {
+
+                const token = localStorage.getItem("authToken");
+                const response = await fetch(
+                    SERVICES_BACK.GET_DEPARTMETS,
+                    {
+                        method: 'GET',
+                        headers: {
+                            'Authorization': `Bearer ${token}`,
+                            credentials: 'include',
+                        }
+                    }
+                );
+                const data = await response.json();
+                setDepartments(data);
+            } catch (error) {
+                setError(error.message);
+            }
+        };
+
+        fetchDeparments();
+
     }, []);
 
     const {
@@ -40,15 +66,15 @@ const EmergencyContact = () => {
 
     const onSubmit = async (values) => {
         setError('');
+        console.log(state);
         setSubmitted(true); // Marcar que el formulario ha si do enviado
         if (isValid) {
             dispatch({ type: "SET_EMERGENCY_CONTACT", data: values });
-            navigate("/register/emergenceContact");
+            //navigate("/register/emergenceContact");
         }
 
         try {
             const token = storageToken;
-
             const response = await fetch(SERVICES_BACK.SAVEUSER, {
                 method: 'POST',
                 headers: {
@@ -56,17 +82,15 @@ const EmergencyContact = () => {
                     'Content-Type': 'application/json',
                 },
                 body: JSON.stringify({
-                    name: information.name + information.lastName,
                     email: information.email,
-                    documentType: "CC",
+                    documentType: information.documentType,
                     documentNumber: information.documentNumber,
-                    universityCode: "202111983",
+                    universityCode: information.code,
                     birthDate: information.birthDate,
                     phoneNumber: information.phone,
                     residenceAddress: information.address,
-                    userType: "STUDENT",
-                    department: "Boyaca",
-                    city: "Tunja",
+                    userType: information.estamento,
+                    cityId: information.city,
                     emergencyContact: {
                         name: emergencyContact.nameEmergencyContact,
                         lastname: emergencyContact.lastNameEmergencyContact,
@@ -74,15 +98,16 @@ const EmergencyContact = () => {
                         email: emergencyContact.emailEmergencyContact,
                         relationship: emergencyContact.relationshipEmergencyContact,
                         residenceAddress: emergencyContact.adressEmergencyContact,
-                        department: "Boyaca",
-                        city: "Tunja"
+                        city: {
+                            id: emergencyContact.cityEmergencyContact
+                        }
                     },
                     universityInformation: {
-                        actualSemester: "10",
+                        actualSemester: estate.actualSemester,
                         program: {
-                            programName: "Ingeniería Electrónica",
+                            id: estate.programName,
                             faculty: {
-                                facultyName: "Ingeniería"
+                                id: estate.faculty
                             }
                         }
                     },
@@ -93,7 +118,7 @@ const EmergencyContact = () => {
                     }
                 })
             });
-            console.log(information, userData);
+            console.log(information, userData, emergencyContact, state);
             if (!response.ok) {
                 if (response.status === 400) {
                     MessagesError('Credenciales incorrectas');
@@ -148,7 +173,8 @@ const EmergencyContact = () => {
 
             if (data) {
                 MessagesSuccess('Inicio de sesión exitoso');
-                navigate('/');
+                console.log(information, state, emergencyContact)
+                //navigate('/');
             } else {
                 MessagesError('Credenciales incorrectas');
             }
@@ -245,11 +271,22 @@ const EmergencyContact = () => {
                         <div className="form-group-Reg">
                             <label className="lbRegItem">Departamento</label>
                             <select className="sltRegItem"
-                                {...register("departmentEmergencyContact", { required: true })}>
-                                <option value="">Seleccione el departamento</option>
-                                <option value="Boyaca">Boyaxa</option>
-                                <option value="Cundinamarca">Cundinamarca</option>
-                                <option value="Antioquia">Antioquia</option>
+                                {...register("departmentEmergencyContact", { required: true })}
+                                onChange={(e) => {
+                                    const selectedDepartmentId = parseInt(e.target.value, 10); // Obtén el id del departamento seleccionado
+                                    const selectedDepartment = departments.find(dept => dept.id === selectedDepartmentId); // Encuentra el departamento correspondiente
+                                    if (selectedDepartment) {
+                                        setCities(selectedDepartment.cities); // Guarda las ciudades del departamento seleccionado
+                                    }
+                                }}
+                            >
+                                {departments.length > 0 ? (
+                                    departments.map((item) => (
+                                        <option key={item.id} value={item.id}>{item.name}</option> // Usa el id como valor
+                                    ))
+                                ) : (
+                                    <option value="">Cargando Departamentos...</option>
+                                )}
                             </select>
                         </div>
                         <div className="form-group-Reg">
@@ -257,10 +294,13 @@ const EmergencyContact = () => {
                             <select className="sltRegItem"
                                 {...register("cityEmergencyContact", { required: true })}>
                                 <option value="">Seleccione su ciudad</option>
-                                <option value="Tunja">Tunja</option>
-                                <option value="Toca">Toca</option>
-                                <option value="Boyaca">Boyaca</option>
-                                <option value="Sogamoso">Sogamoso</option>
+                                {cities.length > 0 ? (
+                                    cities.map((item, index) => (
+                                        <option key={index} value={item.id}>{item.name}</option>
+                                    ))
+                                ) : (
+                                    <option value="">Cargando Municipio...</option>
+                                )}
                             </select>
                         </div>
                         <div className="buttonContainer">
