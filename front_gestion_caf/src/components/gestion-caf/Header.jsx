@@ -39,30 +39,35 @@ const Header = ({
         }
     }, [status]);
     
-    const isUserVerified = async () =>{
+    const isUserVerified = async () => {
         try {
             const token = localStorage.getItem("authToken");
-            const response = await fetch(SERVICES_BACK.GET_IS_USER_VERIFIED  + localStorage.getItem("userName"), {
-              method: "GET",
-              headers: {
-                "Content-Type": "application/json",
-                'Authorization': `Bearer ${token}`,
-                credentials: 'include',
-              }
-            });
-            if (response.status == 200) {
-                if(!response.body.locked){
-                    navigate("/register/informationData");
+            const response = await fetch(SERVICES_BACK.GET_IS_USER_VERIFIED + localStorage.getItem("userName"), {
+                method: "GET",
+                headers: {
+                    'Authorization': `Bearer ${token}`
                 }
-            }else{
+            });
+            
+            console.log(response.status);
+            if (response.status === 200) {
+                console.log(response.body);
+                return true; // Usuario verificado
+            } else {
+                if (response.status === 400) {
+                    navigate("/register/informationData");
+                    return false; // Usuario no verificado
+                }
                 MessagesError("Hubo un error en el servidor");
+                return false; // Error en el servidor o no verificado
             }
         } catch (error) {
-            console.log(error)
+            console.log(error);
             MessagesError("Hubo un error en el servidor");
+            return false; // En caso de error, no está verificado
         }
-        
     };
+    
 
     return (
         <div className="headerContainer">
@@ -88,12 +93,12 @@ const Header = ({
                         <>
                             <li className="menuItem" onClick={async (e) => {
                                 e.preventDefault();
-                                
+
                                 const isVerified = await isUserVerified();
-                                if (!isVerified) {
-                                    navigate('/register/informationData');
-                                }else{
+                                if (isVerified) {
                                     navigate('/registration/terms');
+                                } else {
+                                    navigate('/register/informationData');
                                 }
                             }}>
                                 <span className="Link">
@@ -101,6 +106,7 @@ const Header = ({
                                     <GiNotebook className="icons" />
                                 </span>
                             </li>
+
                             
                             <li className="menuItem" onClick={async (e) => {
                                 e.preventDefault();

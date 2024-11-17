@@ -22,7 +22,6 @@ const MedicalHistory = () => {
         const fetchQuestions = async () => {
             try {
                 const token = localStorage.getItem("authToken");
-                console.log(token)
                 const response = await fetch(
                     SERVICES_BACK.GETALLQUESTIONS,
                     {
@@ -35,6 +34,7 @@ const MedicalHistory = () => {
                 );
                 
                 const data = await response.json();
+                console.log(data)
                 setQuestions(data);
             } catch (error) {
                 setError(error.message); 
@@ -74,26 +74,36 @@ const MedicalHistory = () => {
                 <div className="containerForm">
                     <form className="user-info-form" onSubmit={handleSubmit(onSubmit)}>
                         <div className="form-table">
-                            {/* Form questions */}
-                            {questions.length > 0 ? (
-                                questions.map((item, index) => (
-                                    <div key={index} className="form-row">
-                                        <div className="form-question">
-                                            <label>{item.question}</label>
-                                        </div>
-                                        <div className="form-option">
-                                            <input {...register(item.name, { required: true })} type="radio" value="false" />
-                                            <label>No</label>
-                                        </div>
-                                        <div className="form-option">
-                                            <input {...register(item.name)} type="radio" value="true" />
-                                            <label>Si</label>
-                                        </div>
+                        {questions.length > 0 ? (
+                            questions.map((item, index) => (
+                                <div key={index} className="form-row">
+                                    <div className="form-question">
+                                        <label htmlFor={`question-${index}`}>{item.question}</label>
                                     </div>
-                                ))
-                            ) : (
-                                <div>No se encontraron preguntas.</div>
-                            )}
+                                    <div className="form-option">
+                                        <input
+                                            {...register(item.name, { required: true })}
+                                            type="radio"
+                                            id={`question-${index}-no`}
+                                            value="false"
+                                        />
+                                        <label htmlFor={`question-${index}-no`}>No</label>
+                                    </div>
+                                    <div className="form-option">
+                                        <input
+                                            {...register(item.name, { required: true })}
+                                            type="radio"
+                                            id={`question-${index}-yes`}
+                                            value="true"
+                                        />
+                                        <label htmlFor={`question-${index}-yes`}>Sí</label>
+                                    </div>
+                                </div>
+                            ))
+                        ) : (
+                            <div>No se encontraron preguntas.</div>
+                        )}
+
 
                             {/* Additional Information Field */}
                             {affirmativeAnswers && (

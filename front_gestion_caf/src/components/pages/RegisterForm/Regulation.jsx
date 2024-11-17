@@ -3,7 +3,8 @@ import "./styles/Regulation.css";
 import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
 import { useRegFormContext } from "../../../providers/RegFormProvider";
-import { MessagesError } from "../../gestion-caf/Messages";
+import { MessagesError, MessagesSuccess } from "../../gestion-caf/Messages"
+import { toast, Toaster } from "sonner"; 
 
 const Regulation = () => {
     const [, dispatch] = useRegFormContext();
@@ -26,6 +27,13 @@ const Regulation = () => {
 
     return (
         <div className="rBody">
+                  <Toaster
+                    position="top-center"
+                    dir="auto"
+                    duration={2000}
+                    visibleToasts={4}
+                    richColors
+                />
             <div className="containerRegulation">
                 <h2 className="rTitle">Reglamento</h2>
                 <p className="rInfo">

@@ -5,6 +5,7 @@ import { useRegContext } from "../../../providers/RegProvider";
 import { MessagesError, MessagesSuccess } from '../../gestion-caf/Messages';
 import { SERVICES_BACK } from "../../../constants/constants";
 import "../../styles/Register.css";
+import InformationData from "./InformationData";
 
 const EmergencyContact = () => {
     const [error, setError] = useState('');
@@ -75,6 +76,7 @@ const EmergencyContact = () => {
         if (emergencyContact ) {
             try {
                 const token = storageToken;
+                console.log(emergencyContact.cityEmergencyContact)
                 const response = await fetch(SERVICES_BACK.SAVEUSER, {
                     method: 'POST',
                     headers: {
@@ -82,7 +84,7 @@ const EmergencyContact = () => {
                         'Content-Type': 'application/json',
                     },
                     body: JSON.stringify({
-                        email: information.email,
+                        email: localStorage.getItem("userName"),
                         documentType: information.documentType,
                         documentNumber: information.documentNumber,
                         universityCode: information.code,
@@ -118,25 +120,13 @@ const EmergencyContact = () => {
                         }
                     })
                 });
-                console.log(information, userData, emergencyContact, state);
                 if (!response.ok) {
                     if (response.status === 400) {
-                        MessagesError('Credenciales incorrectas');
+                        MessagesError('Hubo un problema al guardar, envie nuevamente los datos');
                     } else {
                         MessagesError('Hubo un error en el servidor');
                     }
                     return;
-                } else {
-                    console.log("Respuesta bien");
-                }
-
-                const dataResponse = await response.json();
-
-                if (dataResponse) {
-                    MessagesSuccess('Inicio de sesión exitoso');
-                    navigate('/');
-                } else {
-                    MessagesError('Credenciales incorrectas');
                 }
             } catch (error) {
                 MessagesError('Hubo un error en el servidor');
@@ -153,30 +143,28 @@ const EmergencyContact = () => {
                         'Content-Type': 'application/json'
                     },
                     body: JSON.stringify({
-                        userName: userData.email,
+                        userName: localStorage.getItem("userName"),
                         password: userData.password
                     })
                 });
 
                 if (!response.ok) {
                     if (response.status === 400) {
-                        MessagesError('Credenciales incorrectas');
+                        MessagesError('Hubo un problema guardando la contraseña');
                     } else {
                         MessagesError('Hubo un error en el servidor');
                     }
                     return;
-                } else {
-                    console.log("Respuesta bien");
                 }
 
                 const data = await response.json();
 
                 if (data) {
-                    MessagesSuccess('Inicio de sesión exitoso');
-                    console.log(information, state, emergencyContact)
-                    //navigate('/');
+                    console.log(data)
+                    MessagesSuccess('Datos guardados exitosamente');
+                    navigate('/');
                 } else {
-                    MessagesError('Credenciales incorrectas');
+                    MessagesError('No se pudieron guardar los datos');
                 }
             } catch (error) {
                 MessagesError('Hubo un error en el servidor');

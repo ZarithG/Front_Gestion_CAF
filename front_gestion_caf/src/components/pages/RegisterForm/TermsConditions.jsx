@@ -10,9 +10,9 @@ const TermsConditions = () => {
     const [, dispatch] = useRegFormContext();
     const navigate = useNavigate();
 
-    useEffect(() => {
-        isUserVerified();
-    }, []);
+    // useEffect(() => {
+    //     isUserVerified();
+    // }, []);
     
     const {
         register,
@@ -41,10 +41,8 @@ const TermsConditions = () => {
                 credentials: 'include',
               }
             });
-            if (response.status == 200) {
-                if(!response.body.locked){
-                    navigate("/register/informationData");
-                }
+            if (response.status == 400) {
+                navigate("/register/informationData");
             }else{
                 MessagesError("Hubo un error en el servidor");
             }
@@ -76,8 +74,8 @@ const TermsConditions = () => {
                     conforme a la política de tratamiento y protección de datos
                     personales de los titulares de la Universidad Pedagógica y
                     Tecnológica de Colombia, que puede ser consultada en:{" "}
-                    <a href="http://www.uptc.edu.co/gel/habeas_data/">
-                        http://www.uptc.edu.co/gel/habeas_data/
+                    <a href="https://www.uptc.edu.co/sitio/portal/sitios/universidad/taip/ntaip/term_condiciones">
+                        TERMINOS Y CONDICIONES
                     </a>
                 </p>
                 <div className="containerForm">
