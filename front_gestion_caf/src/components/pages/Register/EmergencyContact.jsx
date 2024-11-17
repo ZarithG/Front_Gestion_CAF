@@ -153,8 +153,8 @@ const EmergencyContact = () => {
                     'Content-Type': 'application/json'
                 },
                 body: JSON.stringify({
-                    userName: "juan.archila04@uptc.edu.co",
-                    password: "1234567"
+                    userName: userData.email,
+                    password: userData.password
                 })
             });
 
