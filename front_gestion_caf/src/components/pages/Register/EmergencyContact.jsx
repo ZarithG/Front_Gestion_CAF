@@ -70,116 +70,117 @@ const EmergencyContact = () => {
         setSubmitted(true); // Marcar que el formulario ha si do enviado
         if (isValid) {
             dispatch({ type: "SET_EMERGENCY_CONTACT", data: values });
-            //navigate("/register/emergenceContact");
+            navigate("/register/emergenceContact");
         }
-
-        try {
-            const token = storageToken;
-            const response = await fetch(SERVICES_BACK.SAVEUSER, {
-                method: 'POST',
-                headers: {
-                    'Authorization': `Bearer ${token}`,
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({
-                    email: information.email,
-                    documentType: information.documentType,
-                    documentNumber: information.documentNumber,
-                    universityCode: information.code,
-                    birthDate: information.birthDate,
-                    phoneNumber: information.phone,
-                    residenceAddress: information.address,
-                    userType: information.estamento,
-                    cityId: information.city,
-                    emergencyContact: {
-                        name: emergencyContact.nameEmergencyContact,
-                        lastname: emergencyContact.lastNameEmergencyContact,
-                        phone: emergencyContact.phone,
-                        email: emergencyContact.emailEmergencyContact,
-                        relationship: emergencyContact.relationshipEmergencyContact,
-                        residenceAddress: emergencyContact.adressEmergencyContact,
-                        city: {
-                            id: emergencyContact.cityEmergencyContact
-                        }
+        if (emergencyContact ) {
+            try {
+                const token = storageToken;
+                const response = await fetch(SERVICES_BACK.SAVEUSER, {
+                    method: 'POST',
+                    headers: {
+                        'Authorization': `Bearer ${token}`,
+                        'Content-Type': 'application/json',
                     },
-                    universityInformation: {
-                        actualSemester: estate.actualSemester,
-                        program: {
-                            id: estate.programName,
-                            faculty: {
-                                id: estate.faculty
+                    body: JSON.stringify({
+                        email: information.email,
+                        documentType: information.documentType,
+                        documentNumber: information.documentNumber,
+                        universityCode: information.code,
+                        birthDate: information.birthDate,
+                        phoneNumber: information.phone,
+                        residenceAddress: information.address,
+                        userType: information.estamento,
+                        cityId: information.city,
+                        emergencyContact: {
+                            name: emergencyContact.nameEmergencyContact,
+                            lastname: emergencyContact.lastNameEmergencyContact,
+                            phone: emergencyContact.phone,
+                            email: emergencyContact.emailEmergencyContact,
+                            relationship: emergencyContact.relationshipEmergencyContact,
+                            residenceAddress: emergencyContact.adressEmergencyContact,
+                            city: {
+                                id: emergencyContact.cityEmergencyContact
                             }
+                        },
+                        universityInformation: {
+                            actualSemester: estate.actualSemester,
+                            program: {
+                                id: estate.programName,
+                                faculty: {
+                                    id: estate.faculty
+                                }
+                            }
+                        },
+                        medicalInformation: {
+                            eps: estate.eps,
+                            bloodGroup: estate.bloodType,
+                            allergies: estate.allergies
                         }
-                    },
-                    medicalInformation: {
-                        eps: estate.eps,
-                        bloodGroup: estate.bloodType,
-                        allergies: estate.allergies
+                    })
+                });
+                console.log(information, userData, emergencyContact, state);
+                if (!response.ok) {
+                    if (response.status === 400) {
+                        MessagesError('Credenciales incorrectas');
+                    } else {
+                        MessagesError('Hubo un error en el servidor');
                     }
-                })
-            });
-            console.log(information, userData, emergencyContact, state);
-            if (!response.ok) {
-                if (response.status === 400) {
-                    MessagesError('Credenciales incorrectas');
+                    return;
                 } else {
-                    MessagesError('Hubo un error en el servidor');
+                    console.log("Respuesta bien");
                 }
-                return;
-            } else {
-                console.log("Respuesta bien");
-            }
 
-            const dataResponse = await response.json();
+                const dataResponse = await response.json();
 
-            if (dataResponse) {
-                MessagesSuccess('Inicio de sesión exitoso');
-                navigate('/');
-            } else {
-                MessagesError('Credenciales incorrectas');
-            }
-        } catch (error) {
-            MessagesError('Hubo un error en el servidor');
-            console.log("ERROR:" + error)
-        }
-
-        try {
-            const token = storageToken;
-
-            const response = await fetch(SERVICES_BACK.PASSWORDAUTH, {
-                method: 'POST',
-                headers: {
-                    'Authorization': `Bearer ${token}`,
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({
-                    userName: userData.email,
-                    password: userData.password
-                })
-            });
-
-            if (!response.ok) {
-                if (response.status === 400) {
-                    MessagesError('Credenciales incorrectas');
+                if (dataResponse) {
+                    MessagesSuccess('Inicio de sesión exitoso');
+                    navigate('/');
                 } else {
-                    MessagesError('Hubo un error en el servidor');
+                    MessagesError('Credenciales incorrectas');
                 }
-                return;
-            } else {
-                console.log("Respuesta bien");
+            } catch (error) {
+                MessagesError('Hubo un error en el servidor');
+                console.log("ERROR:" + error)
             }
 
-            const data = await response.json();
+            try {
+                const token = storageToken;
 
-            if (data) {
-                MessagesSuccess('Inicio de sesión exitoso');
-                console.log(information, state, emergencyContact)
-                //navigate('/');
-            } else {
-                MessagesError('Credenciales incorrectas');
+                const response = await fetch(SERVICES_BACK.PASSWORDAUTH, {
+                    method: 'POST',
+                    headers: {
+                        'Authorization': `Bearer ${token}`,
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        userName: userData.email,
+                        password: userData.password
+                    })
+                });
+
+                if (!response.ok) {
+                    if (response.status === 400) {
+                        MessagesError('Credenciales incorrectas');
+                    } else {
+                        MessagesError('Hubo un error en el servidor');
+                    }
+                    return;
+                } else {
+                    console.log("Respuesta bien");
+                }
+
+                const data = await response.json();
+
+                if (data) {
+                    MessagesSuccess('Inicio de sesión exitoso');
+                    console.log(information, state, emergencyContact)
+                    //navigate('/');
+                } else {
+                    MessagesError('Credenciales incorrectas');
+                }
+            } catch (error) {
+                MessagesError('Hubo un error en el servidor');
             }
-        } catch (error) {
-            MessagesError('Hubo un error en el servidor');
         }
     };
 
