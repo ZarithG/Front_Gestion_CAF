@@ -10,6 +10,7 @@ import ScheduleShift from "../../../components/pages/ScheduleShift";
 import TermsConditions from "../../../components/pages/RegisterForm/TermsConditions";
 import InformedConsent from "../../../components/pages/RegisterForm/InformedConsent";
 import MedicalDocument from "../../../components/pages/RegisterForm/MedicalDocument";
+import TutorConsent from "../../../components/pages/RegisterForm/TutorConsent";
 import MedicalHistory from "../../../components/pages/RegisterForm/MedicalHistory";
 import Regulation from "../../../components/pages/RegisterForm/Regulation";
 
@@ -56,6 +57,7 @@ const AppRoutes = () => {
                     <Route path="terms" element={<TermsConditions />} />
                     <Route path="informedConsent" element={<InformedConsent />} />
                     <Route path="medicalDocument" element={<MedicalDocument />} />
+                    <Route path="tutorConsent" element={<TutorConsent />} />
                     <Route path="medicalHistory" element={<MedicalHistory />} />
                     <Route path="regulation" element={<Regulation />} />
                 </Route>

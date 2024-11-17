@@ -1,35 +1,25 @@
-import React, {useEffect, useState} from "react";
+import React, { useState, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
 import { useRegFormContext } from "../../../providers/RegFormProvider";
 import { SERVICES_BACK } from "../../../constants/constants";
 import { MessagesError, MessagesSuccess } from "../../gestion-caf/Messages";
 import { toast, Toaster } from "sonner"; 
-import { useLocation } from "react-router-dom";
 
-const MedicalDocument = () => {
-    const location = useLocation();
-    const inscriptionId = location.state?.inscriptionId;
+const TutorConsent = () => {
 
     const [consentFile, setConsentFile] = useState();
     const navigate = useNavigate();
-    const [submitted, setSubmitted] = useState(false);
 
+    const [submitted, setSubmitted] = useState(false);
     const {
         register,
+        handleSubmit,
         formState: { errors, isValid },
     } = useForm({ mode: "onChange" });
-
-    useEffect(() => {
-        console.log(inscriptionId)
-    }, [inscriptionId]);
-
-    const onSubmit = () => {
-        // if (isValid) {
-        //     const hasAffirmativeAnswer = affirmativeAnswers;
-        //     dispatch({ type: 'SET_MEDICAL_HISTORY', data: { ...values, hasAffirmativeAnswer } });
-        //     navigate('/registration/informedConsent');
-        // }
+    
+    const onSubmit = async () => {
+        //ENVIAR ARCHIVO MENOR DE EDAD
     };
 
     return (
@@ -42,15 +32,15 @@ const MedicalDocument = () => {
                     richColors
                 />
             <div className="containerPersonalInformation">
-                <h2>Carga de consentimiento medico</h2>
-                <p>Por favor adjunte un archivo con la autorización de médica indicando que puede realizar actividad física sin
-                    tener algun inconveniente. Esto debido a que contesto afirmativamente alguna de las preguntas del formulario PAR-Q.
-                </p>
+                <h2>Carga de consentimiento tutor</h2>
+                <p>Por favor adjunte un archivo con la autorización de su padre, madre o tutor legal,
+                    indicando que puede realizar actividad física, y que en caso de algun inconveniente
+                    el o ella seran los reponsables de comunicase con el CAF.</p>
                 <br />
                 <div className="containerForm">
-                    <form className="personal-info-form" onSubmit={onSubmit()}>
+                    <form className="personal-info-form" onSubmit={handleSubmit(onSubmit)}>
                         <div className="form-group">
-                        <label>Archivo de consentimiento médico</label>
+                        <label>Archivo de consentimiento padre, madre o tutor legala</label>
                             <input
                                 type="file"
                                 accept=".pdf"
@@ -67,7 +57,7 @@ const MedicalDocument = () => {
                             )}
                         </div>
                         <button type="submit" disabled={!isValid}>
-                            Enviar documento médico
+                            Siguiente
                         </button>
                     </form>
                 </div>
@@ -76,4 +66,4 @@ const MedicalDocument = () => {
     );
 };
 
-export default MedicalDocument;
+export default TutorConsent;

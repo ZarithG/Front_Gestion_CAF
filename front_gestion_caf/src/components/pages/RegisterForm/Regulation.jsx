@@ -45,7 +45,7 @@ const Regulation = () => {
                     <text>
                     . REGLAMENTO: {" "}
                     </text>
-                    <a href="http://www.uptc.edu.co/gel/habeas_data/">
+                    <a href="https://drive.google.com/file/d/1nS8Lkpj7RLQaWy7WKSYNcjTF_lxmaV7d/view">
                         DESCARGAR Y LEER REGLAMENTO DEL CAF
                     </a>
                     

@@ -79,13 +79,6 @@ const MedicalHistory = () => {
             response: values[`question_${question.id}`] || null,
         }));
 
-        // Agregar datos adicionales (respuesta afirmativa) si existen
-        const additionalInfo = getValues("additionalInfo");
-        if (additionalInfo) {
-            transformedData.push({ id: "additionalInfo", response: additionalInfo });
-        }
-
-        console.log(values.CAF)
         // Agregar el CAF seleccionado
         const selectedCAF = ({ id: values.CAF});
 
@@ -104,15 +97,15 @@ const MedicalHistory = () => {
 
     const CAFSelector = ({ caf, register }) => (
         <div className="form-group-Reg">
-            <label className="lbRegItem">Municipio</label>
+            <label className="lbRegItem">Centro de Acondicionamiento Físico al que se desea inscribir:</label>
             <select className="sltRegItem" {...register("CAF", { required: true })}>
-                <option value="">Seleccione su ciudad</option>
+                <option value="">Seleccione un CAF</option>
                 {caf.length > 0 ? (
                     caf.map((item, index) => (
                         <option key={index} value={item.id}>{item.name}</option>
                     ))
                 ) : (
-                    <option disabled>Cargando ciudades...</option>
+                    <option disabled>Cargando caf's...</option>
                 )}
             </select>
         </div>
@@ -126,6 +119,7 @@ const MedicalHistory = () => {
                 <h2>Seleccione el CAF al que se va a inscribir</h2>
                 <CAFSelector caf={caf} register={register} />
             </div>
+            <br />
             <div className="containerPersonalInformation">
                 <h2>Formulario de valoración e Historia médica</h2>
                 <p>
