@@ -21,6 +21,8 @@ export const SERVICES_BACK = {
     GET_IS_USER_VERIFIED: 'http://localhost:9093/auth/isUserVerified/',
     GET_DEPARTMETS: 'http://localhost:9093/user/departments',
     GET_PROGRAMS: 'http://localhost:9093/user/programs' ,
+    POST_CAF_INSCRIPTION: 'http://localhost:9093/caf/inscription/inscribe-use/' ,
+    GET__ALL_CAF: 'http://localhost:9093/caf/all' ,
 }
 
 export const STATUS = {

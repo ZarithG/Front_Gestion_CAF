@@ -8,11 +8,9 @@ export const useRegFormContext = () =>{
 const initialState = {
     termsConditions: {},
     regulation: {},
-    estate: {},
-    information: {},
-    emergencyContact: {},
-    medicalHistory: {},
+    medicalHistory: [],
     informedConsent: {},
+    cafInformation: {},
     medicalDocument: null,
     currentStep: 0,
 };
@@ -21,22 +19,16 @@ const initialState = {
 const reducer = (state, action) => {
     switch(action.type){
         case 'SET_TERMS_CONDITIONS':{
-            return{ ...state, termsConditions:{...action.data}};
+            return{ ...state, termsConditions:action.data};
         }
         case 'SET_REGULATION':{
             return{ ...state, regulation:{...action.data}};
         }
-        case 'SET_ESTATE':{
-            return{ ...state, estate:{...action.data}};
-        }
-        case 'SET_INFORMATION':{
-            return{ ...state, information:{...action.data}};
-        }
-        case 'SET_EMERGENCY_CONTACT':{
-            return{ ...state, emergencyContact:{...action.data}};
-        }
         case 'SET_MEDICAL_HISTORY':{
-            return{ ...state, medicalHistory:{...action.data}};
+            return { ...state, medicalHistory: action.data };  
+        }
+        case 'SET_CAF_INFORMATION':{
+            return{ ...state, cafInformation:{...action.data}};
         }
         case 'SET_INFORMED_CONSENT':{
             return{ ...state, informedConsent:{...action.data}};
