@@ -6,7 +6,7 @@ import {IoMdSearch} from "react-icons/io";
 import { SERVICES_BACK } from "../../../constants/constants";
 
 const initialUsers = [
-    {code: "", fullName: ""+ " ", email: "", status: ""},
+    {code: "", fullName: "", email: "", status: ""},
 ];
 
 const ManageCenterCoordinators = () => {
