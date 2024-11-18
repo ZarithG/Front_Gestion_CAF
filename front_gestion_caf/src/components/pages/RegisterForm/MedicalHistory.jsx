@@ -57,8 +57,11 @@ const MedicalHistory = () => {
                     },
                 });
 
-                if (!response.ok) {
-                    throw new Error(`Error en la respuesta del servidor: ${response.statusText}`);
+                if (response.status !== 200) {
+                    if(response.status === 500){
+                        navigate("/");
+                    }
+                    throw new Error(`Error en la respuesta del servidor`);
                 }
 
                 const data = await response.json();
@@ -157,7 +160,8 @@ const MedicalHistory = () => {
                                             />
                                             <label htmlFor={`question_${item.id}_yes`}>Sí</label>
                                         </div>
-                                    </div>
+                                        <br />
+                                    </div>   
                                 ))
                             ) : (
                                 <div>No se encontraron preguntas.</div>

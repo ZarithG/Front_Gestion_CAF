@@ -9,6 +9,10 @@ export const MessagesSuccess = (message) => {
     toast.success(message);
 };
 
+export const MessagesInformation = (message) => {
+    toast.info(message);
+};
+
 export const MessagesInfo = (title,message) => {
     Swal.fire ({
         icon: "info",
