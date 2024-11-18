@@ -57,12 +57,16 @@ const Login = () => {
         }),
       });
 
-      console.log(response)
-      if (!response.status == 200) {
+      if (response.status !== 200) {
         if (response.status === 400) {
           MessagesError("Credenciales incorrectas");
         } else {
-          MessagesError("Hubo un error en el servidor");
+          if(response.status === 204){
+            MessagesError("Señor usuario, usted se encuentra inactivo de la aplicación");
+          }else{
+            MessagesError("Hubo un error en el servidor");
+          }
+          
         }
         return;
       }

@@ -3,24 +3,61 @@ import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
 import { useRegFormContext } from "../../../providers/RegFormProvider";
 import { SERVICES_BACK } from "../../../constants/constants";
-import { MessagesError, MessagesSuccess } from "../../gestion-caf/Messages";
+import { MessagesError, MessagesSuccess, MessagesInformation } from "../../gestion-caf/Messages";
 import { toast, Toaster } from "sonner"; 
+import { useLocation } from "react-router-dom";
 
 const TutorConsent = () => {
+    const location = useLocation();
+    const inscriptionId = location.state?.inscriptionId;
 
     const [consentFile, setConsentFile] = useState();
     const navigate = useNavigate();
-
     const [submitted, setSubmitted] = useState(false);
+
     const {
         register,
         handleSubmit,
         formState: { errors, isValid },
     } = useForm({ mode: "onChange" });
-    
-    const onSubmit = async () => {
-        //ENVIAR ARCHIVO MENOR DE EDAD
+
+    useEffect(() => {
+    }, [inscriptionId]);
+
+    const onSubmit = async (values) => {
+        setSubmitted(true);
+        sendTutorConsent(inscriptionId);
     };
+
+    const sendTutorConsent = async (inscriptionId) => {
+        const formData = new FormData();
+
+        if(consentFile !== undefined){
+            formData.append("inscriptionFile", consentFile)
+            formData.append("fileType", "TUTOR")
+            
+            const token = localStorage.getItem("authToken")
+            try {
+                const response = await fetch(SERVICES_BACK.POST_CONSENT_FILE + inscriptionId, {
+                    method: "POST",
+                    headers: {
+                        "Authorization": `Bearer ${token}`,
+                        credentials: "include"
+                    },
+                    body: formData
+                });        
+            
+                if (response.ok) {
+                    MessagesSuccess("Consentimiento de tutor almacenado correctamente")
+                }
+            }catch (error) {
+                MessagesError("Error al eviar el consentimiento");
+            }
+        }else{
+            MessagesInformation("El archivo subido no cumple con el formato y tamaño necesario");
+        }
+        navigate("/");
+    }
 
     return (
         <div className="Register">
@@ -40,7 +77,7 @@ const TutorConsent = () => {
                 <div className="containerForm">
                     <form className="personal-info-form" onSubmit={handleSubmit(onSubmit)}>
                         <div className="form-group">
-                        <label>Archivo de consentimiento padre, madre o tutor legala</label>
+                        <label>Archivo de consentimiento padre, madre o tutor legal.</label>
                             <input
                                 type="file"
                                 accept=".pdf"

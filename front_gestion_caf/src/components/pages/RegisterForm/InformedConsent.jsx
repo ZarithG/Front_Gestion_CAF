@@ -3,13 +3,12 @@ import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
 import { useRegFormContext } from "../../../providers/RegFormProvider";
 import { SERVICES_BACK } from "../../../constants/constants";
-import { MessagesError, MessagesSuccess } from "../../gestion-caf/Messages";
+import { MessagesError, MessagesSuccess, MessagesInformation} from "../../gestion-caf/Messages";
 import { toast, Toaster } from "sonner"; 
 
 const InformedConsent = () => {
     const [state, dispatch] = useRegFormContext();
     const [consentFile, setConsentFile] = useState();
-    const [inscriptionId, setInscriptionId] = useState();
     const navigate = useNavigate();
 
     const [submitted, setSubmitted] = useState(false);
@@ -40,10 +39,8 @@ const InformedConsent = () => {
                 parqQuestionDTO: {
                     id: question.id
                 },
-                questionAnswer: values[`question_${question.id}`] === "true" // Convertir a booleano
+                questionAnswer: question.response === "true" // Convertir a booleano el valor de la respuesta
             }));
-    
-            console.log("userResponseDTOList:", userResponseDTOList);
     
             if (!userResponseDTOList.length) {
                 MessagesError("No hay respuestas válidas para enviar.");
@@ -58,89 +55,82 @@ const InformedConsent = () => {
                 userResponseDTOList: userResponseDTOList, // Lista de respuestas
             };
     
-            // // Realizar la solicitud POST
-            // const token = localStorage.getItem("authToken")
-            // const response = await fetch(SERVICES_BACK.POST_CAF_INSCRIPTION + userId, {
-            //     method: "POST",
-            //     headers: {
-            //         "Authorization": `Bearer ${token}`,
-            //         "Content-Type": "application/json",
-            //         credentials: "include"
-            //     },
-            //     body: JSON.stringify(payload),
-            // });
-    
-            // if (!response.ok) {
-            //     const errorMessage = response.status === 400
-            //         ? "Datos inválidos enviados al servidor."
-            //         : `Hubo un error en el servidor`;
-            //     MessagesError(errorMessage);
-            //     return;
-            // }else{
-            //     setInscriptionId(response.body.id);
-            // }
-    
-            // const data = await response.json();
-            // MessagesSuccess("Datos guardados exitosamente.");
-            // console.log("Respuesta del servidor:", data);
-            
-            // const informationConsentResponse = sendInformationConsent();
-            // console.log("TRUE")
-            // if (informationConsentResponse != null){
-            //     const isAnyResponseTrue = hasTrueResponse(medicalHistory);
-            //     if (isAnyResponseTrue){
-            //         navigate("/registration/medicalDocument", { state: { inscriptionId: inscriptionId } });
-            //     }else{
-            //         verifyIsUserOldMayor();
-            //     }
-            // }
-            setInscriptionId(2);
-            const isAnyResponseTrue = hasTrueResponse(medicalHistory);
-            if (isAnyResponseTrue){
-                navigate("/registration/medicalDocument", { state: { inscriptionId: inscriptionId } });
-            }else{
-                verifyIsUserOldMayor();
-            }
-
-            
-        } catch (error) {
-            console.error("Error al enviar datos:", error);
-            MessagesError("Hubo un error en el servidor.");
-        }
-    };
-    
-    const hasTrueResponse = (transformedData) => {
-        return transformedData.some(item => item.response === 'true');
-    };
-
-    const sendInformationConsent = async () => {
-        const formData = new FormData();
-        formData.append("inscriptionFile", consentFile)
-        formData.append("fileType", "RISKS")
-
-        const token = localStorage.getItem("authToken")
-        const response = null;
-        try {
-             response = await fetch(SERVICES_BACK.POST_CONSENT_FILE + inscriptionId, {
+            // Realizar la solicitud POST
+            const token = localStorage.getItem("authToken")
+            const response = await fetch(SERVICES_BACK.POST_CAF_INSCRIPTION + userId, {
                 method: "POST",
                 headers: {
                     "Authorization": `Bearer ${token}`,
                     "Content-Type": "application/json",
                     credentials: "include"
                 },
-                body: formData
-            });        
-        
-            if (response.ok) {
-                MessagesSuccess("Consentimiento enviado correctamente");
+                body: JSON.stringify(payload),
+            });
+            
+            if (response.status !== 200) {
+                const errorMessage = response.status === 400
+                    ? "Datos inválidos enviados al servidor."
+                    : `Hubo un error en el servidor`;
+                MessagesError(errorMessage);
+                return;
             }
-        }catch (error) {
-            MessagesError("Error al eviar el consentimiento");
+    
+            const data = await response.json();
+            MessagesSuccess("Datos guardados exitosamente.");
+            
+            const informationConsentResponse = sendInformationConsent(data.id);
+
+            if (informationConsentResponse){
+                const isAnyResponseTrue = hasTrueResponse(medicalHistory);
+                if (isAnyResponseTrue){
+                    navigate("/registration/medicalDocument", { state: { inscriptionId: data.id } });
+                }else{
+                    verifyIsUserOldMayor(data.id);
+                }
+            }else{
+                MessagesError("Hubo un error al guardar el consentimiento.");
+            }       
+        } catch (error) {
+            MessagesError("Hubo un error en el servidor.");
         }
-        return response;
+    };
+    
+    const hasTrueResponse = (transformedData) => {
+        return transformedData.some(item => item.response === "true");
+    };
+
+    const sendInformationConsent = async (inscriptionId) => {
+        const formData = new FormData();
+
+        if(consentFile !== undefined){
+            formData.append("inscriptionFile", consentFile)
+            formData.append("fileType", "RISKS")
+            
+            const token = localStorage.getItem("authToken")
+            try {
+                const response = await fetch(SERVICES_BACK.POST_CONSENT_FILE + inscriptionId, {
+                    method: "POST",
+                    headers: {
+                        "Authorization": `Bearer ${token}`,
+                        credentials: "include"
+                    },
+                    body: formData
+                });        
+            
+                if (response.ok) {
+                    MessagesSuccess("Consentimiento enviado correctamente");
+                    return response;
+                }
+            }catch (error) {
+                MessagesError("Error al eviar el consentimiento");
+            }
+        }else{
+            MessagesInformation("El archivo subido no cumple con el formato y tamaño necesario");
+        }
+        return null;
     }
 
-    const verifyIsUserOldMayor = async () => {
+    const verifyIsUserOldMayor = async (id) => {
         const token = localStorage.getItem("authToken")
         const response = await fetch(SERVICES_BACK.GET_IS_USER_OLD_MAYOR + localStorage.getItem("userName"), {
             method: "GET",
@@ -152,11 +142,11 @@ const InformedConsent = () => {
         });
         
         if(response.status === 204){
-            navigate("/registration/tutorConsent");
+            navigate("/registration/tutorConsent", { state: { inscriptionId: id} });
         }else{
             if(response.status === 200){
                 MessagesSuccess("Inscripción almacenada de forma correcta")
-                navigate("/");
+                // navigate("/");
             }else{
                 MessagesError("Hubo un error en el servidor, intentelo más tarde");
             }
@@ -208,7 +198,7 @@ const InformedConsent = () => {
                             )}
                         </div>
                         <button type="submit" disabled={!isValid}>
-                            Siguiente
+                            Enviar
                         </button>
                     </form>
                 </div>
