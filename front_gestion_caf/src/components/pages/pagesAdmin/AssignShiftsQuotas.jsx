@@ -5,7 +5,7 @@ import "./styles/PagesAdmin.css";
 import { MdDelete } from "react-icons/md";
 import { FaEdit } from "react-icons/fa";
 import { SERVICES_BACK } from "../../../constants/constants";
-import { MessagesError } from "../../gestion-caf/Messages";
+import { MessagesError, MessagesSuccess } from "../../gestion-caf/Messages";
 import { Toaster } from "sonner";
 
 
@@ -28,7 +28,6 @@ const AssignShiftsQuotas = () => {
     const [isModalOpen, setModalOpen] = useState(false);
     const [selectedDay, setSelectedDay] = useState(null);
     const [selectedCaf, setSelectedCaf] = useState(null); // Estado para almacenar el CAF seleccionado
-    const [shift, setShift] = useState(null);
     const [token, setToken] = useState("");
     const navigate = useNavigate();
 
@@ -55,7 +54,7 @@ const AssignShiftsQuotas = () => {
                 setError(error.message);
             }
         };
-        
+
 
         fetchCAF();
     }, []);
@@ -71,19 +70,77 @@ const AssignShiftsQuotas = () => {
         setSelectedCaf(caf.find(item => item.id === parseInt(cafId))); // Guarda el CAF seleccionado
     };
 
-    const addTurno = (day) => {
+    const addTurno = () => {
         setModalOpen(true);
     };
 
     const editTurno = (index) => {
-        // Redirige a la página de edición o muestra un formulario para editar el turno
-        navigate("/admin/registerAttendance");
+        navigate("/admin/registerAttendance", { state: { turnoIndex: index } });
     };
 
+
     // Definición de la función removeTurno
-    const removeTurno = (day, index) => {
-        const updatedTurnos = turnos[day].filter((_, i) => i !== index);
-        setTurnos({ ...turnos, [day]: updatedTurnos });
+    const removeTurno = async (day, index) => {
+        console.log(JSON.stringify({
+            id: turnos[day][index].dayAssignment,
+            fitnessCenter: selectedCaf.id,
+            day: day,
+            shifts: [{
+                id: turnos[day][index].id,
+                dayAssignment: turnos[day][index].dayAssignment,
+                startTime: turnos[day][index].inicio,
+                endTime: turnos[day][index].fin,
+                placeAvailable: 0
+            }
+            ]
+        }))
+        try {
+            const response = await fetch(SERVICES_BACK.PUT_DELETE_SHIFT, {
+                method: 'PUT', // Asegúrate de que el método coincide con el de Postman
+                headers: {
+                    'Authorization': `Bearer ${token}`,
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    id: turnos[day][index].dayAssignment,
+                    fitnessCenter: selectedCaf.id,
+                    day: day,
+                    shifts: [{
+                        id: turnos[day][index].id,
+                        dayAssignment: turnos[day][index].dayAssignment,
+                        startTime: turnos[day][index].inicio,
+                        endTime: turnos[day][index].fin,
+                        placeAvailable: 0
+                    }]
+                })
+            });
+            
+
+            if (!response.ok) {
+                console.log('Error:', response.status);  // Verifica el código de estado
+                const errorData = await response.json();
+                console.log('Error Data:', errorData);  // Imprime la respuesta completa de error
+                if (response.status === 400) {
+                    MessagesError('Bad request');
+                } else {
+                    MessagesError('Hubo un error en el servidor');
+                }
+                return;
+            }
+
+            const data = await response.json();
+            console.log(data);  // Agrega esto para ver la respuesta completa
+
+
+            if (data) {
+                MessagesSuccess('Turno eliminado exitosamente');
+            }
+            else {
+                MessagesError('No se pudieron guardar los datos');
+            }
+        } catch (error) {
+            MessagesError('Hubo un error en el servidor');
+        }
     };
 
 
@@ -108,7 +165,7 @@ const AssignShiftsQuotas = () => {
             SABADO: [],
             DOMINGO: [],
         };
-    
+
         data.forEach((item) => {
             if (item.shifts && item.shifts.length > 0) {
                 item.shifts.forEach((shift) => {
@@ -117,6 +174,7 @@ const AssignShiftsQuotas = () => {
                             id: shift.id,
                             inicio: shift.startTime || "00:00", // Hora de inicio del turno
                             fin: shift.endTime || "00:00", // Hora de fin del turno
+                            dayAssignment: shift.dayAssignment,
                             cupos: shift.placeAvailable || 0, // Cambiar según la propiedad real para "cupos"
                         });
                     }
@@ -125,8 +183,45 @@ const AssignShiftsQuotas = () => {
         });
         return classified;
     };
-    
-    
+
+    const handleInstance = async () => {
+        try {
+            const response = await fetch(SERVICES_BACK.POST_INSTANCE_SHIFT+selectedCaf.id, {
+                method: 'POST', // Asegúrate de que el método coincide con el de Postman
+                headers: {
+                    'Authorization': `Bearer ${token}`,
+                    'Content-Type': 'application/json'
+                },
+                
+            });
+            
+            if (!response.ok) {
+                console.log('Error:', response.status);  // Verifica el código de estado
+                const errorData = await response.json();
+                console.log('Error Data:', errorData);  // Imprime la respuesta completa de error
+                if (response.status === 400) {
+                    MessagesError('Bad request');
+                } else {
+                    MessagesError('Hubo un error en el servidor');
+                }
+                return;
+            }
+
+            const data = await response.json();
+            console.log(data);  // Agrega esto para ver la respuesta completa
+
+
+            if (data) {
+                MessagesSuccess('Se creo instancia');
+            }
+            else {
+                MessagesError('No se pudieron guardar los datos');
+            }
+        } catch (error) {
+            MessagesError('Hubo un error en el servidor');
+        }
+    }
+
 
     const handleViewShift = () => {
         const fetchShift = async () => {
@@ -143,7 +238,7 @@ const AssignShiftsQuotas = () => {
                 if (Array.isArray(data)) {
                     const classifiedShifts = classifyShiftsByDay(data);
                     setTurnos(classifiedShifts);
-                    
+                    console.log(classifiedShifts)
                 } else {
                     setError("El formato de datos de CAF es incorrecto.");
                 }
@@ -157,7 +252,7 @@ const AssignShiftsQuotas = () => {
             MessagesError("Seleccione un CAF");
         }
     };
-    
+
 
     return (
         <div className="containerBody">
@@ -229,7 +324,7 @@ const AssignShiftsQuotas = () => {
                         </div>
                     ))}
                     <button onClick={handleViewShift}>Mostrar Turnos</button>
-                    <button>Guardar cambios</button>
+                    <button onClick={handleInstance}>Guardar cambios</button>
                 </div>
             </div>
 

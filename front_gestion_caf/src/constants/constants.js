@@ -28,7 +28,10 @@ export const SERVICES_BACK = {
 
     POST_CAF_INSCRIPTION: 'http://localhost:9093/caf/inscription/inscribe-user/',
     POST_CONSENT_FILE: "http://localhost:9093/caf/files/upload/",
-    POST_SAVE_SHIFT: "http://localhost:9093/shift/saveShift"
+    POST_SAVE_SHIFT: "http://localhost:9093/shift/saveShift",
+    POST_INSTANCE_SHIFT: "http://localhost:9093/shift/reserve/create-shift-instances/",
+    PUT_DELETE_SHIFT: "http://localhost:9093/shift/deleteShift",
+
 }
 
 export const STATUS = {
