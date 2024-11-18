@@ -1,19 +1,66 @@
-import React, {useState} from "react";
+import React, {useEffect, useState} from "react";
 import {useNavigate} from "react-router-dom";
 import "./styles/PagesAdmin.css";
 import "./styles/FitnessCenterCordinator.css";
 import {IoMdSearch} from "react-icons/io";
+import { SERVICES_BACK } from "../../../constants/constants";
 
 const initialUsers = [
-    {code: "U1", name: "Juan", lastname: "Perez", email: "juan.perez@example.com", status: "activo"},
-    {code: "U2", name: "Ana", lastname: "Lopez", email: "ana.lopez@example.com", status: "activo"},
+    {code: "", fullName: ""+ " ", email: "", status: ""},
 ];
 
 const ManageCenterCoordinators = () => {
     const navigate = useNavigate();
     const [users, setUsers] = useState(initialUsers);
     const [search, setSearch] = useState("");
+    const [token, setToken] = useState("");
+    const [error, setError] = useState("");
 
+    useEffect(() => {
+        setToken(localStorage.getItem("authToken"));
+        const fetchCAF = async () => {
+            try {
+                const token = localStorage.getItem("authToken");
+                const response = await fetch(SERVICES_BACK.GET_USER_ALL, {
+                    method: 'GET',
+                    headers: {
+                        'Authorization': `Bearer ${token}`,
+                        credentials: 'include',
+                    }
+                });
+    
+                if (!response.ok) {
+                    throw new Error("Error al obtener los datos de los usuarios");
+                }
+    
+                const data = await response.json();
+    
+                if (Array.isArray(data)) {
+                    
+                    // Procesar los datos al formato deseado
+                    const processedUsers = data.map(user => ({
+                        
+                        code: user.id.toString(), // Asegúrate de que sea una cadena
+                        fullName: user.userName,
+                        email: user.userName, // Asigna el username al email
+                        roles: user.roles.join(", "), // Convierte roles a string si es un array
+                        status: user.active ? "Activo" : "Inactivo", // Convierte boolean a texto
+                    }));
+                    
+                    
+                    setUsers(processedUsers);
+                    
+                } else {
+                    setError("El formato de datos de CAF es incorrecto.");
+                }
+            } catch (error) {
+                setError(error.message);
+            }
+        };
+    
+        fetchCAF();
+    }, []);
+    
     const assignCoordinador = (index) => {
         alert(`Coordinador asignado: ${users[index].name} ${users[index].lastname}`);
     };
@@ -23,8 +70,7 @@ const ManageCenterCoordinators = () => {
     const filteredUsers = users.filter(
         (user) =>
             user.code.toLowerCase().includes(search.toLowerCase()) ||
-            user.name.toLowerCase().includes(search.toLowerCase()) ||
-            user.lastname.toLowerCase().includes(search.toLowerCase())
+            user.fullName.toLowerCase().includes(search.toLowerCase())
     );
 
     return (
@@ -43,7 +89,7 @@ const ManageCenterCoordinators = () => {
 const SearchBar = ({search, handleSearch}) => (
     <div className="containerSearch">
         <div className="search-bar-field">
-            <label className="lbInItem">Ingrese el código o el número de documento del coordinador</label>
+            <label className="lbInItem">Ingrese el código o el número de documento del director</label>
             <div className="search-bar-field-icon">
                 <input
                     type="search"
@@ -63,8 +109,7 @@ const UserTable = ({users, assignCoordinador}) => (
         <thead className="table-header-head">
         <tr className="table-row">
             <th className="table-cell">Código</th>
-            <th className="table-cell">Nombre</th>
-            <th className="table-cell">Apellido</th>
+            <th className="table-cell">Nombre Completo</th>
             <th className="table-cell">Correo</th>
             <th className="table-cell">Estado</th>
             <th className="table-cell">Opciones</th>
@@ -84,10 +129,10 @@ const UserTable = ({users, assignCoordinador}) => (
 );
 
 const UserTableRow = ({user, index, assignCoordinador}) => (
+    
     <tr className="table-row">
         <td className="table-cell">{user.code}</td>
-        <td className="table-cell">{user.name}</td>
-        <td className="table-cell">{user.lastname}</td>
+        <td className="table-cell">{user.fullName}</td>
         <td className="table-cell">{user.email}</td>
         <td className="table-cell">
             <Status status={user.status}/>

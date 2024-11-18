@@ -39,7 +39,58 @@ const ScheduleShift = () => {
             }
         };
 
+        const fetchInstanceShif = async () => {
+            try {
+                const token = localStorage.getItem("authToken");
+                const response = await fetch(
+                    SERVICES_BACK.GET_USER_INSTANCE_SHIFT ,
+                    {
+                        method: 'GET',
+                        headers: {
+                            'Authorization': `Bearer ${token}`,
+                            credentials: 'include',
+                        }
+                    }
+                );
+
+                const data = await response.json();
+                setCAFOptions(data);
+                console.log(data)
+            } catch (error) {
+                setError(error.message); 
+            }
+        };
+        const fetchCAF = async () => {
+            try {
+                const token = localStorage.getItem("authToken");
+                const email = localStorage.getItem("userName");
+                console.log(SERVICES_BACK.GET_USET_ALL_CAF+email)
+                const response = await fetch(SERVICES_BACK.GET_USET_ALL_CAF+email, {
+                    method: 'GET',
+                    headers: {
+                        'Authorization': `Bearer ${token}`,
+                        credentials: 'include',
+                    }
+                });
+                const data = await response.json();
+                console.log(data)
+                if (Array.isArray(data)) {
+                    console.log(data)
+                    setCAFOptions(data);
+                } else {
+                    setError("El formato de datos de CAF es incorrecto.");
+                }
+            } catch (error) {
+                setError(error.message);
+            }
+        };
+
         fetchUserInscriptionToCAF();
+        fetchCAF();
+        console.log(CAFOptions)
+        if(CAFOptions.length>0){
+            fetchInstanceShif();
+        }
     }, []);
 
     const handleScheduleShift = async (e) => {
