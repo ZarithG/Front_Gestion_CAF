@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import "./styles/PagesAdmin.css";
 import "./styles/FitnessCenterCordinator.css";
 import { IoMdSearch } from "react-icons/io";
@@ -10,6 +10,8 @@ const initialUsers = [
 ];
 
 const RegisterAttendance = () => {
+    const location = useLocation();
+    const {turnoIndex} = location.state || {}
     const navigate = useNavigate();
     const [users, setUsers] = useState(initialUsers);
     const [search, setSearch] = useState("");
