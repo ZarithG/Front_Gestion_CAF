@@ -5,16 +5,18 @@ import "./styles/PagesAdmin.css";
 import { MdDelete } from "react-icons/md";
 import { FaEdit } from "react-icons/fa";
 import { SERVICES_BACK } from "../../../constants/constants";
+import { MessagesError } from "../../gestion-caf/Messages";
+import { Toaster } from "sonner";
 
 
 
 const initialTurnos = {
-    LUNES: [{ id: "T1", inicio: "6:40 am", fin: "7:40 am", cupos: 40 }],
+    LUNES: [],
     MARTES: [],
     MIERCOLES: [],
     JUEVES: [],
     VIERNES: [],
-    SÁBADO: [],
+    SABADO: [],
     DOMINGO: [],
 };
 
@@ -26,9 +28,12 @@ const AssignShiftsQuotas = () => {
     const [isModalOpen, setModalOpen] = useState(false);
     const [selectedDay, setSelectedDay] = useState(null);
     const [selectedCaf, setSelectedCaf] = useState(null); // Estado para almacenar el CAF seleccionado
+    const [shift, setShift] = useState(null);
+    const [token, setToken] = useState("");
     const navigate = useNavigate();
 
     useEffect(() => {
+        setToken(localStorage.getItem("authToken"));
         const fetchCAF = async () => {
             try {
                 const token = localStorage.getItem("authToken");
@@ -40,7 +45,7 @@ const AssignShiftsQuotas = () => {
                     }
                 });
                 const data = await response.json();
-    
+
                 if (Array.isArray(data)) {
                     setCaf(data);
                 } else {
@@ -50,11 +55,14 @@ const AssignShiftsQuotas = () => {
                 setError(error.message);
             }
         };
+        
+
         fetchCAF();
     }, []);
 
     const toggleDay = (day) => {
         setActiveDay(activeDay === day ? null : day);
+        console.log(activeDay)
         setSelectedDay(day);
     };
 
@@ -78,7 +86,7 @@ const AssignShiftsQuotas = () => {
         setTurnos({ ...turnos, [day]: updatedTurnos });
     };
 
-    
+
     const handleSaveTurno = (newTurno) => {
         const updatedTurno = {
             id: `T${turnos[selectedDay].length + 1}`,
@@ -90,8 +98,76 @@ const AssignShiftsQuotas = () => {
         });
     };
 
+    const classifyShiftsByDay = (data) => {
+        const classified = {
+            LUNES: [],
+            MARTES: [],
+            MIERCOLES: [],
+            JUEVES: [],
+            VIERNES: [],
+            SABADO: [],
+            DOMINGO: [],
+        };
+    
+        data.forEach((item) => {
+            if (item.shifts && item.shifts.length > 0) {
+                item.shifts.forEach((shift) => {
+                    if (classified[item.day]) {
+                        classified[item.day].push({
+                            id: shift.id,
+                            inicio: shift.startTime || "00:00", // Hora de inicio del turno
+                            fin: shift.endTime || "00:00", // Hora de fin del turno
+                            cupos: shift.placeAvailable || 0, // Cambiar según la propiedad real para "cupos"
+                        });
+                    }
+                });
+            }
+        });
+        return classified;
+    };
+    
+    
+
+    const handleViewShift = () => {
+        const fetchShift = async () => {
+            try {
+                const response = await fetch(SERVICES_BACK.GET_SHIFT_LIST + selectedCaf.id, {
+                    method: 'GET',
+                    headers: {
+                        'Authorization': `Bearer ${token}`,
+                        credentials: 'include',
+                    },
+                });
+                const data = await response.json();
+                console.log(data);
+                if (Array.isArray(data)) {
+                    const classifiedShifts = classifyShiftsByDay(data);
+                    setTurnos(classifiedShifts);
+                    
+                } else {
+                    setError("El formato de datos de CAF es incorrecto.");
+                }
+            } catch (error) {
+                setError(error.message);
+            }
+        };
+        if (selectedCaf) {
+            fetchShift();
+        } else {
+            MessagesError("Seleccione un CAF");
+        }
+    };
+    
+
     return (
         <div className="containerBody">
+            <Toaster
+                position="top-center"
+                dir="auto"
+                duration={2000}
+                visibleToasts={4}
+                richColors
+            />
             <h1>Asignar turnos y cupos</h1>
             <div>
                 <h2>CAF</h2>
@@ -108,7 +184,7 @@ const AssignShiftsQuotas = () => {
                         )}
                     </select>
                 </div>
-                
+
                 <p>Selecciona el día de la semana y añade los turnos disponibles y los cupos</p>
                 <div className="containerDays">
                     {Object.keys(turnos).map((day) => (
@@ -152,11 +228,11 @@ const AssignShiftsQuotas = () => {
                             )}
                         </div>
                     ))}
-                    
+                    <button onClick={handleViewShift}>Mostrar Turnos</button>
                     <button>Guardar cambios</button>
                 </div>
             </div>
-    
+
             <TurnoModal
                 isOpen={isModalOpen}
                 onClose={() => setModalOpen(false)}

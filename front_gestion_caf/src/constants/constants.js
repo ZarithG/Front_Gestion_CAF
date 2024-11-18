@@ -23,7 +23,9 @@ export const SERVICES_BACK = {
     GET_PROGRAMS: 'http://localhost:9093/user/programs' ,
     GET__ALL_CAF: 'http://localhost:9093/caf/all' ,
     GET_IS_USER_OLD_MAYOR: 'http://localhost:9093/user/isUserOldMayor/',
-    
+    GET_SHIFT_LIST: 'http://localhost:9093/shift/allDayAssignments/',
+
+
     POST_CAF_INSCRIPTION: 'http://localhost:9093/caf/inscription/inscribe-user/',
     POST_CONSENT_FILE: "http://localhost:9093/caf/files/upload/",
     POST_SAVE_SHIFT: "http://localhost:9093/shift/saveShift"
