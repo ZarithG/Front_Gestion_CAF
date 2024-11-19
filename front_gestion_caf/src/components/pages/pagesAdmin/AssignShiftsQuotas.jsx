@@ -5,7 +5,7 @@ import "./styles/PagesAdmin.css";
 import { MdDelete } from "react-icons/md";
 import { FaEdit } from "react-icons/fa";
 import { SERVICES_BACK } from "../../../constants/constants";
-import { MessagesError, MessagesSuccess } from "../../gestion-caf/Messages";
+import { MessagesError, MessagesSuccess, showToastPromise } from "../../gestion-caf/Messages";
 import { Toaster } from "sonner";
 
 
@@ -34,30 +34,34 @@ const AssignShiftsQuotas = () => {
     useEffect(() => {
         setToken(localStorage.getItem("authToken"));
         const fetchCAF = async () => {
-            try {
+            const promiseFn = async () => {
                 const token = localStorage.getItem("authToken");
                 const response = await fetch(SERVICES_BACK.GET__ALL_CAF, {
                     method: 'GET',
                     headers: {
                         'Authorization': `Bearer ${token}`,
                         credentials: 'include',
-                    }
+                    },
                 });
                 const data = await response.json();
-
+    
                 if (Array.isArray(data)) {
                     setCaf(data);
                 } else {
-                    setError("El formato de datos de CAF es incorrecto.");
+                    throw new Error("El formato de datos de CAF es incorrecto.");
                 }
-            } catch (error) {
-                setError(error.message);
-            }
+            };
+    
+            await showToastPromise(
+                promiseFn(),
+                "Datos del CAF cargados correctamente.",
+                "Error al cargar los datos."
+            );
         };
-
-
+    
         fetchCAF();
     }, []);
+    
 
     const toggleDay = (day) => {
         setActiveDay(activeDay === day ? null : day);
@@ -74,8 +78,9 @@ const AssignShiftsQuotas = () => {
         setModalOpen(true);
     };
 
-    const editTurno = (index) => {
-        navigate("/admin/registerAttendance", { state: { turnoIndex: index } });
+    const editTurno = (cafId) => {
+        console.log(cafId)
+        navigate("/admin/registerAttendance", { state: { cafId } });
     };
 
 
@@ -225,32 +230,34 @@ const AssignShiftsQuotas = () => {
 
     const handleViewShift = () => {
         const fetchShift = async () => {
-            try {
-                const response = await fetch(SERVICES_BACK.GET_SHIFT_LIST + selectedCaf.id, {
-                    method: 'GET',
-                    headers: {
-                        'Authorization': `Bearer ${token}`,
-                        credentials: 'include',
-                    },
-                });
-                const data = await response.json();
-                console.log(data);
-                if (Array.isArray(data)) {
-                    const classifiedShifts = classifyShiftsByDay(data);
-                    setTurnos(classifiedShifts);
-                } else {
-                    setError("El formato de datos de CAF es incorrecto.");
-                }
-            } catch (error) {
-                setError(error.message);
+            const response = await fetch(SERVICES_BACK.GET_SHIFT_LIST + selectedCaf.id, {
+                method: 'GET',
+                headers: {
+                    'Authorization': `Bearer ${token}`,
+                    credentials: 'include',
+                },
+            });
+            const data = await response.json();
+    
+            if (Array.isArray(data)) {
+                const classifiedShifts = classifyShiftsByDay(data);
+                setTurnos(classifiedShifts);
+            } else {
+                throw new Error("El formato de datos de CAF es incorrecto.");
             }
         };
+    
         if (selectedCaf) {
-            fetchShift();
+            showToastPromise(
+                fetchShift(),
+                "Turnos cargados correctamente.",
+                "Error al cargar los turnos."
+            );
         } else {
-            MessagesError("Seleccione un CAF");
+            MessagesError("Seleccione un CAF.");
         }
     };
+    
 
 
     return (
@@ -308,7 +315,7 @@ const AssignShiftsQuotas = () => {
                                                     <td>{turno.cupos}</td>
                                                     <td className="tdbutton">
                                                         <div className="containerButtons">
-                                                            <button className="buttonAssign" onClick={() => editTurno(index)}><FaEdit /></button>
+                                                            <button className="buttonAssign" onClick={() => editTurno(selectedCaf.id)}><FaEdit /></button>
                                                             <button className="buttonAssign" onClick={() => removeTurno(day, index)}><MdDelete /></button>
                                                         </div>
                                                     </td>

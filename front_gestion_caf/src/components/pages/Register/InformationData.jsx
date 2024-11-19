@@ -62,6 +62,7 @@ const InformationData = () => {
         fetchDeparments();
 
     }, []);
+    
 
     const handleRedirect = () => {
         const params = new URLSearchParams(window.location.search);
@@ -121,19 +122,19 @@ const InformationData = () => {
 
                         <div className="form-group-Reg">
                             <label className="lbRegItem">Número de documento de identidad</label>
-                            <input className="inpRegItem" type="text" {...register("documentNumber", { required: true })} />
+                            <input className="inpRegItem" type="number" {...register("documentNumber", { required: true })} />
                             {submitted && errors.document && <p className="error">Este campo es obligatorio.</p>}
                         </div>
 
                         <div className="form-group-Reg">
                             <label className="lbRegItem">Número de teléfono</label>
-                            <input className="inpRegItem" type="text" {...register("phone", { required: true })} />
+                            <input className="inpRegItem" type="number" {...register("phone", { required: true })} />
                             {submitted && errors.phone && <p className="error">Este campo es obligatorio.</p>}
                         </div>
 
                         <div className="form-group-Reg">
                             <label className="lbRegItem">Código</label>
-                            <input className="inpRegItem" type="text" {...register("code", { required: true })} />
+                            <input className="inpRegItem" type="number" {...register("code", { required: true })} />
                             {submitted && errors.phone && <p className="error">Este campo es obligatorio.</p>}
                         </div>
 

@@ -80,33 +80,54 @@ const ScheduleShift = () => {
             }
         };
 
-        fetchUserInscriptionToCAF();
-        fetchCAF();
-        fetchuser();
+        toast.promise(
+            fetchUserInscriptionToCAF(),
+            {
+                loading: 'Cargando inscripciones...',
+                success: <b>Inscripciones cargadas correctamente.</b>,
+                error: <b>No se pudieron cargar las inscripciones.</b>,
+            }
+        );
+
+        toast.promise(
+            fetchCAF(),
+            {
+                loading: 'eCargando datos de CAF...',
+                success: <b>Datos de CAF cargados correctamente.</b>,
+                error: <b>Error al cargar los datos de CAF.</b>,
+            }
+        );
+
+        toast.promise(
+            fetchuser(),
+            {
+                loading: 'Cargando datos del usuario...',
+                success: <b>Datos del usuario cargados correctamente.</b>,
+                error: <b>Error al cargar los datos del usuario.</b>,
+            }
+        );
         
     }, []);
 
     const fetchInstanceShif = async () => {
-        try {
-            console.log(SERVICES_BACK.GET_USER_INSTANCE_SHIFT + selectedCaf.code)
-            const response = await fetch(
-                SERVICES_BACK.GET_USER_INSTANCE_SHIFT + selectedCaf.code,
-                {
+        toast.promise(
+            (async () => {
+                const response = await fetch(SERVICES_BACK.GET_USER_INSTANCE_SHIFT + selectedCaf.code, {
                     method: 'GET',
                     headers: {
                         'Authorization': `Bearer ${token}`,
                         credentials: 'include',
                     }
-                }
-            );
-
-            const data = await response.json();
-            setShifts(data);
-            console.log(data);
-
-        } catch (error) {
-            setError(error.message);
-        }
+                });
+                const data = await response.json();
+                setShifts(data);
+            })(),
+            {
+                loading: 'Cargando turnos disponibles...',
+                success: <b>Turnos cargados correctamente.</b>,
+                error: <b>Error al cargar los turnos.</b>,
+            }
+        );
     };
 
     const fetchuser = async () => {
@@ -136,50 +157,40 @@ const ScheduleShift = () => {
             MessagesError("Por favor selecciona un CAF antes de agendar.");
             return;
         }
-        try {
-            const response = await fetch(SERVICES_BACK.POST_SHIFT_RESERVE, {
-                method: 'POST', 
-                headers: {
-                    'Authorization': `Bearer ${token}`,
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({
-                    id: 0,
-                    idShiftInstance: "cafId",
-                    idDayAssignment: "day",
-                    userId: user.id,
-                    dateReservation: null,
-                    reservationEnum: null,
-                })
-                
-            });
-            
-            if (!response.ok) {
-                console.log('Error:', response.status);  // Verifica el código de estado
-                const errorData = await response.json();
-                console.log('Error Data:', errorData);  // Imprime la respuesta completa de error
-                if (response.status === 400) {
-                    MessagesError('Bad request');
-                } else {
-                    MessagesError('Hubo un error en el servidor');
+
+        toast.promise(
+            (async () => {
+                const response = await fetch(SERVICES_BACK.POST_SHIFT_RESERVE, {
+                    method: 'POST',
+                    headers: {
+                        'Authorization': `Bearer ${token}`,
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        id: 0,
+                        idShiftInstance: selectedShift.id,
+                        idDayAssignment: selectedShift.dayAssignment.id,
+                        userId: user.id,
+                        dateReservation: null,
+                        reservationEnum: null,
+                    })
+                });
+
+                if (!response.ok) {
+                    throw new Error('Error al agendar turno.');
                 }
-                return;
-            }
 
-            const data = await response.json();
-            console.log(data);  // Agrega esto para ver la respuesta completa
-
-
-            if (data) {
-                MessagesSuccess('Se creo instancia');
+                const data = await response.json();
+                if (data) {
+                    MessagesSuccess("Turno apartado correctamente.");
+                }
+            })(),
+            {
+                loading: 'Agendando turno...',
+                success: <b>Turno agendado correctamente.</b>,
+                error: <b>No se pudo agendar el turno.</b>,
             }
-            else {
-                MessagesError('No se pudieron guardar los datos');
-            }
-            MessagesSuccess("Turno Apartado correctamente.");
-        } catch (error) {
-            MessagesError('Hubo un error en el servidor. Inténtalo nuevamente.');
-        }
+        );
     };
 
     const handleDateChange = (newDate) => {
@@ -209,15 +220,16 @@ const ScheduleShift = () => {
     };
     
     const formatDate = (date) => {
-        const options = { day: '2-digit', month: 'long' }; // day con dos dígitos y month en formato largo
-        return new Date(date).toLocaleDateString('es-CO', options);
+        const options = { day: '2-digit', month: 'long', year: 'numeric' };
+        return new Date(date + 'Z').toLocaleDateString('es-CO', options);
     };
+    
 
     const handleShiftChange = (event) =>{
         const shiftId = parseInt(event.target.value);
-        setSelectedShift(shifts.find(item => item.code === shiftId)); // Guarda el CAF seleccionado
         if(shiftId){
-            setSelectedShift();
+            setSelectedShift(shifts.find(item => item.id === shiftId)); // Guarda el CAF seleccionado
+            
         }
     }
 
@@ -265,7 +277,7 @@ const ScheduleShift = () => {
                             {shifts.length > 0 ? (
                                 shifts.map((shift, index) => (
                                     <option key={index} value={shift.id}>
-                                        {`Turno ${index+1}: ${formatDate(shift.date)}
+                                        {`Turno ${index+1}: ${(shift.date)}
                                         ${formatTime(shift.startTime)} a 
                                         ${formatTime(shift.endTime)}`}
                                     </option>

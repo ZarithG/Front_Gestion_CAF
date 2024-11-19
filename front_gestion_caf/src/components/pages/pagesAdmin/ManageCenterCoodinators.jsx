@@ -1,18 +1,69 @@
-import React, {useState} from "react";
+import React, {useState, useEffect} from "react";
 import {useNavigate} from "react-router-dom";
 import "./styles/PagesAdmin.css";
 import "./styles/FitnessCenterCordinator.css";
-import {IoMdSearch} from "react-icons/io";
+import { IoMdSearch } from "react-icons/io";
+import { SERVICES_BACK } from "../../../constants/constants";
+import { showToastPromise } from "../../gestion-caf/Messages";
+import { Toaster,toast } from "sonner";
 
 const initialUsers = [
-    {code: "U1", name: "Juan", lastname: "Perez", email: "juan.perez@example.com", status: "activo"},
-    {code: "U2", name: "Ana", lastname: "Lopez", email: "ana.lopez@example.com", status: "activo"},
+    { code: "", fullName: " ", email: "", status: "" },
 ];
 
 const ManageCenterCoordinators = () => {
     const navigate = useNavigate();
     const [users, setUsers] = useState(initialUsers);
     const [search, setSearch] = useState("");
+    const [error, setError] = useState("");
+    
+    useEffect(() => {
+        const fetchCUserAll = async () => {
+            const token = localStorage.getItem("authToken");
+
+            const fetchUsers = async () => {
+                const response = await fetch(SERVICES_BACK.GET_USER_ALL, {
+                    method: "GET",
+                    headers: {
+                        Authorization: `Bearer ${token}`,
+                        credentials: "include",
+                    },
+                });
+
+                if (!response.ok) {
+                    throw new Error("Error al obtener los datos de los usuarios");
+                }
+
+                const data = await response.json();
+                console.log(data)
+                if (Array.isArray(data)) {
+                    // Procesar los datos al formato deseado
+                    return data.map((user) => ({
+                        code: user.id.toString(), // Convertir el ID a una cadena
+                        fullName: user.name, // Usar el nombre completo del objeto
+                        email: user.userName, // Usar el correo como email
+                        status: user.active ? "Activo" : "Inactivo", // Convertir boolean a texto
+                    }));
+                } else {
+                    throw new Error("El formato de datos de CAF es incorrecto.");
+                }
+            };
+
+            try {
+                await showToastPromise(
+                    fetchUsers().then((processedUsers) => setUsers(processedUsers)),
+                    "Datos cargados correctamente",
+                    "Error al cargar los datos"
+                );
+            } catch (error) {
+                setError(error.message);
+            }
+        };
+
+        fetchCUserAll();
+    }, []); // Dependencias vacías para ejecutar solo al montar
+
+
 
     const assignCoordinador = (index) => {
         alert(`Coordinador asignado: ${users[index].name} ${users[index].lastname}`);
@@ -108,3 +159,4 @@ const Status = ({status}) => {
 };
 
 export default ManageCenterCoordinators;
+

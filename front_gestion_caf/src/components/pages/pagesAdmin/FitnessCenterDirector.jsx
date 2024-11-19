@@ -8,14 +8,10 @@ import { showToastPromise } from "../../gestion-caf/Messages";
 import { Toaster,toast } from "sonner";
 
 const initialUsers = [
-<<<<<<< HEAD
     { code: "", fullName: " ", email: "", status: "" },
-=======
-    {code: "", fullName: "", email: "", status: ""},
->>>>>>> 710c7c9541d9473db1c1acfdc26af2c6fc6ed3b9
 ];
 
-const ManageCenterCoordinators = () => {
+const ManageCenterDirector = () => {
     const navigate = useNavigate();
     const [users, setUsers] = useState(initialUsers);
     const [search, setSearch] = useState("");
@@ -167,4 +163,4 @@ const Status = ({ status }) => {
     return <span className={`status ${statusClass}`}>{status}</span>;
 };
 
-export default ManageCenterCoordinators;
+export default ManageCenterDirector;
