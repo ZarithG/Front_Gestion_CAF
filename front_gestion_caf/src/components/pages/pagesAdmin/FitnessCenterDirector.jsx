@@ -8,7 +8,11 @@ import { showToastPromise } from "../../gestion-caf/Messages";
 import { Toaster,toast } from "sonner";
 
 const initialUsers = [
+<<<<<<< HEAD
     { code: "", fullName: " ", email: "", status: "" },
+=======
+    {code: "", fullName: "", email: "", status: ""},
+>>>>>>> 710c7c9541d9473db1c1acfdc26af2c6fc6ed3b9
 ];
 
 const ManageCenterCoordinators = () => {
