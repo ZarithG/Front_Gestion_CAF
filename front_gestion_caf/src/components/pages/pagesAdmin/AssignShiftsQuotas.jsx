@@ -187,7 +187,7 @@ const AssignShiftsQuotas = () => {
     const handleInstance = async () => {
         try {
             const response = await fetch(SERVICES_BACK.POST_INSTANCE_SHIFT+selectedCaf.id, {
-                method: 'POST', // Asegúrate de que el método coincide con el de Postman
+                method: 'POST', 
                 headers: {
                     'Authorization': `Bearer ${token}`,
                     'Content-Type': 'application/json'
@@ -238,7 +238,6 @@ const AssignShiftsQuotas = () => {
                 if (Array.isArray(data)) {
                     const classifiedShifts = classifyShiftsByDay(data);
                     setTurnos(classifiedShifts);
-                    console.log(classifiedShifts)
                 } else {
                     setError("El formato de datos de CAF es incorrecto.");
                 }
@@ -278,6 +277,7 @@ const AssignShiftsQuotas = () => {
                             <option disabled>Cargando caf...</option>
                         )}
                     </select>
+                    <button onClick={handleViewShift}>Mostrar Turnos</button>
                 </div>
 
                 <p>Selecciona el día de la semana y añade los turnos disponibles y los cupos</p>
@@ -323,7 +323,7 @@ const AssignShiftsQuotas = () => {
                             )}
                         </div>
                     ))}
-                    <button onClick={handleViewShift}>Mostrar Turnos</button>
+                    
                     <button onClick={handleInstance}>Guardar cambios</button>
                 </div>
             </div>

@@ -27,14 +27,17 @@ export const SERVICES_BACK = {
     GET_SHIFT_LIST: 'http://localhost:9093/shift/allDayAssignments/',
     GET_USER_ALL: 'http://localhost:9093/auth/user/all',
     GET_USER_INSTANCE_SHIFT: 'http://localhost:9093/shift/reserve/shift-instances-caf/',
+    GET_ONE_USER: 'http://localhost:9093/user/basic/',
     
-
+    
+    
     POST_CAF_INSCRIPTION: 'http://localhost:9093/caf/inscription/inscribe-user/',
     POST_CONSENT_FILE: "http://localhost:9093/caf/files/upload/",
     POST_SAVE_SHIFT: "http://localhost:9093/shift/saveShift",
     POST_INSTANCE_SHIFT: "http://localhost:9093/shift/reserve/create-shift-instances/",
+    POST_SHIFT_RESERVE: 'http://localhost:9093/shift/reserve/reserve-shift-user',
+    
     PUT_DELETE_SHIFT: "http://localhost:9093/shift/deleteShift",
-
 }
 
 export const STATUS = {

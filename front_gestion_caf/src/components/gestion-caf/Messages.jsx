@@ -13,11 +13,22 @@ export const MessagesInformation = (message) => {
     toast.info(message);
 };
 
-export const MessagesInfo = (title,message) => {
-    Swal.fire ({
+export const MessagesInfo = (title, message) => {
+    Swal.fire({
         icon: "info",
         title: title,
         html: message,
-        timer: 2000, 
+        timer: 2000,
     })
+};
+
+export const showToastPromise = async (promiseFn, successMessage, errorMessage) => {
+    await toast.promise(
+        promiseFn,
+        {
+            loading: 'Processing...',
+            success: successMessage || "Operation completed!",
+            error: errorMessage || "Something went wrong.",
+        }
+    );
 };
