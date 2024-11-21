@@ -13,7 +13,7 @@ const UserRegistrationRequest = () => {
     const [users, setUsers] = useState(initialUsers);
     const [search, setSearch] = useState("");
 
-    const viewUser = (index) => navigate("/admin/fitnessCenterUser/detail");
+    const viewUser = (index) => navigate("/admin/fitnessCenterUser/view");
 
     const declineUser = (index) => {
         if (window.confirm("¿Estás seguro de que deseas rechazar la solicitud?")) {

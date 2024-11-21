@@ -22,6 +22,7 @@ import ModifyUserData from "../../../components/pages/pagesAdmin/ModifyUserData"
 import RegisteredUsers from "../../../components/pages/pagesAdmin/RegisteredUsers";
 import UserRegistrationRequest from "../../../components/pages/pagesAdmin/UserRegistrationRequest";
 import UserDataDetail from "../../../components/pages/pagesAdmin/UserDataDetail";
+import UserDataView from "../../../components/pages/pagesAdmin/ViewUsers";
 
 import FitnessCenterCoordinators from "../../../components/pages/pagesAdmin/FitnessCenterCoordinators";
 import ManageCenterCoodinators from "../../../components/pages/pagesAdmin/ManageCenterCoodinators";
@@ -71,6 +72,7 @@ const AppRoutes = () => {
                     <Route path="fitnessCenterUser/modify" element={<ModifyUserData />} />
                     <Route path="fitnessCenterUser/registrationRequest" element={<UserRegistrationRequest />} />
                     <Route path="fitnessCenterUser/detail" element={<UserDataDetail />} />
+                    <Route path="fitnessCenterUser/view" element={<UserDataView />} />
                     
                     <Route path="fitnessCenterDirector" element={<FitnessCenterDirector />} />
 
