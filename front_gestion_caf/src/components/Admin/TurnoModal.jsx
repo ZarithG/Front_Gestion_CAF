@@ -4,8 +4,6 @@ import DatePicker from "react-multi-date-picker";
 import TimePicker from "react-multi-date-picker/plugins/time_picker";
 import { SERVICES_BACK } from "../../constants/constants";
 import { MessagesError, MessagesSuccess } from "../gestion-caf/Messages";
-import { format } from 'date-fns';
-
 
 const TurnoModal = ({ isOpen, onClose, onSave, day, cafId }) => {
     const [inicio, setInicio] = useState(null);

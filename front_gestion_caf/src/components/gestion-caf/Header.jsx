@@ -34,6 +34,7 @@ const Header = ({
 
     useEffect(() => {
         const storedRoleName = localStorage.getItem("roleName");
+        console.log("CREE EL HEADER")
         if (storedRoleName) {
             setRoleName(storedRoleName);
         }
@@ -108,6 +109,26 @@ const Header = ({
                             </li>
 
                             
+                            <li className="menuItem" onClick={async (e) => {
+                                e.preventDefault();
+                                
+                                const isVerified = await isUserVerified();
+                                if (!isVerified) {
+                                    navigate('/register/informationData');
+                                }else{
+                                    navigate('/scheduleShift');
+                                }
+                            }}>
+                                <span className="Link">
+                                    <label> Agendar turno </label>
+                                    <TbCalendarTime className="icons" />
+                                </span>
+                            </li>
+                        </>
+                    )}
+                    {/* Mostrar opciones específicas para usuarios con rol USER */}
+                    {roleName === USER_TYPE.SPORTSMAN && (
+                                            <>
                             <li className="menuItem" onClick={async (e) => {
                                 e.preventDefault();
                                 
