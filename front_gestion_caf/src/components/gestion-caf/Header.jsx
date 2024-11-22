@@ -163,6 +163,7 @@ const Header = ({
                                     localStorage.removeItem("roleName");
                                     setRoleName(''); 
                                     logout();
+                                    window.location.reload()
                                 }}>
                                     <label> Cerrar sesión </label>
                                     <MdLogin className="icons" />

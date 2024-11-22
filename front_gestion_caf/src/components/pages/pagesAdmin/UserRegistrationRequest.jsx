@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect} from "react";
 import { useNavigate } from "react-router-dom";
 import "./styles/PagesAdmin.css";
 import { IoMdSearch } from "react-icons/io";
@@ -6,10 +6,7 @@ import { MessagesError, MessagesSuccess } from '../../gestion-caf/Messages';
 import { SERVICES_BACK } from "../../../constants/constants";
 import { Toaster } from "sonner"; 
 
-const initialUsers = [
-    { code: "202012575", name: "Juan", lastname: "Perez", estate: "Docente" },
-    { code: "202418764", name: "Ana", lastname: "Lopez", estate: "Estudiante" },
-];
+const initialUsers = [];
 
 const UserRegistrationRequest = () => {
     const navigate = useNavigate();
@@ -17,6 +14,10 @@ const UserRegistrationRequest = () => {
     const [search, setSearch] = useState("");
 
     const viewUser = (index) => navigate("/admin/fitnessCenterUser/view");
+
+    useEffect(() => {
+        fetchCAFInscriptions(); // Llama a la función al cargar el componente
+      }, []);
 
     const declineUser = (index) => {
         if (window.confirm("¿Estás seguro de que deseas rechazar la solicitud?")) {
@@ -40,14 +41,16 @@ const UserRegistrationRequest = () => {
             user.lastname.toLowerCase().includes(search.toLowerCase())
     );
 
-    const fetchCAFInscriptions = async (values) => {
+    const fetchCAFInscriptions = async () => {
         try {
             const token = localStorage.getItem("authToken");
+            console.log(token)
             const response = await fetch(SERVICES_BACK.GET_ALL_CAF_INSCRIPTIONS + localStorage.getItem("userName"), {
                 method: 'GET',
                 headers: {
                     'Authorization': `Bearer ${token}`,
                     'Content-Type': 'application/json',
+                    credentials: 'include'
                 }
             });
             if (!response.ok) {
@@ -58,9 +61,20 @@ const UserRegistrationRequest = () => {
                 }
                 return;
             }
+            
+            const data = await response.json(); // Convierte la respuesta a JSON
+
+            // Mapea los datos del backend al formato requerido por initialUsers
+            const formattedUsers = data.map((item) => ({
+                documentNumber: item.documentNumber,
+                name: item.name,
+                email: item.email,
+                userType: item.userType,
+            }));
+
+            setUsers(formattedUsers);
         } catch (error) {
             MessagesError('Hubo un error en el servidor');
-            console.log("ERROR:" + error)
         }
     }
 
@@ -107,9 +121,9 @@ const UserTable = ({ users, acceptUser, declineUser, viewUser }) => (
     <table className="table">
         <thead className="table-header-head">
             <tr className="table-row">
-                <th className="table-cell">Código aspirante</th>
+                <th className="table-cell">Documento</th>
                 <th className="table-cell">Nombre</th>
-                <th className="table-cell">Apellidos</th>
+                <th className="table-cell">Correo Electrónico</th>
                 <th className="table-cell">Estamento</th>
                 <th className="table-cell">Opciones</th>
             </tr>
@@ -131,10 +145,10 @@ const UserTable = ({ users, acceptUser, declineUser, viewUser }) => (
 
 const UserTableRow = ({ user, index, acceptUser, declineUser, viewUser }) => (
     <tr className="table-row">
-        <td className="table-cell">{user.code}</td>
+        <td className="table-cell">{user.documentNumber}</td>
         <td className="table-cell">{user.name}</td>
-        <td className="table-cell">{user.lastname}</td>
-        <td className="table-cell">{user.estate}</td>
+        <td className="table-cell">{user.email}</td>
+        <td className="table-cell">{user.userType}</td>
         <td className="table-cell">
             <div className="button-container">
                 <button className="button" onClick={() => acceptUser(index)}>

@@ -49,9 +49,7 @@ const ScheduleShift = () => {
 
         const fetchCAF = async () => {
             try {
-                
-
-                const response = await fetch(SERVICES_BACK.GET_USET_ALL_CAF + userEmail, {
+                const response = await fetch(SERVICES_BACK.GET_USER_ACTIVE_INSCRIPTION + userEmail, {
                     method: 'GET',
                     headers: {
                         'Authorization': `Bearer ${token}`,
@@ -59,7 +57,6 @@ const ScheduleShift = () => {
                     }
                 });
                 const data = await response.json();
-                console.log(data)
                 if (Array.isArray(data)) {
                     const processedInscriptions = data.map((item) => ({
                         code: item.fitnessCenterDTO.id, // Código de la inscripción
@@ -69,9 +66,8 @@ const ScheduleShift = () => {
                         inscriptionDate: new Date(item.inscriptionDate).toLocaleString(), // Fecha de inscripción
                         status: item.inscriptionStatus === "ACCEPTED" ? "Aceptado" : "Pendiente", // Estado de la inscripción
                     }));
+                    setOneCAFOptions(processedInscriptions);  
 
-                    setOneCAFOptions(processedInscriptions);
-                    console.log(oneCAFOptions)
                 } else {
                     setError("El formato de datos de CAF es incorrecto.");
                 }
@@ -92,7 +88,7 @@ const ScheduleShift = () => {
         toast.promise(
             fetchCAF(),
             {
-                loading: 'eCargando datos de CAF...',
+                loading: 'Cargando datos de CAF...',
                 success: <b>Datos de CAF cargados correctamente.</b>,
                 error: <b>Error al cargar los datos de CAF.</b>,
             }
@@ -105,13 +101,13 @@ const ScheduleShift = () => {
                 success: <b>Datos del usuario cargados correctamente.</b>,
                 error: <b>Error al cargar los datos del usuario.</b>,
             }
-        );
-        
+        );      
     }, []);
 
     const fetchInstanceShif = async () => {
         toast.promise(
             (async () => {
+                console.log(selectedCaf)
                 const response = await fetch(SERVICES_BACK.GET_USER_INSTANCE_SHIFT + selectedCaf.code, {
                     method: 'GET',
                     headers: {
@@ -236,9 +232,27 @@ const ScheduleShift = () => {
     const handleCafChange = (event) => {
         const cafId = parseInt(event.target.value);
         if(cafId){
-            setSelectedCaf(oneCAFOptions.find(item => item.code === cafId)); // Guarda el CAF seleccionado
+            const selectedCaf = oneCAFOptions.find(item => item.code === cafId); // Guarda el CAF seleccionado
             setShifts([]);
-            fetchInstanceShif();   
+            toast.promise(
+                (async () => {
+                    console.log(selectedCaf.code)
+                    const response = await fetch(SERVICES_BACK.GET_USER_INSTANCE_SHIFT + selectedCaf.code, {
+                        method: 'GET',
+                        headers: {
+                            'Authorization': `Bearer ${token}`,
+                            credentials: 'include',
+                        }
+                    });
+                    const data = await response.json();
+                    setShifts(data);
+                })(),
+                {
+                    loading: 'Cargando turnos disponibles...',
+                    success: <b>Turnos cargados correctamente.</b>,
+                    error: <b>Error al cargar los turnos.</b>,
+                }
+            );   
         }
     };
 
@@ -264,7 +278,7 @@ const ScheduleShift = () => {
                                     <option key={index} value={item.code}>{item.fitnessCenterName}</option>
                                 ))
                             ) : (
-                                <option disabled>Cargando caf...</option>
+                                <option disabled>No se ha inscrito a ningun CAF aún</option>
                             )}
                         </select>
 
