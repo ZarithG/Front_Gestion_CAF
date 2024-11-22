@@ -3,20 +3,27 @@ import "../styles/Home.css";
 import Footer from "../gestion-caf/Footer";
 import Carousel from "../../components/gestion-caf/Carrusel"; 
 
-const Home = () => {
+const Home = ({
+    status, setStatus
+}) => {
     const [authToken, setAuthToken] = useState("");
     const [userName, setUserName] = useState('');
     const [roleName, setRoleName] = useState('');
 
     useEffect(() => {
         const storedUserName = localStorage.getItem("userName");
-        
+        if(status === true){
+            setStatus(false);
+        }else{
+            setStatus(true);
+        }
+
         if (storedUserName) {    
             setUserName(storedUserName);
         }else{
             handleRedirect();
         }
-    }, []);
+    },[]);
 
     const handleRedirect = () => {
         const params = new URLSearchParams(window.location.search);

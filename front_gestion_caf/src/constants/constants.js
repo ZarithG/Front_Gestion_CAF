@@ -17,7 +17,7 @@ export const SERVICES_BACK = {
     
     GET__ALL_CAF: 'http://localhost:9093/caf/all' ,
     GETALLQUESTIONS: 'http://localhost:9093/caf/question/all',
-    GET_USER_ACTIVE_INSCRIPTION: 'http://localhost:9093/caf/inscription/all/',
+    GET_USER_ACTIVE_INSCRIPTION: 'http://localhost:9093/caf/inscription/all-active/',
     GET_USET_ALL_CAF: 'http://localhost:9093/caf/inscription/all/' ,
     
     GET_IS_USER_VERIFIED: 'http://localhost:9093/auth/isUserVerified/',

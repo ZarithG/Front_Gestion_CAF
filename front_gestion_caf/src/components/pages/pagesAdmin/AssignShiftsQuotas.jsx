@@ -15,9 +15,7 @@ const initialTurnos = {
     MARTES: [],
     MIERCOLES: [],
     JUEVES: [],
-    VIERNES: [],
-    SABADO: [],
-    DOMINGO: [],
+    VIERNES: []
 };
 
 const AssignShiftsQuotas = () => {
@@ -166,9 +164,7 @@ const AssignShiftsQuotas = () => {
             MARTES: [],
             MIERCOLES: [],
             JUEVES: [],
-            VIERNES: [],
-            SABADO: [],
-            DOMINGO: [],
+            VIERNES: []
         };
 
         data.forEach((item) => {

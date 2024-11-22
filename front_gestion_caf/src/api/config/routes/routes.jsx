@@ -42,13 +42,15 @@ import ProtectedRoute from "../../../components/gestion-caf/ProtectedRoute";
 import NotFound from "../../../components/pages/NotFound";
 import { USER_TYPE } from "../../../constants/constants";
 
-const AppRoutes = () => {
+const AppRoutes = ({
+    status, setStatus
+}) => {
     return (
         <>
             <Routes>
                 <Route path="/scheduleShift" element={<ScheduleShift/>}/>
-                <Route path="/" element={<Home />} />
-                <Route path="/login" element={<Login />} />
+                <Route path="/" element={<Home status={status} setStatus={setStatus}/>} />
+                <Route path="/login" element={<Login status={status} setStatus={setStatus}/>} />
                 <Route path="/register" element={<Register />}>
                     <Route path="emergenceContact" element={<EmergencyContact />} />
                     <Route path="informationData" element={<InformationData />} />

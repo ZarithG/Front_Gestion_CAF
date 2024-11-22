@@ -10,8 +10,9 @@ import { MessagesError, MessagesSuccess } from "../gestion-caf/Messages";
 import { STATUS, USER_TYPE, SERVICES_BACKR, SERVICES_BACK } from "../../constants/constants";
 
 const Header = ({
-    status,
+    status, setStatus
 }) => {
+
     const [roleName, setRoleName] = useState('');
     const navigate = useNavigate();
 
@@ -21,9 +22,10 @@ const Header = ({
                 method: 'POST',
                 credentials: 'include',
             });
-    
+            
             if (response.ok) {
                 console.log('Logout successful');
+                setStatus(true);
             } else {
                 console.error('Error during logout:', response.status);
             }
@@ -34,7 +36,6 @@ const Header = ({
 
     useEffect(() => {
         const storedRoleName = localStorage.getItem("roleName");
-        console.log("CREE EL HEADER")
         if (storedRoleName) {
             setRoleName(storedRoleName);
         }

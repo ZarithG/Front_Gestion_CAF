@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect} from "react";
 import "../styles/Login.css";
 import { MessagesError, MessagesSuccess } from "../gestion-caf/Messages";
 import LogoBienestar from "../../components/CAF-images/logoBienestar.png";
@@ -8,7 +8,9 @@ import { SERVICES_BACK } from "../../constants/constants";
 import { Toaster } from "sonner"; 
 import Header from "../gestion-caf/Header";
 
-const Login = () => {
+const Login = ({
+  status, setStatus
+}) => {
   const [authToken, setAuthToken] = useState("");
   const [userName, setUserName] = useState("");
   const [email, setEmail] = useState("");
@@ -16,6 +18,14 @@ const Login = () => {
   const [token, setToken] = useState("");
   const [error, setError] = useState("");
   const navigate = useNavigate();
+
+  useEffect(() => {
+    if(status === true){
+        setStatus(false);
+    }else{
+        setStatus(true);
+    }
+  },[]);  
 
   const handleRedirect = (data) => {
     const token = data.token.token

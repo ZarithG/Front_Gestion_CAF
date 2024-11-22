@@ -44,48 +44,54 @@ const UserDataDetail = () => {
 
     return (
         <div className="containerBody">
-            <h1 className="InformationDataPageTitle">Completar datos básicos</h1>
+            <h1 style={{ textAlign: "center" }} className="InformationDataPageTitle">
+                Detalle de la inscripción del usuario
+            </h1>
 
             {/* Información personal */}
             <div className="containerPersonalInformation">
-                <h2>Información personal</h2>
-                <p>Agregue sus datos personales</p>
+                <h2 style={{ textAlign: "center" }}>
+                    Información personal
+                </h2>
+                <p style={{ textAlign: "center" }}>
+                    Datos personales del usuario que realizo la inscripción.
+                </p>
                 <div className="containerForm">
                     <form className="info-form" >
 
                         <div className="form-group">
                             <label className="lbInItem">Nombre</label>
-                            <input type="text" />
+                            <input type="text" readOnly/>
                         </div>
 
                         <div className="form-group">
                             <label className="lbInItem">Apellidos</label>
-                            <input type="text" />
+                            <input type="text" readOnly />
                         </div>
 
                         <div className="form-group">
                             <label className="lbInItem">Número de documento de identidad</label>
-                            <input type="text" />
+                            <input type="text" readOnly />
                         </div>
 
                         <div className="form-group">
                             <label className="lbInItem">Número de teléfono</label>
-                            <input type="text" />
+                            <input type="text" readOnly />
                         </div>
 
                         <div className="form-group">
                             <label className="lbInItem">Fecha de nacimiento</label>
-                            <input type="text" />
+                            <input type="text" readOnly />
                         </div>
 
                         <div className="form-group">
                             <label className="lbInItem">Correo electrónico</label>
-                            <input type="text" />
+                            <input type="text" readOnly />
                         </div>
 
                         <div className="form-group">
                             <label className="lbInItem">Dirección</label>
-                            <input type="text" />
+                            <input type="text" readOnly />
                         </div>
 
                     </form>
@@ -94,37 +100,47 @@ const UserDataDetail = () => {
 
             {/* Información de salud */}
             <div className="containerPersonalInformation">
-                <h2>Información salud</h2>
-                <p>Datos personales sobre salud </p>
+                <br /><br />
+                <h2 style={{ textAlign: "center" }}>
+                    Información salud
+                </h2>
+                <p style={{ textAlign: "center" }}>
+                    Datos personales sobre salud     
+                </p>
                 <div className="containerForm">
                     <form className="info-form" >
 
                         <div className="form-group">
                             <label className="lbInItem">EPS</label>
-                            <input type="text" />
+                            <input type="text" readOnly/>
                         </div>
 
                         <div className="form-group">
                             <label className="lbInItem">Grupo sanguineo RH</label>
-                            <input type="text" />
+                            <input type="text" readOnly/>
                         </div>
 
                         <div className="form-group">
                             <label className="lbInItem">Número de documento de identidad</label>
-                            <input type="text" />
+                            <input type="text" readOnly/>
                         </div>
 
                         <div className="form-group">
                             <label className="lbInItem">Alergias</label>
-                            <input type="text" />
+                            <input type="text" readOnly/>
                         </div>
 
                     </form>
                 </div>
             </div>
+            
             <div className="containerPersonalInformation">
-                <h2> Respuestas Formulario de valoración e Historia médica</h2>
-                
+            <br />
+            <br />
+            <h2 style={{ textAlign: "center" }}>
+            Respuestas Formulario de valoración e Historia médica
+            </h2>
+                <br />
                 <div className="containerForm">
                     <form className="user-info-form" >
                         <div className="form-table">
@@ -136,8 +152,9 @@ const UserDataDetail = () => {
                                                 {item.questionText}
                                             </label>
                                         </div>
-                                        <div className="form-option">
-                                            <input
+                                        <br />
+                                        <div className="form-option" style={{ textAlign: "center" }}>
+                                            <input style={{ textAlign: "center" }}
                                                 type="text"
                                                 id={`question_${item.id}_no`}
                                                 value="false"
@@ -150,20 +167,6 @@ const UserDataDetail = () => {
                                 ))
                             ) : (
                                 <div>No se encontraron preguntas.</div>
-                            )}
-
-                            { (
-                                <div className="form-row">
-                                    <label htmlFor="additionalInfo">
-                                        Si en la anterior sección contestó una o varias preguntas de
-                                        forma afirmativa, por favor complemente su respuesta.
-                                    </label>
-                                    <input
-                                        type="text"
-                                        id="additionalInfo"
-                                        placeholder="Escriba detalles aquí..."
-                                    />
-                                </div>
                             )}
                         </div>
 

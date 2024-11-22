@@ -76,7 +76,6 @@ const EmergencyContact = () => {
         if (emergencyContact ) {
             try {
                 const token = storageToken;
-                console.log(emergencyContact.cityEmergencyContact)
                 const response = await fetch(SERVICES_BACK.SAVEUSER, {
                     method: 'POST',
                     headers: {

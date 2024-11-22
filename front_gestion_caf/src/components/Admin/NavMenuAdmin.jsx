@@ -8,7 +8,9 @@ import '../styles/NavMenuAdmin.css';
 import { Link } from "react-router-dom";
 import { USER_TYPE } from "../../constants/constants";
 
-const NavMenuAdmin = () => {
+const NavMenuAdmin = ({
+    navStatus, setNavStatus
+}) => {
     const [isExpanded, setIsExpanded] = useState(false); // Estado para controlar si el menú está expandido o comprimido
     const [roleName, setRoleName] = useState(""); // Estado para almacenar el rol del usuario    
 
@@ -16,6 +18,7 @@ const NavMenuAdmin = () => {
     const handleMouseLeave = () => setIsExpanded(false); // Comprime el menú cuando el puntero sale
 
     useEffect(() => {
+        console.log("ESTADO DEL NAV MENU")
         // Escucha los cambios de 'roleName' en localStorage
         const storedRoleName = localStorage.getItem("roleName");
         if (storedRoleName) {
@@ -37,7 +40,11 @@ const NavMenuAdmin = () => {
         return () => {
             window.removeEventListener("storage", handleStorageChange);
         };
-    }, []);
+    }, [navStatus]);
+    
+    if (!roleName || roleName === USER_TYPE.USER) {
+        return null;
+    }
 
     return (
         roleName !== USER_TYPE.USER && roleName !== "" && (
@@ -64,24 +71,30 @@ const NavMenuAdmin = () => {
                             </Link>
                         </li>
                     )}
-                    <li className="menuNavItem">
-                        <Link className="LinkNav" to="/admin/fitnessCenters">
-                            <LuDumbbell className="menuNavIcon" />
-                            {isExpanded && <span>Gestionar CAF</span>}
-                        </Link>
-                    </li>
-                    <li className="menuNavItem">
-                        <Link className="LinkNav" to="/admin/assignShiftsQuotas">
-                            <IoMdCalendar className="menuNavIcon" />
-                            {isExpanded && <span>Gestionar Turnos</span>}
-                        </Link>
-                    </li>
-                    <li className="menuNavItem">
-                        <Link className="LinkNav" to="/admin/fitnessCenterUser">
-                            <FaUsers className="menuNavIcon" />
-                            {isExpanded && <span>Usuarios CAF</span>}
-                        </Link>
-                    </li>
+                    {(roleName === USER_TYPE.DIRECTOR || roleName === USER_TYPE.ADMIN) && (
+                        <li className="menuNavItem">
+                            <Link className="LinkNav" to="/admin/fitnessCenters">
+                                <LuDumbbell className="menuNavIcon" />
+                                {isExpanded && <span>Gestionar CAF</span>}
+                            </Link>
+                        </li>
+                    )}
+                    {(roleName === USER_TYPE.COORDINATOR) && (
+                        <li className="menuNavItem">
+                            <Link className="LinkNav" to="/admin/assignShiftsQuotas">
+                                <IoMdCalendar className="menuNavIcon" />
+                                {isExpanded && <span>Gestionar Turnos</span>}
+                            </Link>
+                        </li>
+                    )}
+                    {(roleName === USER_TYPE.COORDINATOR || roleName === USER_TYPE.ADMIN || roleName === USER_TYPE.DIRECTOR) && (
+                        <li className="menuNavItem">
+                            <Link className="LinkNav" to="/admin/fitnessCenterUser">
+                                <FaUsers className="menuNavIcon" />
+                                {isExpanded && <span>Usuarios CAF</span>}
+                            </Link>
+                        </li>
+                    )}
                 </ul>
             </div>
         )
