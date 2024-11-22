@@ -9,7 +9,7 @@ import { MessagesSuccess, MessagesError, showToastPromise } from "../../gestion-
 const RegisterAttendance = () => {
     const location = useLocation();
     const navigate = useNavigate();
-    const { cafId } = location.state || {}
+    const [cafId ,setCafId] = useState(0);
     const [shiftReservations, setShiftReservations] = useState([]);
 
     const [search, setSearch] = useState("");
@@ -33,10 +33,11 @@ const RegisterAttendance = () => {
     const [turno,setTurno] = useState("T-0 0:00 a 0:00 ");
 
     useEffect(() => {
-        if (cafId) {
+        getCafId();
+        if (cafId > 0) {
             console.log("CAF ID recibido:", cafId);
             handleViewShift();
-            handleShift();
+            //handleShift();
             fetchShiftReservations();
         } else {
             console.error("No se recibió cafId");
@@ -46,14 +47,15 @@ const RegisterAttendance = () => {
 
     const handleViewShift = async () => {
         try {
-            const response = await fetch(SERVICES_BACK.POST_SHIFT_INTANCE_ACT + cafId, {
-                method: "POST",
+            const response = await fetch(SERVICES_BACK.GET_SHIFT_INTANCE_ACT + cafId, {
+                method: "GET",
                 headers: {
                     Authorization: `Bearer ${token}`,
                     credentials: "include",
                 },
             });
             const data = await response.json();
+            console.log(data);
             if (data.id) {
                 setTurno(`T ${data.startTime} a ${data.endTime}`)
                 setShiftActual({
@@ -72,6 +74,27 @@ const RegisterAttendance = () => {
             MessagesError("Error al cargar el turno.");
         }
     };
+
+    //Método par aobtener el id del CAF de un coodinador
+    const getCafId = async () => {
+        try {
+            const response = await fetch(SERVICES_BACK.GET_IDCAF_BY_USER_EMAIL + localStorage.getItem('userName'), {
+                method: "GET",
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                    credentials: "include",
+                },
+            });
+            const data = await response.json();
+            console.log(data)
+            setCafId(data);
+
+        } catch (error) {
+            console.error("Error al obtener id del fitnessCenter:", error);
+            MessagesError("Error al obtener id del fitnessCenter.");
+        }
+    };
+
 
     const handleShift = async () => {
         console.log(shiftActual)
@@ -93,8 +116,8 @@ const RegisterAttendance = () => {
         }
     };
 
-    const fetchShiftReservations  = async (id) => {
-        const response = await fetch(SERVICES_BACK.GET_ONE_reservation_ID+ id, {
+    const fetchShiftReservations  = async () => {
+        const response = await fetch(SERVICES_BACK.GET_RESERVE_BY_SHIFT + shiftActual.id, {
             method: "GET",
             headers: {
                 Authorization: `Bearer ${token}`,
@@ -164,9 +187,9 @@ const RegisterAttendance = () => {
 
     const filteredshiftReservations = shiftReservations.filter(
         (reservation) =>
-            reservation.code.toLowerCase().includes(search.toLowerCase()) ||
-            reservation.name.toLowerCase().includes(search.toLowerCase()) ||
-            reservation.lastname.toLowerCase().includes(search.toLowerCase())
+            reservation.userBasicDTO.universityCode.toLowerCase().includes(search.toLowerCase()) ||
+            reservation.userBasicDTO.name.toLowerCase().includes(search.toLowerCase()) ||
+            reservation.userBasicDTO.documentNumber.toLowerCase().includes(search.toLowerCase())
     );
 
     const registerAttendance = (index) => {
