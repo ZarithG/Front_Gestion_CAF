@@ -6,18 +6,28 @@ import { IoMdSearch } from "react-icons/io";
 import { SERVICES_BACK } from "../../../constants/constants";
 import { MessagesSuccess, MessagesError, showToastPromise } from "../../gestion-caf/Messages";
 
-const initialUsers = [
-    { code: "202026788", name: "Juan", lastname: "Perez", status: "Asistencia" },
-    { code: "201915829", name: "Ana", lastname: "Lopez", status: "Activo" },
-];
-
 const RegisterAttendance = () => {
     const location = useLocation();
     const navigate = useNavigate();
-    const { cafId } = location.state || {};
-    const [users, setUsers] = useState(initialUsers);
+    const { cafId } = location.state || {}
+    const [shiftReservations, setShiftReservations] = useState([]);
+
     const [search, setSearch] = useState("");
-    const [shiftActual, setShiftActual] = useState("");
+    const [shiftActual, setShiftActual] = useState({
+        id:0,
+        state:true,
+        shift:0,
+        date:null,
+        placeAvailable:0
+    });
+    const [reservation, setReservation] = useState({
+        id: 0, // ID de la reservación
+        idShiftInstance: 0, // ID de la instancia de turno
+        idDayAssignment: 0, // ID del día asignado
+        userId: 0, // ID del usuario
+        dateReservation: null, // Fecha y hora de la reservación
+        reservationEnum: '', // Estado de la reservación (puede ser un string o un valor predeterminado)
+      });
     const [shift, setShift] = useState("");
     const token = localStorage.getItem("authToken");
     const [turno,setTurno] = useState("T-0 0:00 a 0:00 ");
@@ -27,6 +37,7 @@ const RegisterAttendance = () => {
             console.log("CAF ID recibido:", cafId);
             handleViewShift();
             handleShift();
+            fetchShiftReservations();
         } else {
             console.error("No se recibió cafId");
             MessagesError("Seleccione un CAF.");
@@ -44,8 +55,14 @@ const RegisterAttendance = () => {
             });
             const data = await response.json();
             if (data.id) {
-                setTurno(`T-1 ${data.startTime} a ${data.endTime}`)
-                setShiftActual(data.id);
+                setTurno(`T ${data.startTime} a ${data.endTime}`)
+                setShiftActual({
+                    id: data.id, // ID del turno
+                    state: data.state, // Estado del turno
+                    shift: data.shift, // Número del turno
+                    date: data.date, // Fecha del turno
+                    placeAvailable: data.placeAvailable, // Lugares disponibles
+                });
                 
             } else {
                 throw new Error("El formato de datos de CAF es incorrecto.");
@@ -76,8 +93,8 @@ const RegisterAttendance = () => {
         }
     };
 
-    const fetchUsers = async (id) => {
-        const response = await fetch(SERVICES_BACK.GET_ONE_USER_ID+ id, {
+    const fetchShiftReservations  = async (id) => {
+        const response = await fetch(SERVICES_BACK.GET_ONE_reservation_ID+ id, {
             method: "GET",
             headers: {
                 Authorization: `Bearer ${token}`,
@@ -90,32 +107,71 @@ const RegisterAttendance = () => {
         }
 
         const data = await response.json();
-        if (Array.isArray(data)) {
-            console.log(data)
-            // Procesar los datos al formato deseado
-            return data.map((user) => ({
-                code: user.id.toString(), // Convertir el ID a una cadena
-                fullName: user.name, // Usar el nombre completo del objeto
-                email: user.userName, // Usar el correo como email
-                status: user.active ? "Activo" : "Inactivo", // Convertir boolean a texto
-            }));
-            
-        } else {
-            throw new Error("El formato de datos de CAF es incorrecto.");
+        setShiftReservations(data);
+    };
+
+    const fetchRegisterAttendance = async () => {
+        try {
+            const token = localStorage.getItem("authToken");
+            const response = await fetch(SERVICES_BACK.POST_REGISTRY_ATTENDED_RESERVE, {
+                method: "POST",
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                    credentials: "include",
+                },
+                body:JSON.stringify({
+                    reservation
+                })
+            });
+            const data = await response.json();
+            if (data.id) {
+                setTurno(`T ${data.startTime} a ${data.endTime}`)
+                setShiftActual({
+                    id: data.id, // ID del turno
+                    state: data.state, // Estado del turno
+                    shift: data.shift, // Número del turno
+                    date: data.date, // Fecha del turno
+                    placeAvailable: data.placeAvailable, // Lugares disponibles
+                });
+                
+            } else {
+                throw new Error("El formato de datos de CAF es incorrecto.");
+            }
+        } catch (error) {
+            console.error("Error al cargar el turno:", error);
+            MessagesError("Error al cargar el turno.");
         }
     };
 
+    const fetchFinishShiftInstanceActual = async () => {
+        try {
+            const token = localStorage.getItem("authToken");
+            const response = await fetch(SERVICES_BACK.POST_FINISH_INSTANCE_ACT + shiftActual, {
+                method: "POST",
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                    credentials: "include",
+                }
+            });
+            const data = await response.json();
+            
+        } catch (error) {
+            console.error("Error al cargar el turno:", error);
+            MessagesError("Error al cargar el turno.");
+        }
+    };
     const handleSearch = (event) => setSearch(event.target.value);
 
-    const filteredUsers = users.filter(
-        (user) =>
-            user.code.toLowerCase().includes(search.toLowerCase()) ||
-            user.name.toLowerCase().includes(search.toLowerCase()) ||
-            user.lastname.toLowerCase().includes(search.toLowerCase())
+    const filteredshiftReservations = shiftReservations.filter(
+        (reservation) =>
+            reservation.code.toLowerCase().includes(search.toLowerCase()) ||
+            reservation.name.toLowerCase().includes(search.toLowerCase()) ||
+            reservation.lastname.toLowerCase().includes(search.toLowerCase())
     );
 
-    const assignCoordinador = (index) => {
-        alert(`Coordinador asignado: ${users[index].name} ${users[index].lastname}`);
+    const registerAttendance = (index) => {
+        fetchRegisterAttendance();
+        //alert(`Coordinador asignado: ${shiftReservations[index].name} ${shiftReservations[index].lastname}`);
     };
 
     return (
@@ -127,10 +183,10 @@ const RegisterAttendance = () => {
                     <SearchBar search={search} handleSearch={handleSearch} />
                 </div>
                 <div className="table-content">
-                    <UserTable users={filteredUsers} assignCoordinador={assignCoordinador} />
+                    <ReservationTable shiftReservations={filteredshiftReservations} registerAttendance={registerAttendance} />
                 </div>
                 <div className="ContainerTurno">
-                    <button onClick={handleShift}>Finalizar Turno</button>
+                    <button onClick={fetchFinishShiftInstanceActual}>Finalizar Turno</button>
                 </div>
             </div>
         </div>
@@ -162,42 +218,40 @@ const SearchBar = ({ search, handleSearch }) => (
     </div>
 );
 
-const UserTable = ({ users, assignCoordinador }) => (
+const ReservationTable = ({ shiftReservations, registerAttendance }) => (
     <table className="table">
         <thead className="table-header-head">
             <tr className="table-row">
                 <th className="table-cell">Código</th>
+                <th className="table-cell">Documento</th>
                 <th className="table-cell">Nombre</th>
-                <th className="table-cell">Apellido</th>
-                <th className="table-cell">Estado</th>
+                <th className="table-cell">Email</th>
                 <th className="table-cell">Opciones</th>
             </tr>
         </thead>
         <tbody>
-            {users.map((user, index) => (
-                <UserTableRow
-                    key={`${user.code}-${index}`}
-                    user={user}
+            {shiftReservations.map((reservation, index) => (
+                <ReservationTableRow
+                    key={`${reservation.code}-${index}`}
+                    reservation={reservation}
                     index={index}
-                    assignCoordinador={assignCoordinador}
+                    registerAttendance={registerAttendance}
                 />
             ))}
         </tbody>
     </table>
 );
 
-const UserTableRow = ({ user, index, assignCoordinador }) => (
+const ReservationTableRow = ({ reservation, index, registerAttendance }) => (
     <tr className="table-row">
-        <td className="table-cell">{user.code}</td>
-        <td className="table-cell">{user.name}</td>
-        <td className="table-cell">{user.lastname}</td>
-        <td className="table-cell">
-            <Status status={user.status} />
-        </td>
+        <td className="table-cell">{reservation.userBasicDTOuniversityCode}</td>
+        <td className="table-cell">{reservation.userBasicDTO.documentNumber}</td>
+        <td className="table-cell">{reservation.userBasicDTO.name}</td>
+        <td className="table-cell">{reservation.userBasicDTO.email}</td>
         <td className="table-cell">
             <div className="button-container">
-                {user.status.toLowerCase() !== "asistencia" && (
-                    <button className="button" onClick={() => assignCoordinador(index)}>
+                {reservation.status.toLowerCase() !== "asistencia" && (
+                    <button className="button" onClick={() => registerAttendance(index)}>
                         Registrar
                     </button>
                 )}

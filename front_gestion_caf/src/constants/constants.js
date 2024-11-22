@@ -43,8 +43,9 @@ export const SERVICES_BACK = {
     POST_SHIFT_RESERVE: 'http://localhost:9093/shift/reserve/reserve-shift-user',
     POST_REGISTRY_ATTENDED_RESERVE: 'http://localhost:9093/shift/reserve/registry-attended-reserve',
     POST_SHIFT_INTANCE_ACT: 'http://localhost:9093/shift/shift-instances/actShift/',
-    
+    POST_FINISH_INSTANCE_ACT: 'http://localhost:9093/shift/shift-instances/finishShift/',
     PUT_DELETE_SHIFT: "http://localhost:9093/shift/deleteShift",
+
 }
 
 export const STATUS = {

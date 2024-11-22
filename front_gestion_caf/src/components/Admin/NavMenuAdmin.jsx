@@ -87,6 +87,14 @@ const NavMenuAdmin = ({
                             </Link>
                         </li>
                     )}
+                    {(roleName === USER_TYPE.COORDINATOR) && (
+                        <li className="menuNavItem">
+                            <Link className="LinkNav" to="/admin/registerAttendance">
+                                <IoMdCalendar className="menuNavIcon" />
+                                {isExpanded && <span>Registrar asistencia</span>}
+                            </Link>
+                        </li>
+                    )}
                     {(roleName === USER_TYPE.COORDINATOR || roleName === USER_TYPE.ADMIN || roleName === USER_TYPE.DIRECTOR) && (
                         <li className="menuNavItem">
                             <Link className="LinkNav" to="/admin/fitnessCenterUser">
