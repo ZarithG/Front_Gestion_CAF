@@ -84,19 +84,6 @@ const AssignShiftsQuotas = () => {
 
     // Definición de la función removeTurno
     const removeTurno = async (day, index) => {
-        console.log(JSON.stringify({
-            id: turnos[day][index].dayAssignment,
-            fitnessCenter: selectedCaf.id,
-            day: day,
-            shifts: [{
-                id: turnos[day][index].id,
-                dayAssignment: turnos[day][index].dayAssignment,
-                startTime: turnos[day][index].inicio,
-                endTime: turnos[day][index].fin,
-                placeAvailable: 0
-            }
-            ]
-        }))
         try {
             const response = await fetch(SERVICES_BACK.PUT_DELETE_SHIFT, {
                 method: 'PUT', // Asegúrate de que el método coincide con el de Postman
