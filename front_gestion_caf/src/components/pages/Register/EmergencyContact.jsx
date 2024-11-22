@@ -67,7 +67,6 @@ const EmergencyContact = () => {
 
     const onSubmit = async (values) => {
         setError('');
-        console.log(state);
         setSubmitted(true); // Marcar que el formulario ha si do enviado
         if (isValid) {
             dispatch({ type: "SET_EMERGENCY_CONTACT", data: values });

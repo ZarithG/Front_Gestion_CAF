@@ -2,6 +2,9 @@ import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import "./styles/PagesAdmin.css";
 import { IoMdSearch } from "react-icons/io";
+import { MessagesError, MessagesSuccess } from '../../gestion-caf/Messages';
+import { SERVICES_BACK } from "../../../constants/constants";
+import { Toaster } from "sonner"; 
 
 const initialUsers = [
     { code: "202012575", name: "Juan", lastname: "Perez", estate: "Docente" },
@@ -37,8 +40,39 @@ const UserRegistrationRequest = () => {
             user.lastname.toLowerCase().includes(search.toLowerCase())
     );
 
+    const fetchCAFInscriptions = async (values) => {
+        try {
+            const token = localStorage.getItem("authToken");
+            const response = await fetch(SERVICES_BACK.GET_ALL_CAF_INSCRIPTIONS + localStorage.getItem("userName"), {
+                method: 'GET',
+                headers: {
+                    'Authorization': `Bearer ${token}`,
+                    'Content-Type': 'application/json',
+                }
+            });
+            if (!response.ok) {
+                if (response.status === 204) {
+                    MessagesError('No hay inscripciones registradas en el CAF');
+                } else {
+                    MessagesError('Hubo un error en el servidor');
+                }
+                return;
+            }
+        } catch (error) {
+            MessagesError('Hubo un error en el servidor');
+            console.log("ERROR:" + error)
+        }
+    }
+
     return (
         <div className="containerBody">
+            <Toaster
+                position="top-center"
+                dir="auto"
+                duration={5000}
+                visibleToasts={4}
+                richColors
+            />
             <h1>Solicitud de Inscripción de Usuarios CAF</h1>
             <div className="body-containerBody">
                 <SearchBar search={search} handleSearch={handleSearch} />
