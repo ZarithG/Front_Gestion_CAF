@@ -34,7 +34,7 @@ export const SERVICES_BACK = {
     GET_IS_USER_OLD_MAYOR: 'http://localhost:9093/user/isUserOldMayor/',
     GET_ONE_USER: 'http://localhost:9093/user/basic/',
     GET_ONE_USER_ID: 'http://localhost:9093/user/basic/user-id/',
-    
+    GET_IDCAF_BY_USER_EMAIL: 'http://localhost:9093/caf/',
     
     POST_CAF_INSCRIPTION: 'http://localhost:9093/caf/inscription/inscribe-user/',
     POST_CONSENT_FILE: "http://localhost:9093/caf/files/upload/",
@@ -42,7 +42,7 @@ export const SERVICES_BACK = {
     POST_INSTANCE_SHIFT: "http://localhost:9093/shift/reserve/create-shift-instances/",
     POST_SHIFT_RESERVE: 'http://localhost:9093/shift/reserve/reserve-shift-user',
     POST_REGISTRY_ATTENDED_RESERVE: 'http://localhost:9093/shift/reserve/registry-attended-reserve',
-    POST_SHIFT_INTANCE_ACT: 'http://localhost:9093/shift/shift-instances/actShift/',
+    GET_SHIFT_INTANCE_ACT: 'http://localhost:9093/shift/shift-instances/actShift/',
     POST_FINISH_INSTANCE_ACT: 'http://localhost:9093/shift/shift-instances/finishShift/',
     PUT_DELETE_SHIFT: "http://localhost:9093/shift/deleteShift",
 
