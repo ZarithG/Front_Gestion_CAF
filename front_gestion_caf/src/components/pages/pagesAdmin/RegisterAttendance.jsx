@@ -38,7 +38,7 @@ const RegisterAttendance = () => {
             console.log("CAF ID recibido:", cafId);
             handleViewShift();
             //handleShift();
-            fetchShiftReservations();
+            //fetchShiftReservations();
         } else {
             console.error("No se recibió cafId");
             MessagesError("Seleccione un CAF.");
@@ -47,10 +47,11 @@ const RegisterAttendance = () => {
 
     const handleViewShift = async () => {
         try {
+            const token = localStorage.getItem("authToken");
             const response = await fetch(SERVICES_BACK.GET_SHIFT_INTANCE_ACT + cafId, {
                 method: "GET",
                 headers: {
-                    Authorization: `Bearer ${token}`,
+                    'Authorization': `Bearer ${token}`,
                     credentials: "include",
                 },
             });
@@ -78,11 +79,12 @@ const RegisterAttendance = () => {
     //Método par aobtener el id del CAF de un coodinador
     const getCafId = async () => {
         try {
+            const token = localStorage.getItem("authToken");
             const response = await fetch(SERVICES_BACK.GET_IDCAF_BY_USER_EMAIL + localStorage.getItem('userName'), {
-                method: "GET",
+                method: 'GET',
                 headers: {
-                    Authorization: `Bearer ${token}`,
-                    credentials: "include",
+                    'Authorization': `Bearer ${token}`,
+                    credentials: 'include',
                 },
             });
             const data = await response.json();
@@ -99,11 +101,12 @@ const RegisterAttendance = () => {
     const handleShift = async () => {
         console.log(shiftActual)
         try {
-            const response = await fetch(SERVICES_BACK.GET_RESERVE_BY_SHIFT + shiftActual, {
+            const response = await fetch(SERVICES_BACK.GET_RESERVE_BY_SHIFT + shiftActual.id, {
                 method: "GET",
                 headers: {
-                    Authorization: `Bearer ${token}`,
+                    'Authorization': `Bearer ${token}`,
                     credentials: "include",
+                    'Content-Type': 'application/json'
                 },
             });
             const data = await response.json();
@@ -117,12 +120,13 @@ const RegisterAttendance = () => {
     };
 
     const fetchShiftReservations  = async () => {
+        const token = localStorage.getItem("authToken");
         const response = await fetch(SERVICES_BACK.GET_RESERVE_BY_SHIFT + shiftActual.id, {
-            method: "GET",
-            headers: {
-                Authorization: `Bearer ${token}`,
-                credentials: "include",
-            },
+            method: 'GET',
+                headers: {
+                    'Authorization': `Bearer ${token}`,
+                    credentials: 'include',
+                },
         });
 
         if (!response.ok) {
@@ -139,8 +143,9 @@ const RegisterAttendance = () => {
             const response = await fetch(SERVICES_BACK.POST_REGISTRY_ATTENDED_RESERVE, {
                 method: "POST",
                 headers: {
-                    Authorization: `Bearer ${token}`,
+                    'Authorization': `Bearer ${token}`,
                     credentials: "include",
+                    'Content-Type': 'application/json'
                 },
                 body:JSON.stringify({
                     reservation
@@ -172,8 +177,9 @@ const RegisterAttendance = () => {
             const response = await fetch(SERVICES_BACK.POST_FINISH_INSTANCE_ACT + shiftActual, {
                 method: "POST",
                 headers: {
-                    Authorization: `Bearer ${token}`,
+                    'Authorization': `Bearer ${token}`,
                     credentials: "include",
+                    'Content-Type': 'application/json'
                 }
             });
             const data = await response.json();

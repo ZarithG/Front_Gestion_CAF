@@ -314,7 +314,7 @@ const AssignShiftsQuotas = () => {
                         </div>
                     ))}
                     
-                    <button onClick={handleInstance}>Guardar cambios</button>
+                    <button onClick={handleInstance}>Crear turnos</button>
                 </div>
             </div>
 
