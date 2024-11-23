@@ -22,7 +22,7 @@ const Regulation = () => {
             dispatch({ type: "SET_REGULATION", data: values });
             navigate('/registration/medicalHistory');
         } else {
-            MessagesError("Debes aceptar los términos y condiciones para continuar.");
+            MessagesError("Debes aceptar el reglamento para continuar.");
         }
     };
 
@@ -43,7 +43,7 @@ const Regulation = () => {
                             Por favor descargue el reglamento y léalo cuidadosamente, si esta dispuesto a cumplir
                             con lo estipulado en este, descargue el consentimiento informado y fírmelo, pueden imprimirlo y
                             escanearlo en formato pdf o firmarlo de manera digital, este archivo se debe subir en este formulario. REGLAMENTO: {
-                                <a href="https://drive.google.com/file/d/1nS8Lkpj7RLQaWy7WKSYNcjTF_lxmaV7d/view">
+                                <a href="https://drive.google.com/file/d/1nS8Lkpj7RLQaWy7WKSYNcjTF_lxmaV7d/view"  target="_blank" rel="noreferrer noopener">
                                     DESCARGAR Y LEER REGLAMENTO DEL CAF
                                 </a>}
                         </p>

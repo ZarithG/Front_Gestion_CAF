@@ -1,9 +1,9 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
 import { useRegFormContext } from "../../../providers/RegFormProvider";
 import { SERVICES_BACK } from "../../../constants/constants";
-import { MessagesError, MessagesSuccess, MessagesInformation} from "../../gestion-caf/Messages";
+import { MessagesError, MessagesSuccess, showToastPromise, MessagesInformation} from "../../gestion-caf/Messages";
 import { toast, Toaster } from "sonner"; 
 
 const InformedConsent = () => {
@@ -30,7 +30,7 @@ const InformedConsent = () => {
         try {
             const userId = localStorage.getItem("userName");
             if (!userId) {
-                MessagesError("No se encontró el ID de usuario.");
+                showToastPromise(Promise.reject("No se encontró el ID de usuario."), "Error", "No se encontró el ID de usuario.");
                 return;
             }
 
@@ -43,7 +43,7 @@ const InformedConsent = () => {
             }));
     
             if (!userResponseDTOList.length) {
-                MessagesError("No hay respuestas válidas para enviar.");
+                showToastPromise(Promise.reject("No hay respuestas válidas para enviar."), "Error", "No hay respuestas válidas para enviar.");
                 return;
             }
 
@@ -71,12 +71,12 @@ const InformedConsent = () => {
                 const errorMessage = response.status === 400
                     ? "Datos inválidos enviados al servidor."
                     : `Hubo un error en el servidor`;
-                MessagesError(errorMessage);
+                showToastPromise(Promise.reject(errorMessage), "Error", errorMessage);
                 return;
             }
     
             const data = await response.json();
-            MessagesSuccess("Datos guardados exitosamente.");
+            showToastPromise(Promise.resolve("Datos guardados exitosamente."), "Éxito", "Datos guardados exitosamente.");
             
             const informationConsentResponse = sendInformationConsent(data.id);
 
@@ -88,13 +88,13 @@ const InformedConsent = () => {
                     verifyIsUserOldMayor(data.id);
                 }
             }else{
-                MessagesError("Hubo un error al guardar el consentimiento.");
+                showToastPromise(Promise.reject("Hubo un error al guardar el consentimiento."), "Error", "Hubo un error al guardar el consentimiento.");
             }       
         } catch (error) {
-            MessagesError("Hubo un error en el servidor.");
+            showToastPromise(Promise.reject("Hubo un error en el servidor."), "Error", "Hubo un error en el servidor.");
         }
     };
-    
+
     const hasTrueResponse = (transformedData) => {
         return transformedData.some(item => item.response === "true");
     };
@@ -118,11 +118,11 @@ const InformedConsent = () => {
                 });        
             
                 if (response.ok) {
-                    MessagesSuccess("Consentimiento enviado correctamente");
+                    showToastPromise(Promise.resolve("Consentimiento enviado correctamente"), "Éxito", "Consentimiento enviado correctamente");
                     return response;
                 }
             }catch (error) {
-                MessagesError("Error al eviar el consentimiento");
+                showToastPromise(Promise.reject("Error al enviar el consentimiento"), "Error", "Error al enviar el consentimiento");
             }
         }else{
             MessagesInformation("El archivo subido no cumple con el formato y tamaño necesario");
@@ -145,15 +145,12 @@ const InformedConsent = () => {
             navigate("/registration/tutorConsent", { state: { inscriptionId: id} });
         }else{
             if(response.status === 200){
-                MessagesSuccess("Inscripción almacenada de forma correcta")
-                // navigate("/");
+                showToastPromise(Promise.resolve("Inscripción almacenada de forma correcta"), "Éxito", "Inscripción almacenada de forma correcta");
             }else{
-                MessagesError("Hubo un error en el servidor, intentelo más tarde");
+                showToastPromise(Promise.reject("Hubo un error en el servidor, inténtelo más tarde"), "Error", "Hubo un error en el servidor, inténtelo más tarde");
             }
-            
         }
     };
-
 
     return (
         <div className="Register">
@@ -170,11 +167,11 @@ const InformedConsent = () => {
                     y léalo cuidadosamente. Si está dispuesto a cumplir con lo estipulado en este,
                     diligencie el consentimiento y suba el archivo en formato PDF para ser revisado.
                     Una vez revisado, le pondrán una estampilla al carnet al momento en que vaya al CAF 
-                    en el que se inscribio, y luego de que verifique en el apartado de Notificaciones
+                    en el que se inscribió, y luego de que verifique en el apartado de Notificaciones
                     que su inscripción ha sido aceptada.</p>
                 <br />
                 <h3>Enlace plantilla consentimiento informado</h3>
-                <a href="https://drive.google.com/file/d/1vY3vnB_I79746xxRKkvVGl2rzcKigdoo/view">
+                <a href="https://drive.google.com/file/d/1vY3vnB_I79746xxRKkvVGl2rzcKigdoo/view" target="_blank" rel="noreferrer noopener">
                         PLANTILLA CONSENTIMIENTO INFORMADO
                     </a>
                 <div className="containerForm">

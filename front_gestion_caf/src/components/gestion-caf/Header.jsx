@@ -164,6 +164,7 @@ const Header = ({
                                     setRoleName(''); 
                                     logout();
                                     window.location.reload()
+                                    navigate("/")
                                 }}>
                                     <label> Cerrar sesión </label>
                                     <MdLogin className="icons" />

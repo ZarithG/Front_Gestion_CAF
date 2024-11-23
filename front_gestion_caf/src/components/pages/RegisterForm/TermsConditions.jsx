@@ -27,7 +27,7 @@ const TermsConditions = () => {
             dispatch({ type: "SET_TERMS_CONDITIONS", data: values });
             navigate('/registration/regulation');
         } else {
-            MessagesError("Debes aceptar los términos y condiciones para continuar.");
+            MessagesError("Debes aceptar los términos y condiciones para continuar.")
         }
     };
 
@@ -82,7 +82,7 @@ const TermsConditions = () => {
                     conforme a la política de tratamiento y protección de datos
                     personales de los titulares de la Universidad Pedagógica y
                     Tecnológica de Colombia, que puede ser consultada en:{" "}
-                    <a href="https://www.uptc.edu.co/sitio/portal/sitios/universidad/taip/ntaip/term_condiciones">
+                    <a href="https://www.uptc.edu.co/sitio/portal/sitios/universidad/taip/ntaip/term_condiciones"  target="_blank" rel="noreferrer noopener">
                         TERMINOS Y CONDICIONES
                     </a>
                 </p>

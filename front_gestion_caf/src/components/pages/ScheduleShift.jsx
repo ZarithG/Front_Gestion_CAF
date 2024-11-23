@@ -27,7 +27,7 @@ const ScheduleShift = () => {
     useEffect(() => {
         const fetchUserInscriptionToCAF = async () => {
             try {
-                
+
                 const response = await fetch(
                     SERVICES_BACK.GET_USER_ACTIVE_INSCRIPTION + userEmail,
                     {
@@ -66,7 +66,7 @@ const ScheduleShift = () => {
                         inscriptionDate: new Date(item.inscriptionDate).toLocaleString(), // Fecha de inscripción
                         status: item.inscriptionStatus === "ACCEPTED" ? "Aceptado" : "Pendiente", // Estado de la inscripción
                     }));
-                    setOneCAFOptions(processedInscriptions);  
+                    setOneCAFOptions(processedInscriptions);
 
                 } else {
                     setError("El formato de datos de CAF es incorrecto.");
@@ -101,7 +101,7 @@ const ScheduleShift = () => {
                 success: <b>Datos del usuario cargados correctamente.</b>,
                 error: <b>Error al cargar los datos del usuario.</b>,
             }
-        );      
+        );
     }, []);
 
     const fetchInstanceShif = async () => {
@@ -150,43 +150,44 @@ const ScheduleShift = () => {
     const handleScheduleShift = async (e) => {
         e.preventDefault();
         if (!selectedCaf) {
-            MessagesError("Por favor selecciona un CAF antes de agendar.");
+            MessagesError("Por favor selecciona un opción antes de agendar.");
             return;
         }
+        if (window.confirm(`Desea apartar un turno en el horario ${selectedCaf}`)) {
+            toast.promise(
+                (async () => {
+                    const response = await fetch(SERVICES_BACK.POST_SHIFT_RESERVE, {
+                        method: 'POST',
+                        headers: {
+                            'Authorization': `Bearer ${token}`,
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({
+                            id: 0,
+                            idShiftInstance: selectedShift.id,
+                            idDayAssignment: selectedShift.dayAssignment.id,
+                            userId: user.id,
+                            dateReservation: null,
+                            reservationEnum: null,
+                        })
+                    });
 
-        toast.promise(
-            (async () => {
-                const response = await fetch(SERVICES_BACK.POST_SHIFT_RESERVE, {
-                    method: 'POST',
-                    headers: {
-                        'Authorization': `Bearer ${token}`,
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify({
-                        id: 0,
-                        idShiftInstance: selectedShift.id,
-                        idDayAssignment: selectedShift.dayAssignment.id,
-                        userId: user.id,
-                        dateReservation: null,
-                        reservationEnum: null,
-                    })
-                });
+                    if (!response.ok) {
+                        throw new Error('Error al agendar turno.');
+                    }
 
-                if (!response.ok) {
-                    throw new Error('Error al agendar turno.');
+                    const data = await response.json();
+                    if (data) {
+                        MessagesSuccess("Turno apartado correctamente.");
+                    }
+                })(),
+                {
+                    loading: 'Agendando turno...',
+                    success: <b>Turno agendado correctamente.</b>,
+                    error: <b>No se pudo agendar el turno.</b>,
                 }
-
-                const data = await response.json();
-                if (data) {
-                    MessagesSuccess("Turno apartado correctamente.");
-                }
-            })(),
-            {
-                loading: 'Agendando turno...',
-                success: <b>Turno agendado correctamente.</b>,
-                error: <b>No se pudo agendar el turno.</b>,
-            }
-        );
+            );
+        }
     };
 
     const handleDateChange = (newDate) => {
@@ -214,24 +215,24 @@ const ScheduleShift = () => {
         const [hours, minutes] = time.split(':');
         return `${hours}:${minutes}`; // Retorna el formato HH:mm
     };
-    
+
     const formatDate = (date) => {
         const options = { day: '2-digit', month: 'long', year: 'numeric' };
         return new Date(date + 'Z').toLocaleDateString('es-CO', options);
     };
-    
 
-    const handleShiftChange = (event) =>{
+
+    const handleShiftChange = (event) => {
         const shiftId = parseInt(event.target.value);
-        if(shiftId){
+        if (shiftId) {
             setSelectedShift(shifts.find(item => item.id === shiftId)); // Guarda el CAF seleccionado
-            
+
         }
     }
 
     const handleCafChange = (event) => {
         const cafId = parseInt(event.target.value);
-        if(cafId){
+        if (cafId) {
             const selectedCaf = oneCAFOptions.find(item => item.code === cafId); // Guarda el CAF seleccionado
             setShifts([]);
             toast.promise(
@@ -252,7 +253,7 @@ const ScheduleShift = () => {
                     success: <b>Turnos cargados correctamente.</b>,
                     error: <b>Error al cargar los turnos.</b>,
                 }
-            );   
+            );
         }
     };
 
@@ -291,7 +292,7 @@ const ScheduleShift = () => {
                             {shifts.length > 0 ? (
                                 shifts.map((shift, index) => (
                                     <option key={index} value={shift.id}>
-                                        {`Turno ${index+1}: ${(shift.date)}
+                                        {`Turno ${index + 1}: ${(shift.date)}
                                         ${formatTime(shift.startTime)} a 
                                         ${formatTime(shift.endTime)}`}
                                     </option>

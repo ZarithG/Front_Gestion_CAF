@@ -1,24 +1,99 @@
+.containerFormQuestions {
+    margin: 16px 0;
+    padding: 16px;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    background-color: #f9f9f9;
+}
+
 .form-table {
-    display: table; /* Usar la propiedad de tabla */
-    width: 100%; /* Hacer que ocupe todo el ancho */
+    display: table;
+    width: 100%;
+    border-collapse: collapse;
 }
 
 .form-row {
-    display: table-row; /* Cada fila es una fila de tabla */
+    display: table-row;
+    border-bottom: 1px solid #ddd;
 }
 
 .form-question {
-    display: table-cell; /* Cada pregunta es una celda de la tabla */
-    padding: 8px; /* Espaciado interno */
-    text-align: left; /* Alinear texto a la izquierda */
+    display: table-cell;
+    padding: 8px 16px;
+    text-align: justify;
+    font-weight: bold;
+    vertical-align: middle;
 }
 
 .form-option {
-    display: table-cell; /* Cada opción es una celda de la tabla */
-    padding: 8px; /* Espaciado interno */
-    text-align: center; /* Centrar texto */
+    display: flex;
+    flex-direction: row;
+    display: table-cell;
+    padding: 8px 16px;
+    text-align: center;
+    vertical-align: middle;
 }
 
-.form-option input {
-    margin-right: 4px; /* Espacio entre el input y el label */
+.moreInformation {
+    width: 100%;
+    display: flex;
+    flex-direction: row;
+    gap: 16px; /* Espaciado entre los elementos */
+    padding-left: 16px; /* Espaciado interno */
+    border-radius: 8px; /* Esquinas redondeadas */
+    background-color: #f9f9f9; /* Fondo ligeramente gris */
+    margin: 10px 0; /* Margen superior e inferior */
+    align-items: center; /* Alinear los elementos verticalmente */
+}
+
+.moreInformation input {
+    width: 25%; /* Ancho específico */
+    padding: 8px; /* Espaciado interno */
+    border: 1px solid #ddd; /* Borde claro */
+    border-radius: 4px; /* Bordes redondeados */
+    font-size: 16px; /* Tamaño de fuente */
+    background-color: #fff; /* Fondo blanco */
+}
+
+.moreInformation label {
+    width: 70%;
+    font-weight: bold; /* Resaltar el texto del label */
+    font-size: 16px; /* Tamaño de fuente */
+    color: #333; /* Color del texto */
+    text-align: justify;
+}
+
+.moreInformation textarea {
+    display: table-cell; /* Utiliza table-cell para alinearse con las otras celdas */
+    width: 100%; /* Asegura que el textarea ocupe todo el ancho de la celda */
+    padding: 8px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-size: 16px;
+    background-color: #fff;
+    height: 100px; /* Ajusta la altura para que se vea más grande y adecuado para texto largo */
+    resize: vertical; /* Permite que el usuario cambie el tamaño del textarea verticalmente */
+}
+
+.containerPersonalInformation p {
+    text-align: justify;
+    font-size: 16px;
+    line-height: 1.6;
+    color: #333;
+}
+
+button[type="submit"] {
+    margin-top: 16px;
+    padding: 10px 20px;
+    font-size: 16px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.error-message {
+    color: red;
+    font-weight: bold;
+    margin-bottom: 16px;
 }
