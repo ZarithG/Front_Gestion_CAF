@@ -8,8 +8,8 @@ export const USER_TYPE = {
 
 export const SERVICES_BACK = {
     GOOGLELOGIN: "http://localhost:9093/auth/google/login",
-    LOGINAUTH: 'http://localhost:9093/auth/login',
-    LOGOUTAUTH: 'http://localhost:9093/auth/logout ',
+    LOGINAUTH: 'http://54.175.186.157:9093/auth/login',
+    LOGOUTAUTH: 'http://54.175.186.157:9093/auth/logout ',
     USERAUTH: 'http://localhost:9093/auth/verify/user',
     PASSWORDAUTH: 'http://localhost:9093/auth/change/password',
     CREATEAUTH: 'http://localhost:9093/auth/create',
