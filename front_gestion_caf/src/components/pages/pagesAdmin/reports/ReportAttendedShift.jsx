@@ -5,8 +5,9 @@ import "./ReportAttendedShift.css";
 import "../styles/PagesAdmin.css";
 import "../styles/FitnessCenterCordinator.css";
 import { SERVICES_BACK } from "../../../../constants/constants";
-import { MessagesError, MessagesSuccess, showToastPromise,showToastWarning } from "../../../gestion-caf/Messages";
+import { MessagesError, MessagesInfo, MessagesSuccess, showToastPromise,showToastWarning } from "../../../gestion-caf/Messages";
 import AttendanceTable from "./AttendanceTable";
+import { Toaster, toast } from "sonner";
 
 const ReportAttendedShift = () => {
     
@@ -92,39 +93,45 @@ const ReportAttendedShift = () => {
                 },
                 body:JSON.stringify(
                     {
-                        "fitnessCenter": selectedCaf,
-                        "day": selectedDay,
+                        "fitnessCenter": 1,
+                        "day": "LUNES",
                         "startDate": formatDateToLocalDate(startDate),
                         "endDate":formatDateToLocalDate(endDate)
                     }
                 )
             });
-
-            if (!response.ok) {
-                throw new Error('Error al obtener los datos del reporte de turnos');
-            }
-
-            const data = await response.json();
-            const auxShiftsList = [];
             
-            if (Array.isArray(data)) {
+            console.log(response.status)
+
+            if (response.status !== 200) {
+                if(response.status === 204){
+                    MessagesInfo("No se encontraron turnos para el periodo de tiempo seleccionado");
+                    return;
+                }else{
+                    throw new Error('Error al obtener los datos del reporte de turnos');
+                }
+            }else{
+                const data = await response.json();
+                const auxShiftsList = [];
                 
-                auxShiftsList.forEach((shift) => {
-                    const auxShif = {
-                        dayName: shift.day,
-                        shift: `${formatTime(shift.startTime)} a ${formatTime(shift.endTime)}`,
-                        placeAvailable: shift.maximumPlaceAvailable,
-                        attended: shift.attendedCount,
-                        noAttended: shift.noAttendedCount,
-                        total: shift.attendedCount + shift.noAttendedCount
-                    };
-                    auxShiftsList.push(auxShif);
-                });
-
-            };
-
-            setShifts(auxShiftsList);
-        
+                if (Array.isArray(data)) {
+                    
+                    auxShiftsList.forEach((shift) => {
+                        const auxShif = {
+                            dayName: shift.day,
+                            shift: `${formatTime(shift.startTime)} a ${formatTime(shift.endTime)}`,
+                            placeAvailable: shift.maximumPlaceAvailable,
+                            attended: shift.attendedCount,
+                            noAttended: shift.noAttendedCount,
+                            total: shift.attendedCount + shift.noAttendedCount
+                        };
+                        auxShiftsList.push(auxShif);
+                    });
+    
+                };
+    
+                setShifts(auxShiftsList);
+            }
         } catch (error) {
             console.error('Error al obtener el reporte de turnos:', error);
         }
@@ -252,6 +259,13 @@ const ReportAttendedShift = () => {
 
     return (
         <div className="containerBody">
+            <Toaster
+                position="top-center"
+                dir="auto"
+                duration={2000}
+                visibleToasts={4}
+                richColors
+            />
             <h1>Reportes</h1>
             <div className="body-containerBody">
             <div className="FiltersReport">

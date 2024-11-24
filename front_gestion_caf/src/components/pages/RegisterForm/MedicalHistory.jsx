@@ -3,7 +3,7 @@ import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
 import { useRegFormContext } from "../../../providers/RegFormProvider";
 import { SERVICES_BACK } from "../../../constants/constants";
-import { showToastPromise } from "../../gestion-caf/Messages";
+import { MessagesError, showToastPromise } from "../../gestion-caf/Messages";
 import { Toaster, toast } from "sonner";
 import "./styles/MedicalHistory.css";
 
@@ -110,12 +110,42 @@ const MedicalHistory = () => {
 
         // Agregar el CAF seleccionado
         const selectedCAF = ({ id: values.CAF });
+        
+        const token = localStorage.getItem("authToken");
+        return fetch(SERVICES_BACK.GET_USER_ACTIVE_INSCRIPTION + localStorage.getItem("userName"), {
+            method: 'GET',
+            headers: {
+                'Authorization': `Bearer ${token}`,
+                credentials: 'include',
+            }
+        })
+            .then(async (response) => {
+                if (!response.ok) {
+                    throw new Error("Error al obtener los datos del CAF");
+                }
+                const data = await response.json();
+                // Verifica que data sea un array antes de actualizar el estado    
+                if (Array.isArray(data)) {
+                    console.log(data)
+                    const alreadyRegistered = data.some(item => item.fitnessCenterDTO?.id === values.CAF);
 
-        // Dispatching data to context
-        dispatch({ type: "SET_CAF_INFORMATION", data: selectedCAF });
-        dispatch({ type: "SET_MEDICAL_HISTORY", data: transformedData });
+                    if (alreadyRegistered) {
+                        MessagesError("Señor usuario, usted ya tiene una inscripción activa en el CAF seleccionado");
+                        return;
+                    }
+                    //Dispatching data to context
+                    dispatch({ type: "SET_CAF_INFORMATION", data: selectedCAF });
+                    dispatch({ type: "SET_MEDICAL_HISTORY", data: transformedData })
+                    navigate("/registration/informedConsent");
+                } else {
+                    throw new Error("El formato de datos de CAF es incorrecto.");
+                }
 
-        navigate("/registration/informedConsent");
+            })
+            .catch((error) => {
+                setError(error.message);
+                throw error; // Lanza el error para que sea manejado por showToastPromise
+            });
     };
 
     // Verifica respuestas afirmativas
