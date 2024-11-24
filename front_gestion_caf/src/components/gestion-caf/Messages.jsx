@@ -26,7 +26,7 @@ export const showToastPromise = async (promiseFn, successMessage, errorMessage) 
     await toast.promise(
         promiseFn,
         {
-            loading: 'Processing...',
+            loading: 'Cargando datos...',
             success: successMessage || "Operation completed!",
             error: errorMessage || "Something went wrong.",
         }

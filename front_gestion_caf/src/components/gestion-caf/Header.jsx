@@ -125,6 +125,13 @@ const Header = ({
                                     <TbCalendarTime className="icons" />
                                 </span>
                             </li>
+
+                            <li className="menuItem">
+                                <Link className="Link" to="/notifications">
+                                    <label> Notificaciones </label>
+                                    <MdNotifications className="icons" />
+                                </Link>
+                            </li>
                         </>
                     )}
                     {/* Mostrar opciones específicas para usuarios con rol USER */}
@@ -151,20 +158,14 @@ const Header = ({
                     {roleName && (
                         <>
                             <li className="menuItem">
-                                <Link className="Link" to="/notifications">
-                                    <label> Notificaciones </label>
-                                    <MdNotifications className="icons" />
-                                </Link>
-                            </li>
-                            <li className="menuItem">
                                 <Link className="Link" to="/" onClick={() => {
                                     localStorage.removeItem("authToken");
                                     localStorage.removeItem("userName");
                                     localStorage.removeItem("roleName");
                                     setRoleName(''); 
                                     logout();
-                                    window.location.reload()
                                     navigate("/")
+                                    window.location.reload()
                                 }}>
                                     <label> Cerrar sesión </label>
                                     <MdLogin className="icons" />

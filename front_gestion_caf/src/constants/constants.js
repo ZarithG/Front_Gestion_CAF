@@ -8,8 +8,8 @@ export const USER_TYPE = {
 
 export const SERVICES_BACK = {
     GOOGLELOGIN: "http://localhost:9093/auth/google/login",
-    LOGINAUTH: 'http://54.175.186.157:9093/auth/login',
-    LOGOUTAUTH: 'http://54.175.186.157:9093/auth/logout ',
+    LOGINAUTH: 'http://localhost:9093/auth/login',
+    LOGOUTAUTH: 'http://localhost:9093/auth/logout ',
     USERAUTH: 'http://localhost:9093/auth/verify/user',
     PASSWORDAUTH: 'http://localhost:9093/auth/change/password',
     CREATEAUTH: 'http://localhost:9093/auth/create',
@@ -37,8 +37,13 @@ export const SERVICES_BACK = {
     GET_IDCAF_BY_USER_EMAIL: 'http://localhost:9093/caf/',
     
     POST_CAF_INSCRIPTION: 'http://localhost:9093/caf/inscription/inscribe-user/',
+    POST_CAF_ACCEPT_INSCRIPTION: 'http://localhost:9093/caf/inscription/accept-inscription/',
+    POST_CAF_REJECT_INSCRIPTION: 'http://localhost:9093/caf/inscription/reject-inscription/',
+    POST_CAF_INACTIVE_INSCRIPTION: 'http://localhost:9093/caf/inscription/inactive-inscription/',
+    POST_CAF_ACTIVE_INSCRIPTION: 'http://localhost:9093/caf/inscription/active-inscription/',
     POST_CONSENT_FILE: "http://localhost:9093/caf/files/upload/",
     GET_ALL_CAF_INSCRIPTIONS: "http://localhost:9093/caf/inscription/all/coordinator-email/",
+    GET_ALL_CAF_ACTIVE_INSCRIPTIONS: "http://localhost:9093/caf/inscription/all-active/coordinator-email/",
     POST_SAVE_SHIFT: "http://localhost:9093/shift/saveShift",
     POST_INSTANCE_SHIFT: "http://localhost:9093/shift/reserve/create-shift-instances/",
     POST_SHIFT_RESERVE: 'http://localhost:9093/shift/reserve/reserve-shift-user',

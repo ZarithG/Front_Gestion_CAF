@@ -2,9 +2,9 @@ import React, { useState, useEffect} from "react";
 import { useNavigate } from "react-router-dom";
 import "./styles/PagesAdmin.css";
 import { IoMdSearch } from "react-icons/io";
-import { MessagesError, MessagesSuccess } from '../../gestion-caf/Messages';
 import { SERVICES_BACK } from "../../../constants/constants";
-import { Toaster } from "sonner"; 
+import { MessagesError, MessagesSuccess, showToastPromise } from "../../gestion-caf/Messages";
+import { Toaster } from "sonner";
 
 const initialUsers = [];
 
@@ -19,16 +19,49 @@ const UserRegistrationRequest = () => {
         fetchCAFInscriptions(); // Llama a la función al cargar el componente
       }, []);
 
-    const declineUser = (index) => {
-        if (window.confirm("¿Estás seguro de que deseas rechazar la solicitud?")) {
-            const updatedUsers = users.filter((_, i) => i !== index);
-            setUsers(updatedUsers);
+    const declineUser = async (index) => {
+        const token = localStorage.getItem("authToken");
+        const response = await fetch(SERVICES_BACK.POST_CAF_REJECT_INSCRIPTION + index, {
+            method: 'POST',
+            headers: {
+                'Authorization': `Bearer ${token}`,
+                'Content-Type': 'application/json',
+                credentials: 'include'
+            }
+        });
+        if (!response.ok) {
+            if (response.status === 204) {
+                MessagesError('No se pudo rechazar la inscripción correctamente');
+            } else {
+                MessagesError('Hubo un error en el servidor');
+            }
+            return;
+        }else{
+            MessagesSuccess("Inscripción rechazada correctamente");
+            window.location.reload();
         }
     };
 
-    const acceptUser = (index) => {
-        if (window.confirm("¿Estás seguro de que deseas aceptar la solicitud?")) {
-            alert("Usuario aceptado");
+    const acceptUser = async (index) => {
+        const token = localStorage.getItem("authToken");
+        const response = await fetch(SERVICES_BACK.POST_CAF_ACCEPT_INSCRIPTION + index, {
+            method: 'POST',
+            headers: {
+                'Authorization': `Bearer ${token}`,
+                'Content-Type': 'application/json',
+                credentials: 'include'
+            }
+        });
+        if (!response.ok) {
+            if (response.status === 204) {
+                MessagesError('No se pudo aceptar la inscripción correctamente');
+            } else {
+                MessagesError('Hubo un error en el servidor');
+            }
+            return;
+        }else{
+            MessagesSuccess("Inscripción aceptada correctamente");
+            window.location.reload();
         }
     };
 
@@ -36,43 +69,65 @@ const UserRegistrationRequest = () => {
 
     const filteredUsers = users.filter(
         (user) =>
-            user.code.toLowerCase().includes(search.toLowerCase()) ||
+            user.inscriptionId ||
+            user.documentNumber ||
             user.name.toLowerCase().includes(search.toLowerCase()) ||
-            user.lastname.toLowerCase().includes(search.toLowerCase())
+            user.email.toLowerCase().includes(search.toLowerCase()) ||
+            user.userType.toLowerCase().includes(search.toLowerCase())
     );
+
+    const classifyUser = (userType) => {
+        if(userType === "STUDENT"){
+            return "ESTUDIANTE";
+        }else{
+            if(userType === "EXTERN"){
+                return "EXTERNO";
+            }else{
+                if(userType === "ADMINISTRATIVE"){
+                    return "ADMINISTRATIVO";
+                }
+            }
+        }
+        return "NA";
+    }
 
     const fetchCAFInscriptions = async () => {
         try {
             const token = localStorage.getItem("authToken");
-            console.log(token)
-            const response = await fetch(SERVICES_BACK.GET_ALL_CAF_INSCRIPTIONS + localStorage.getItem("userName"), {
-                method: 'GET',
-                headers: {
-                    'Authorization': `Bearer ${token}`,
-                    'Content-Type': 'application/json',
-                    credentials: 'include'
+            const promiseFn = async () => {
+                const response = await fetch(SERVICES_BACK.GET_ALL_CAF_INSCRIPTIONS + localStorage.getItem("userName"), {
+                    method: 'GET',
+                    headers: {
+                        'Authorization': `Bearer ${token}`,
+                        'Content-Type': 'application/json',
+                        credentials: 'include'
+                    }
+                });
+                if (!response.ok) {
+                    if (response.status === 204) {
+                        MessagesError('No hay inscripciones registradas en el CAF');
+                    } else {
+                        MessagesError('Hubo un error en el servidor');
+                    }
+                    return;
                 }
-            });
-            if (!response.ok) {
-                if (response.status === 204) {
-                    MessagesError('No hay inscripciones registradas en el CAF');
-                } else {
-                    MessagesError('Hubo un error en el servidor');
-                }
-                return;
-            }
-            
-            const data = await response.json(); // Convierte la respuesta a JSON
-
-            // Mapea los datos del backend al formato requerido por initialUsers
-            const formattedUsers = data.map((item) => ({
-                documentNumber: item.documentNumber,
-                name: item.name,
-                email: item.email,
-                userType: item.userType,
-            }));
-
-            setUsers(formattedUsers);
+                
+                const data = await response.json(); // Convierte la respuesta a JSON
+                // Mapea los datos del backend al formato requerido por initialUsers
+                const formattedUsers = data.map((item) => ({
+                    inscriptionId: item.inscriptionId,
+                    documentNumber: item.userAllDataDTO.documentNumber,
+                    name: item.userAllDataDTO.name,
+                    email: item.userAllDataDTO.email,
+                    userType: classifyUser(item.userAllDataDTO.userType),
+                }));
+                setUsers(formattedUsers);
+            };
+            await showToastPromise(
+                promiseFn(),
+                "Datos del CAF cargados correctamente.",
+                "Error al cargar los datos."
+            );
         } catch (error) {
             MessagesError('Hubo un error en el servidor');
         }
@@ -121,6 +176,7 @@ const UserTable = ({ users, acceptUser, declineUser, viewUser }) => (
     <table className="table">
         <thead className="table-header-head">
             <tr className="table-row">
+                <th className="table-cell">Número Inscripción</th>
                 <th className="table-cell">Documento</th>
                 <th className="table-cell">Nombre</th>
                 <th className="table-cell">Correo Electrónico</th>
@@ -133,7 +189,7 @@ const UserTable = ({ users, acceptUser, declineUser, viewUser }) => (
                 <UserTableRow
                     key={`${user.code}- ${ index }`}
             user={user}
-            index={index}
+            index={user.inscriptionId}
             acceptUser={acceptUser}
             declineUser={declineUser}
             viewUser={viewUser}
@@ -145,6 +201,7 @@ const UserTable = ({ users, acceptUser, declineUser, viewUser }) => (
 
 const UserTableRow = ({ user, index, acceptUser, declineUser, viewUser }) => (
     <tr className="table-row">
+        <td className="table-cell">{user.inscriptionId}</td>
         <td className="table-cell">{user.documentNumber}</td>
         <td className="table-cell">{user.name}</td>
         <td className="table-cell">{user.email}</td>
