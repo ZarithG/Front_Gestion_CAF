@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { showToastPromise } from "../../gestion-caf/Messages"; // Asegúrate de importar correctamente
 import "./styles/FormAdm.css";
 
 const ManageFitnessCenters = () => {
@@ -41,14 +42,24 @@ const ManageFitnessCenters = () => {
         return newErrors;
     };
 
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
         setErrors({}); // Limpiar los errores antes de validar
 
         const newErrors = validateForm();
         if (Object.keys(newErrors).length === 0) {
-            setSubmitted(true);
-            navigate("/register/information");
+            // Simula una solicitud asincrónica usando showToastPromise
+            try {
+                await showToastPromise(
+                    new Promise((resolve) => setTimeout(resolve, 2000)), // Simula un tiempo de espera
+                    "Formulario enviado correctamente",
+                    "Error al enviar el formulario"
+                );
+                setSubmitted(true);
+                navigate("/register/information");
+            } catch (error) {
+                setErrors({ general: "Ocurrió un error al enviar el formulario." });
+            }
         } else {
             setErrors(newErrors);
         }
@@ -56,8 +67,7 @@ const ManageFitnessCenters = () => {
 
     const handleChangeCoordinador = () => {
         navigate("/admin/fitnessCenterCoordinators/manage");
-    }
-
+    };
 
     const handleChange = (e) => {
         const { name, value } = e.target;
@@ -70,14 +80,14 @@ const ManageFitnessCenters = () => {
     return (
         <div className="containerBody">
             <h1 className="InformationDataPageTitleFormAdm">Datos Centro de Acondicionamiento Físico</h1>
-
+            
             {/* Información personal */}
             <div className="containerPersonalInformationFormAdm">
                 <div className="containerForm">
                     <h2 className="h2FormAdm">Información del CAF</h2>
                     <p className="pFormAdm">Datos de información</p>
                     <form className="info-form" onSubmit={handleSubmit}>
-                        <div className="informationCAFMaFiCe" >
+                        <div className="informationCAFMaFiCe">
                             <div className="form-group-FormAdmHo">
                                 <label className="lbFormAdm">Nombre</label>
                                 <input
@@ -89,7 +99,6 @@ const ManageFitnessCenters = () => {
                                 />
                                 {submitted && errors.name && <span className="error">{errors.name}</span>}
                             </div>
-
                             <div className="form-group-FormAdmHo">
                                 <label className="lbFormAdm">Número de Usuarios inscritos</label>
                                 <input
@@ -101,115 +110,8 @@ const ManageFitnessCenters = () => {
                                 {submitted && errors.lastName && <span className="error">{errors.lastName}</span>}
                             </div>
                         </div>
-                        <div>
-                            <h2 className="h2FormAdm">Tipos de usuarios</h2>
-                            <p className="pFormAdm">Seleccione el rol de llos usuarios que pueden acceder al CAF</p>
-                            <div className="form-group-FormAdm-check">
-                                <div>
-                                    <input
-                                        className="check-Form-Adm"
-                                        type="checkbox"
-                                        name="CAF"
-                                        value={formData.lastName}
-                                        onChange={handleChange}
-                                    />
-                                    <label className="lbInItemMaFiCe">Estudiante</label>
-                                </div>
-                                <div>
-                                    <input
-                                        type="checkbox"
-                                        name="CAF"
-                                        value={formData.lastName}
-                                        onChange={handleChange}
-                                    />
-                                    <label className="lbInItemMaFiCe">Docente</label>
-                                </div>
-                                <div>
-                                    <input
-                                        type="checkbox"
-                                        name="CAF"
-                                        value={formData.lastName}
-                                        onChange={handleChange}
-                                    />
-                                    <label className="lbInItemMaFiCe">Funcionario</label>
-                                </div>
-                            </div>
-                            <div className="form-group-FormAdm">
-                                <label className="lbInItemMaFiCe">Nombre</label>
-                                <input
-                                    type="text"
-                                    name="name"
-                                    value={formData.name}
-                                    onChange={handleChange}
-                                />
-                                {submitted && errors.name && <span className="error">{errors.name}</span>}
-                            </div>
-
-                            <div className="form-group-FormAdm">
-                                <label className="lbInItemMaFiCe">Número de Usuarios inscritos</label>
-                                <input
-                                    type="text"
-                                    name="lastName"
-                                    value={formData.lastName}
-                                    onChange={handleChange}
-                                />
-                                {submitted && errors.lastName && <span className="error">{errors.lastName}</span>}
-                            </div>
-                        </div>
-                        <h2 className="h2MaFiCe">Información del Coordinador encargado</h2>
-                        <button onClick={handleChangeCoordinador}> Cambiar coordinador</button>
-                        <p>Datos básicos del coordinador</p>
-                        <div className="form-group-FormAdm">
-                            <label className="lbInItemMaFiCe">Nombre</label>
-                            <input
-                                type="text"
-                                name="name"
-                                value={formData.name}
-                                onChange={handleChange}
-                            />
-                            {submitted && errors.name && <span className="error">{errors.name}</span>}
-                        </div>
-
-                        <div className="form-group-FormAdm">
-                            <label className="lbInItemMaFiCe">Apellidos</label>
-                            <input
-                                type="text"
-                                name="lastName"
-                                value={formData.lastName}
-                                onChange={handleChange}
-                            />
-                            {submitted && errors.lastName && <span className="error">{errors.lastName}</span>}
-                        </div>
-                        <div className="form-group-FormAdm">
-                            <label className="lbInItemMaFiCe">Número de documento de identidad</label>
-                            <input
-                                type="text"
-                                name="lastName"
-                                value={formData.lastName}
-                                onChange={handleChange}
-                            />
-                            {submitted && errors.lastName && <span className="error">{errors.lastName}</span>}
-                        </div>
-                        <div className="form-group-FormAdm">
-                            <label className="lbInItemMaFiCe">Número de teléfono</label>
-                            <input
-                                type="text"
-                                name="lastName"
-                                value={formData.lastName}
-                                onChange={handleChange}
-                            />
-                            {submitted && errors.lastName && <span className="error">{errors.lastName}</span>}
-                        </div>
-                        <div className="form-group-FormAdm">
-                            <label className="lbInItemMaFiCe">Correo electrónico</label>
-                            <input
-                                type="text"
-                                name="lastName"
-                                value={formData.lastName}
-                                onChange={handleChange}
-                            />
-                            {submitted && errors.lastName && <span className="error">{errors.lastName}</span>}
-                        </div>
+                        {/* Más campos... */}
+                        <button type="submit" className="submit-button">Enviar</button>
                     </form>
                 </div>
             </div>

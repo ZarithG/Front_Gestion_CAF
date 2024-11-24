@@ -1,12 +1,11 @@
-import React, {useState} from "react";
-import {useNavigate} from "react-router-dom";
+import React, { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import "./styles/PagesAdmin.css";
 import "./styles/FitnessCenterCordinator.css";
-import {IoMdSearch} from "react-icons/io";
-import {FiEdit} from "react-icons/fi";
-import {FaRegEye} from "react-icons/fa6";
+import { IoMdSearch } from "react-icons/io";
 import { SERVICES_BACK } from "../../../constants/constants";
-import { MessagesError, showToastPromise } from "../../gestion-caf/Messages";
+import { showToastPromise } from "../../gestion-caf/Messages";
+import { Toaster } from "sonner";
 
 // Datos iniciales
 const initialCAF = [
@@ -36,28 +35,27 @@ const FitnessCenters = () => {
                     credentials: "include",
                 },
             });
-        
+
             if (!response.ok) {
                 throw new Error("Error al obtener los datos de los usuarios");
             }
-        
+
             const data = await response.json();
-            
+
             if (Array.isArray(data)) {
                 // Filtrar y procesar los datos al formato deseado
                 const specificRole = "ROLE_CAF_COORDINATOR"; // Rol específico a filtrar
-                return data
-                    .map((user) => ({
-                        code: user.id.toString(), // Convertir el ID a una cadena
-                        fullName: user.name, // Usar el nombre completo del objeto
-                        description: user.description,
-                        email: user.coordinatorEmail, // Usar el correo como email
-                    }));
+                return data.map((user) => ({
+                    code: user.id.toString(), // Convertir el ID a una cadena
+                    fullName: user.name, // Usar el nombre completo del objeto
+                    description: user.description,
+                    email: user.coordinatorEmail, // Usar el correo como email
+                }));
             } else {
                 throw new Error("El formato de datos de CAF es incorrecto.");
             }
         };
-        
+
         try {
             await showToastPromise(
                 fetchCAF().then((processedCAF) => setCAF(processedCAF)),
@@ -67,18 +65,18 @@ const FitnessCenters = () => {
         } catch (error) {
             setError(error.message);
         }
-        
     };
 
-    fetchCAFAll();
-    
+    // Ejecutar fetchCAFAll solo al cargar el componente
+    useEffect(() => {
+        fetchCAFAll();
+    }, []);
+
     const editUser = (index) => {
         navigate("/admin/fitnessCenters/manageFitnessCenters");
     };
 
-    const removeUser = (index) => {
-        
-    };
+    const removeUser = (index) => {};
 
     const handleSearch = (event) => {
         setSearch(event.target.value);
@@ -90,23 +88,32 @@ const FitnessCenters = () => {
             user.fullName.toLowerCase().includes(search.toLowerCase()) ||
             user.email.toLowerCase().includes(search.toLowerCase())
     );
-    
 
     return (
         <div className="containerBody">
+            <Toaster
+                position="top-center"
+                dir="auto"
+                duration={2000}
+                visibleToasts={4}
+                richColors
+            />
             <h1>Gestionar Centros de Acondicionamiento</h1>
             <div className="body-containerBody">
-                <SearchBar search={search} handleSearch={handleSearch}/>
+                <SearchBar search={search} handleSearch={handleSearch} />
                 <div className="table-content">
-                    
-                    <UserTable CAF={filteredCAF} editUser={editUser} removeUser={removeUser}/>
+                    <UserTable
+                        CAF={filteredCAF}
+                        editUser={editUser}
+                        removeUser={removeUser}
+                    />
                 </div>
             </div>
         </div>
     );
 };
 
-const SearchBar = ({search, handleSearch}) => (
+const SearchBar = ({ search, handleSearch }) => (
     <div className="containerSearch">
         <div className="search-bar-field">
             <label className="lbInItem">Ingrese nombre del CAF</label>
@@ -136,31 +143,22 @@ const UserTable = ({ CAF }) => (
             </tr>
         </thead>
         <tbody>
-            
             {CAF.map((user, index) => (
-                <UserTableRow
-                    key={`${user.code}-${index}`}
-                    user={user}
-                    index={index}
-                />
+                <UserTableRow key={`${user.code}-${index}`} user={user} index={index} />
             ))}
         </tbody>
     </table>
 );
 
-const UserTableRow = ({ user, index }) => (
-
+const UserTableRow = ({ user }) => (
     <tr className="table-row">
         <td className="table-cell">{user.code}</td>
         <td className="table-cell">{user.fullName}</td>
         <td className="table-cell">{user.description}</td>
         <td className="table-cell">{user.coordinator}</td>
-        
         <td className="table-cell">
             <div className="button-container">
-                <button className="button" >
-                    Asignar
-                </button>
+                <button className="button">Asignar</button>
             </div>
         </td>
     </tr>

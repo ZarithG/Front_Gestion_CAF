@@ -62,6 +62,12 @@ const RegisterNewCoordinator = () => {
         }));
     };
 
+    const handleSave = () => {
+        if(window.confirm("Seguro de guardar un nuevo coordinador")){
+           
+        }
+    }
+
     return (
         <div className="containerBody">
             <h1 className="InformationDataPageTitleFormAdm">Completar datos básicos del coordinador</h1>
@@ -233,7 +239,7 @@ const RegisterNewCoordinator = () => {
                             {submitted && errors.confirmPassword && <span className="error">{errors.confirmPassword}</span>}
                         </div>
                         <div className="containerButtonAdm">
-                        <button className="buttonFormAdm">Guardar</button>
+                        <button className="buttonFormAdm" onClick={handleSave}>Guardar</button>
                         </div>
                     </form>
                 </div>
