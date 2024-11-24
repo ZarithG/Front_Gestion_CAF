@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { FaUserTie, FaUsers } from "react-icons/fa6";
+import { FaCalendarCheck } from "react-icons/fa";
 import { GrYoga } from "react-icons/gr";
 import { BiSolidReport } from "react-icons/bi";
 import { LuDumbbell } from "react-icons/lu";
@@ -99,7 +100,7 @@ const NavMenuAdmin = ({
                     {(roleName === USER_TYPE.COORDINATOR) && (
                         <li className="menuNavItem">
                             <Link className="LinkNav" to="/admin/registerAttendance">
-                                <IoMdCalendar className="menuNavIcon" />
+                                <FaCalendarCheck className="menuNavIcon" />
                                 {isExpanded && <span>Registrar asistencia</span>}
                             </Link>
                         </li>

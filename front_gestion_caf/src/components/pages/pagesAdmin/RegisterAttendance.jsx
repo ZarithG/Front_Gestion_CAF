@@ -4,7 +4,7 @@ import "./styles/PagesAdmin.css";
 import "./styles/FitnessCenterCordinator.css";
 import { IoMdSearch } from "react-icons/io";
 import { SERVICES_BACK } from "../../../constants/constants";
-import { MessagesSuccess, MessagesError, showToastPromise } from "../../gestion-caf/Messages";
+import { MessagesError, MessagesInfo, MessagesSuccess, showToastPromise } from "../../gestion-caf/Messages";
 
 const RegisterAttendance = () => {
     const location = useLocation();
@@ -38,7 +38,7 @@ const RegisterAttendance = () => {
             console.log("CAF ID recibido:", cafId);
             handleViewShift();
             //handleShift();
-            //fetchShiftReservations();
+            fetchShiftReservations();
         } else {
             console.error("No se recibió cafId");
             MessagesError("Seleccione un CAF.");
@@ -55,9 +55,10 @@ const RegisterAttendance = () => {
                     credentials: "include",
                 },
             });
-            const data = await response.json();
-            console.log(data);
-            if (data.id) {
+            
+            if (response.status === 200) {
+                const data = await response.json();
+                console.log("ACTUAL"+data);
                 setTurno(`T ${data.startTime} a ${data.endTime}`)
                 setShiftActual({
                     id: data.id, // ID del turno
@@ -67,8 +68,12 @@ const RegisterAttendance = () => {
                     placeAvailable: data.placeAvailable, // Lugares disponibles
                 });
                 
-            } else {
-                throw new Error("El formato de datos de CAF es incorrecto.");
+            } else if(response.status === 204){
+                MessagesInfo("No hay un turno actual.");
+                return;
+            } else{
+                MessagesError("Error en el servidor");
+                return;
             }
         } catch (error) {
             console.error("Error al cargar el turno:", error);
@@ -78,23 +83,25 @@ const RegisterAttendance = () => {
 
     //Método par aobtener el id del CAF de un coodinador
     const getCafId = async () => {
-        try {
-            const token = localStorage.getItem("authToken");
-            const response = await fetch(SERVICES_BACK.GET_IDCAF_BY_USER_EMAIL + localStorage.getItem('userName'), {
-                method: 'GET',
-                headers: {
-                    'Authorization': `Bearer ${token}`,
-                    credentials: 'include',
-                },
-            });
-            const data = await response.json();
-            console.log(data)
-            setCafId(data);
-
-        } catch (error) {
-            console.error("Error al obtener id del fitnessCenter:", error);
-            MessagesError("Error al obtener id del fitnessCenter.");
-        }
+        
+            try {
+                const token = localStorage.getItem("authToken");
+                const response = await fetch(SERVICES_BACK.GET_IDCAF_BY_USER_EMAIL + localStorage.getItem('userName'), {
+                    method: 'GET',
+                    headers: {
+                        'Authorization': `Bearer ${token}`,
+                        credentials: 'include',
+                    },
+                });
+                const data = await response.json();
+                console.log(data)
+                setCafId(data);
+    
+            } catch (error) {
+                console.error("Error al obtener id del fitnessCenter:", error);
+                MessagesError("Error al obtener id del CAF.");
+            }
+        
     };
 
 
@@ -120,7 +127,8 @@ const RegisterAttendance = () => {
     };
 
     const fetchShiftReservations  = async () => {
-        const token = localStorage.getItem("authToken");
+        if(shiftActual.id != 0){
+            const token = localStorage.getItem("authToken");
         const response = await fetch(SERVICES_BACK.GET_RESERVE_BY_SHIFT + shiftActual.id, {
             method: 'GET',
                 headers: {
@@ -129,12 +137,21 @@ const RegisterAttendance = () => {
                 },
         });
 
-        if (!response.ok) {
-            throw new Error("Error al obtener los datos de los usuarios");
+        if (response.ok) {
+            const data = await response.json();
+            if(Array.isArray(data))
+                setShiftReservations(data);
+            else
+                MessagesError("Ocurrió un error")
+            
+        }else if(response.status === 204){
+                MessagesInfo("No se encontraron reservaciones para el turno actual.")
+                return;
+        }else{
+            MessagesError("Error en el servidor al cargar las reserevaciones del turno actual.")
+            return;
         }
-
-        const data = await response.json();
-        setShiftReservations(data);
+        }
     };
 
     const fetchRegisterAttendance = async () => {
@@ -172,21 +189,38 @@ const RegisterAttendance = () => {
     };
 
     const fetchFinishShiftInstanceActual = async () => {
-        try {
-            const token = localStorage.getItem("authToken");
-            const response = await fetch(SERVICES_BACK.POST_FINISH_INSTANCE_ACT + shiftActual, {
-                method: "POST",
-                headers: {
-                    'Authorization': `Bearer ${token}`,
-                    credentials: "include",
-                    'Content-Type': 'application/json'
+        if(shiftActual.id != 0){
+            console.log("ID ACTUAL"+shiftActual.id );
+            try {
+                const token = localStorage.getItem("authToken");
+                const response = await fetch(SERVICES_BACK.POST_FINISH_INSTANCE_ACT + shiftActual, {
+                    method: "POST",
+                    headers: {
+                        'Authorization': `Bearer ${token}`,
+                        credentials: "include"
+                    }
+                });
+    
+                if (response.status !== 200) {
+                    if(response.status === 204){
+                        MessagesInfo("No fue posible finalizar el turno actual, por favor intente de nuevo.");
+                        return;
+                    }else{
+                        MessagesInfo("Error al finalizar el turno actual");
+                        return;
+                        
+                    }
+                }else{
+                    const data = await response.json();
+                    MessagesSuccess("Se finalizó exitosamente el turno actual.");
                 }
-            });
-            const data = await response.json();
-            
-        } catch (error) {
-            console.error("Error al cargar el turno:", error);
-            MessagesError("Error al cargar el turno.");
+                
+            } catch (error) {
+                console.error("Error al cargar el turno:", error);
+                MessagesError("Error al cargar el turno.");
+            }
+        }else{
+            MessagesInfo("No hay un turno actual.");
         }
     };
     const handleSearch = (event) => setSearch(event.target.value);

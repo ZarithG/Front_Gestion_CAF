@@ -142,3 +142,9 @@ td{
 .form-group {
   flex: 1; /* Para que cada campo ocupe la misma cantidad de espacio */
 }
+
+.inline-container {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}

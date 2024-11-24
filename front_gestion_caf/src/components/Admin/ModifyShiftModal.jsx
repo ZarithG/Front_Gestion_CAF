@@ -5,10 +5,11 @@ import TimePicker from "react-multi-date-picker/plugins/time_picker";
 import { SERVICES_BACK } from "../../constants/constants";
 import { MessagesError, MessagesSuccess } from "../gestion-caf/Messages";
 
-const TurnoModal = ({ isOpen, onClose, onSave, day, cafId }) => {
-    const [inicio, setInicio] = useState(null);
-    const [fin, setFin] = useState(null);
-    const [cupos, setCupos] = useState(1);
+const ModifyShiftModal = ({ isOpen, onClose,  day, cafId, shiftIdEdit,startTimeEdit,endTimeEdit, placeAvailableEdit }) => {
+    const [shiftId, setShiftId] = useState(shiftIdEdit);
+    const [startTime, setStartTime] = useState(startTimeEdit);
+    const [endTime, setEndTime] = useState(endTimeEdit);
+    const [places, setPlaces] = useState(placeAvailableEdit);
     const [storageToken, setToken] = useState('');
     const [selectedDay, setSelectedDay] = useState(""); // Define selectedDay como estado
     useEffect(() => {
@@ -16,31 +17,31 @@ const TurnoModal = ({ isOpen, onClose, onSave, day, cafId }) => {
         setToken(token);
     }, []);
 
-    // Maneja el cambio de hora de inicio y calcula el fin automáticamente
+    // Maneja el cambio de hora de startTime y calcula el endTime automáticamente
     const handleInicioChange = (newDateTime) => {
         const inicioDate = newDateTime ? new Date(newDateTime) : new Date();
-        setInicio(inicioDate);
+        setStartTime(inicioDate);
 
-        // Calcula la hora de fin sumando 75 minutos
+        // Calcula la hora de endTime sumando 75 minutos
         const newFin = new Date(inicioDate);
         newFin.setMinutes(newFin.getMinutes() + 75);
-        setFin(newFin);
+        setEndTime(newFin);
     };
 
-    // Maneja la hora de fin manualmente si se modifica
+    // Maneja la hora de endTime manualmente si se modifica
     const handleFinChange = (newDateTime) => {
         const finDate = newDateTime ? new Date(newDateTime) : new Date();
-        setFin(finDate);
+        setEndTime(finDate);
     };
 
     // Función para guardar los datos
     const handleSave = async () => {
-        if (!inicio || !fin || fin <= inicio) {
-            alert("La hora de fin debe ser posterior a la hora de inicio.");
+        if (!startTime || !endTime || endTime <= startTime) {
+            alert("La hora de fin debe ser posterior a la hora de startTime.");
             return;
         }
 
-        if (cupos < 1) {
+        if (places < 1) {
             alert("El número de cupos debe ser al menos 1.");
             return;
         }
@@ -53,8 +54,8 @@ const TurnoModal = ({ isOpen, onClose, onSave, day, cafId }) => {
 
         };
 
-        const formattedInicio = inicio ? formatTo24Hours(inicio) : "00:00:00";
-        const formattedFin = fin ? formatTo24Hours(fin) : "00:00:00";
+        const formattedInicio = startTime ? formatTo24Hours(startTime) : "00:00:00";
+        const formattedFin = endTime ? formatTo24Hours(endTime) : "00:00:00";
 
         console.log(JSON.stringify({
             id: 0,
@@ -65,15 +66,15 @@ const TurnoModal = ({ isOpen, onClose, onSave, day, cafId }) => {
                 dayAssignment: 1,
                 startTime: formattedInicio,
                 endTime: formattedFin,
-                placeAvailable: cupos
+                placeAvailable: places
             }
             ]
         }))
         try {
             const token = storageToken;
 
-            const response = await fetch(SERVICES_BACK.POST_SAVE_SHIFT, {
-                method: 'POST',
+            const response = await fetch(SERVICES_BACK.PUT_EDIT_SHIFT, {
+                method: 'PUT',
                 headers: {
                     'Authorization': `Bearer ${token}`,
                     'Content-Type': 'application/json'
@@ -83,12 +84,11 @@ const TurnoModal = ({ isOpen, onClose, onSave, day, cafId }) => {
                     fitnessCenter: cafId,
                     day: day,
                     shifts: [{
-                        id: 0,
+                        id: shiftIdEdit,
                         dayAssignment: 1,
                         startTime: formattedInicio,
                         endTime: formattedFin,
-                        placeAvailable: cupos,
-                        status:true
+                        placeAvailable: places
                     }
                     ]
                 })
@@ -106,14 +106,14 @@ const TurnoModal = ({ isOpen, onClose, onSave, day, cafId }) => {
             const data = await response.json();
 
             if (data) {
-                MessagesSuccess('Datos guardados exitosamente');
-                setInicio(null);
-                setFin(null);
-                setCupos(1);
+                MessagesSuccess('Datos modificados exitosamente');
+                setStartTime(null);
+                setEndTime(null);
+                setPlaces(1);
                 onClose(); // Opcional, según tu flujo
             }
             else {
-                MessagesError('No se pudieron guardar los datos');
+                MessagesError('No se pudieron modificar los datos');
             }
         } catch (error) {
             MessagesError('Hubo un error en el servidor');
@@ -126,12 +126,12 @@ const TurnoModal = ({ isOpen, onClose, onSave, day, cafId }) => {
     return (
         <div className="modal-overlay">
             <div className="modal-content">
-                <h2>Añadir Turno</h2>
+                <h2>Editar Turno</h2>
                 <div className="containerNewShift">
                     <label>Hora de inicio</label>
                     <DatePicker
                         disableDayPicker
-                        value={inicio}
+                        value={startTime}
                         onChange={handleInicioChange}
                         format="HH:mm:ss"
                         plugins={[<TimePicker position="bottom" />]}
@@ -141,7 +141,7 @@ const TurnoModal = ({ isOpen, onClose, onSave, day, cafId }) => {
                     <label className="lbNewShift">Hora de fin</label>
                     <DatePicker
                         disableDayPicker
-                        value={fin}
+                        value={endTime}
                         onChange={handleFinChange}
                         format="HH:mm:ss"
                         plugins={[<TimePicker position="bottom" />]}
@@ -151,21 +151,21 @@ const TurnoModal = ({ isOpen, onClose, onSave, day, cafId }) => {
                     <label className="lbNewShift">Cupos</label>
                     <input
                         type="number"
-                        value={cupos}
+                        value={places}
                         onChange={(e) => {
                             const value = parseInt(e.target.value, 10);
-                            setCupos(isNaN(value) ? 1 : Math.max(1, value));
+                            setPlaces(isNaN(value) ? 1 : Math.max(1, value));
                         }}
                         min="1"
                     />
                 </div>
                 <div className="modal-buttons">
                     <button onClick={onClose}>Cancelar</button>
-                    <button onClick={handleSave}>Añadir</button>
+                    <button onClick={handleSave}>Editar</button>
                 </div>
             </div>
         </div>
     );
 };
 
-export default TurnoModal;
+export default ModifyShiftModal;

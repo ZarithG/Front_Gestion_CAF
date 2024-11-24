@@ -7,6 +7,7 @@ import { FaEdit } from "react-icons/fa";
 import { SERVICES_BACK } from "../../../constants/constants";
 import { MessagesError, MessagesSuccess, showToastPromise } from "../../gestion-caf/Messages";
 import { Toaster } from "sonner";
+import ModifyShiftModal from "../../Admin/ModifyShiftModal";
 
 
 
@@ -20,17 +21,84 @@ const initialTurnos = {
 
 const AssignShiftsQuotas = () => {
     const [caf, setCaf] = useState([]);
-    const [error, setError] = useState("");
+    const [cafId ,setCafId] = useState(0);
     const [turnos, setTurnos] = useState(initialTurnos);
     const [activeDay, setActiveDay] = useState(null);
     const [isModalOpen, setModalOpen] = useState(false);
+    const [isModalEditOpen, setModalEditOpen] = useState(false);
     const [selectedDay, setSelectedDay] = useState(null);
     const [selectedCaf, setSelectedCaf] = useState(null); // Estado para almacenar el CAF seleccionado
+    const [shiftIdEdit, setShiftIdEdit] = useState("");
+    const [startTimeEdit, setStartTimeEdit] = useState("");
+    const [endTimeEdit, setEndTimeEdit] = useState("");
+    const [placeAvailableEdit, setPlaceAvailableEdit] = useState(0);
     const [token, setToken] = useState("");
-    const navigate = useNavigate();
 
     useEffect(() => {
-        setToken(localStorage.getItem("authToken"));
+        getCafId();
+        if (cafId > 0) {
+            console.log("CAF ID recibido:", cafId);
+            const promiseFn = async () => {
+                const token = localStorage.getItem("authToken");
+                const response = await fetch(SERVICES_BACK.GET__ALL_CAF, {
+                    method: 'GET',
+                    headers: {
+                        'Authorization': `Bearer ${token}`,
+                        credentials: 'include',
+                    },
+                });
+                const data = await response.json();
+    
+                if (Array.isArray(data)) {
+                    setCaf(data);
+                } else {
+                    throw new Error("El formato de datos de CAF es incorrecto.");
+                }
+            };
+    
+            await showToastPromise(
+                promiseFn(),
+                "Datos del CAF cargados correctamente.",
+                "Error al cargar los datos."
+            );
+
+            handleViewShift();
+            
+        } else {
+            console.error("No se recibió cafId");
+        }
+    }, [cafId]);
+
+    //Método par aobtener el id del CAF de un coodinador
+    const getCafId = async () => {
+        
+        try {
+            const token = localStorage.getItem("authToken");
+            const response = await fetch(SERVICES_BACK.GET_IDCAF_BY_USER_EMAIL + localStorage.getItem('userName'), {
+                method: 'GET',
+                headers: {
+                    'Authorization': `Bearer ${token}`,
+                    credentials: 'include',
+                },
+            });
+
+            if(response.ok){
+                const data = await response.json();
+                console.log(data)
+                setCafId(data);
+            }else if(response.status === 204){
+                MessagesError("Recargar la página para carga datos");    
+            }
+
+        } catch (error) {
+            console.error("Error al obtener id del fitnessCenter:", error);
+            MessagesError("Error al obtener id del CAF.");
+        }
+    
+};
+
+const fetchCAFS = async () => {
+    setToken(localStorage.getItem("authToken"));
         const fetchCAF = async () => {
             const promiseFn = async () => {
                 const token = localStorage.getItem("authToken");
@@ -56,9 +124,42 @@ const AssignShiftsQuotas = () => {
                 "Error al cargar los datos."
             );
         };
+}
+
+
+const findCAF = async () => {
     
-        fetchCAF();
-    }, []);
+}
+    // useEffect(() => {
+    //     setToken(localStorage.getItem("authToken"));
+    //     const fetchCAF = async () => {
+    //         const promiseFn = async () => {
+    //             const token = localStorage.getItem("authToken");
+    //             const response = await fetch(SERVICES_BACK.GET__ALL_CAF, {
+    //                 method: 'GET',
+    //                 headers: {
+    //                     'Authorization': `Bearer ${token}`,
+    //                     credentials: 'include',
+    //                 },
+    //             });
+    //             const data = await response.json();
+    
+    //             if (Array.isArray(data)) {
+    //                 setCaf(data);
+    //             } else {
+    //                 throw new Error("El formato de datos de CAF es incorrecto.");
+    //             }
+    //         };
+    
+    //         await showToastPromise(
+    //             promiseFn(),
+    //             "Datos del CAF cargados correctamente.",
+    //             "Error al cargar los datos."
+    //         );
+    //     };
+    
+    //     fetchCAF();
+    // }, []);
     
 
     const toggleDay = (day) => {
@@ -76,9 +177,14 @@ const AssignShiftsQuotas = () => {
         setModalOpen(true);
     };
 
-    const editTurno = (cafId) => {
-        console.log(cafId)
-        navigate("/admin/registerAttendance", { state: { cafId } });
+    const editTurno = (dayAssignmentId, shiftId, startTime, endTime, places) => {
+        setSelectedDay(dayAssignmentId);
+        setShiftIdEdit(shiftId);
+        setEndTimeEdit(endTime);
+        setStartTimeEdit(startTime);
+        setPlaceAvailableEdit(places);
+        console.log("HOLA"+startTimeEdit);
+        setModalEditOpen(true);
     };
 
 
@@ -100,7 +206,7 @@ const AssignShiftsQuotas = () => {
                         dayAssignment: turnos[day][index].dayAssignment,
                         startTime: turnos[day][index].inicio,
                         endTime: turnos[day][index].fin,
-                        placeAvailable: 0
+                        placeAvailable: turnos[day][index].cupos
                     }]
                 })
             });
@@ -112,8 +218,10 @@ const AssignShiftsQuotas = () => {
                 console.log('Error Data:', errorData);  // Imprime la respuesta completa de error
                 if (response.status === 400) {
                     MessagesError('Bad request');
-                } else {
-                    MessagesError('Hubo un error en el servidor');
+                } else if(response.status === 404) {
+                    MessagesError('Hubo un error al eliminar el turno.');
+                } else{
+                    MessagesError('Hubo un error en el servidor.');
                 }
                 return;
             }
@@ -163,7 +271,7 @@ const AssignShiftsQuotas = () => {
                             inicio: shift.startTime || "00:00", // Hora de inicio del turno
                             fin: shift.endTime || "00:00", // Hora de fin del turno
                             dayAssignment: shift.dayAssignment,
-                            cupos: shift.placeAvailable || 0, // Cambiar según la propiedad real para "cupos"
+                            cupos: shift.placeAvailable , // Cambiar según la propiedad real para "cupos"
                         });
                     }
                 });
@@ -189,7 +297,10 @@ const AssignShiftsQuotas = () => {
                 console.log('Error Data:', errorData);  // Imprime la respuesta completa de error
                 if (response.status === 400) {
                     MessagesError('Bad request');
-                } else {
+                } else if(response.status === 204){
+                    MessagesError('No es posible cargar los turnos');
+                } 
+                else {
                     MessagesError('Hubo un error en el servidor');
                 }
                 return;
@@ -220,25 +331,17 @@ const AssignShiftsQuotas = () => {
                     credentials: 'include',
                 },
             });
+
             const data = await response.json();
     
             if (Array.isArray(data)) {
                 const classifiedShifts = classifyShiftsByDay(data);
                 setTurnos(classifiedShifts);
+                console.log(turnos);
             } else {
                 throw new Error("El formato de datos de CAF es incorrecto.");
             }
         };
-    
-        if (selectedCaf) {
-            showToastPromise(
-                fetchShift(),
-                "Turnos cargados correctamente.",
-                "Error al cargar los turnos."
-            );
-        } else {
-            MessagesError("Seleccione un CAF.");
-        }
     };
     
 
@@ -254,9 +357,12 @@ const AssignShiftsQuotas = () => {
             />
             <h1>Asignar turnos y cupos</h1>
             <div>
-                <h2>CAF</h2>
                 <div className="form-group-Reg">
-                    <label className="lbRegItem">Centro de Acondicionamiento Físico al que se desea inscribir:</label>
+                <div className="inline-container">
+                    <h1>CAF</h1>
+                    <h2>{cafId}</h2>
+                </div>
+                    {/* <label className="lbRegItem">Centro de Acondicionamiento Físico al que se desea inscribir:</label>
                     <select className="sltRegItem" onChange={handleCafChange}>
                         <option value="">Seleccione un CAF</option>
                         {caf.length > 0 ? (
@@ -266,7 +372,7 @@ const AssignShiftsQuotas = () => {
                         ) : (
                             <option disabled>Cargando caf...</option>
                         )}
-                    </select>
+                    </select> */}
                     <button onClick={handleViewShift}>Mostrar Turnos</button>
                 </div>
 
@@ -298,7 +404,7 @@ const AssignShiftsQuotas = () => {
                                                     <td>{turno.cupos}</td>
                                                     <td className="tdbutton">
                                                         <div className="containerButtons">
-                                                            <button className="buttonAssign" onClick={() => editTurno(selectedCaf.id)}><FaEdit /></button>
+                                                            <button className="buttonAssign" onClick={() => editTurno(turnos[day][index].dayAssignment,turnos[day][index].id, turnos[day][index].inicio, turnos[day][index].fin, turnos[day][index].cupos)}><FaEdit /></button>
                                                             <button className="buttonAssign" onClick={() => removeTurno(day, index)}><MdDelete /></button>
                                                         </div>
                                                     </td>
@@ -314,7 +420,7 @@ const AssignShiftsQuotas = () => {
                         </div>
                     ))}
                     
-                    <button onClick={handleInstance}>Crear turnos</button>
+                    <button onClick={handleInstance}>Finalizar semestre</button>
                 </div>
             </div>
 
@@ -325,6 +431,15 @@ const AssignShiftsQuotas = () => {
                 day={selectedDay}
                 cafId={selectedCaf?.id} // Pasa el ID del CAF seleccionado
             />
+            <ModifyShiftModal 
+                isOpen={isModalEditOpen}
+                onClose={() => setModalEditOpen(false)}
+                day= {selectedDay}
+                cafId = {selectedCaf} 
+                shiftIdEdit={shiftIdEdit}
+                startTimeEdit = {startTimeEdit}
+                endTimeEdit = {endTimeEdit}
+                placeAvailableEdit = {placeAvailableEdit}/>
         </div>
     );
 };

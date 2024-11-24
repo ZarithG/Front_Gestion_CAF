@@ -8,20 +8,16 @@ import { SERVICES_BACK } from "../../../../constants/constants";
 import { MessagesError, MessagesInfo, MessagesSuccess, showToastPromise,showToastWarning } from "../../../gestion-caf/Messages";
 import AttendanceTable from "./AttendanceTable";
 import { Toaster, toast } from "sonner";
+import { is } from "date-fns/locale";
 
 const ReportAttendedShift = () => {
     
     const [shifts, setShifts] = useState([
-        { dayName: "Lunes", shift: "7:00 a 8:00", placeAvailable:40,attended: 15, noAttended: 5, total: 20 },
-        { dayName: "Martes", shift: "8:10 a 9:00",placeAvailable:40, attended: 18, noAttended: 2, total: 20 },
-        { dayName: "Miércoles", shift: "9:10 a 10:00", placeAvailable:40,attended: 10, noAttended: 10, total: 20 },
+        //{ dayName: "Lunes", shift: "7:00 a 8:00", placeAvailable:40,attended: 15, noAttended: 5, total: 20 },
+        //{ dayName: "Martes", shift: "8:10 a 9:00",placeAvailable:40, attended: 18, noAttended: 2, total: 20 },
+        //{ dayName: "Miércoles", shift: "9:10 a 10:00", placeAvailable:40,attended: 10, noAttended: 10, total: 20 },
     ]);
-
-    const data = [
-        { dayName: "Lunes", shift: "7:00 a 8:00", placeAvailable:40,attended: 15, noAttended: 5, total: 20 },
-        { dayName: "Martes", shift: "8:10 a 9:00",placeAvailable:40, attended: 18, noAttended: 2, total: 20 },
-        { dayName: "Miércoles", shift: "9:10 a 10:00", placeAvailable:40,attended: 10, noAttended: 10, total: 20 },
-    ];
+    const [token, setToken] = useState("");
     const [labelShifts, setLabelShifts] = useState([
         { id: 1, name: "LUNES" },
         { id: 2, name: "MARTES" },
@@ -29,7 +25,6 @@ const ReportAttendedShift = () => {
         { id: 4, name: "JUEVES" },
         { id: 5, name: "VIERNES" },
     ]);
-    const [token, setToken] = useState("");
     const [caf, setCaf] = useState([]);
     const [days, setDays] = useState(labelShifts);
     const [selectedCaf, setSelectedCaf] = useState(null);
@@ -77,7 +72,23 @@ const ReportAttendedShift = () => {
 
     const fetchShifts = async () => {
         // Validar que todos los campos estén completos
-        
+        if(setSelectedCaf == null){
+            MessagesError("Debe seleccionar un caf para generar el reporte.");
+            return;
+        }
+        if(setSelectedDay == null){
+            MessagesError("Debe seleccionar un día para generar el reporte.");
+            return;
+        }
+
+        if(endDate == null){
+            if(endDate > startDate){
+                MessagesError("Debe seleccionar un rango de fecha válido para generar el reporte.");
+                return;
+            }
+            MessagesError("Debe seleccionar una fecha fin generar el reporte.");
+            return;
+        }
         try{
             const token = localStorage.getItem("authToken");
             console.log(selectedCaf);
@@ -93,8 +104,8 @@ const ReportAttendedShift = () => {
                 },
                 body:JSON.stringify(
                     {
-                        "fitnessCenter": 1,
-                        "day": "LUNES",
+                        "fitnessCenter": selectedCaf,
+                        "day": selectedDay,
                         "startDate": formatDateToLocalDate(startDate),
                         "endDate":formatDateToLocalDate(endDate)
                     }
@@ -114,8 +125,7 @@ const ReportAttendedShift = () => {
                 const data = await response.json();
                 const auxShiftsList = [];
                 
-                if (Array.isArray(data)) {
-                    
+                if (Array.isArray(data) && (data.length >0)) {
                     auxShiftsList.forEach((shift) => {
                         const auxShif = {
                             dayName: shift.day,
@@ -127,10 +137,20 @@ const ReportAttendedShift = () => {
                         };
                         auxShiftsList.push(auxShif);
                     });
-    
-                };
+
+                    if(auxShiftsList.length > 0){
+                        if(auxShiftsList[0].total == 0){
+                            MessagesError("No se encontraron turnos para el periodo de tiempo seleccionado"); 
+                        }else{
+                            MessagesSuccess("Reporte generado"); 
+                        }
+                    }else{
+                        MessagesError("No se encontraron turnos para el periodo de tiempo seleccionado"); 
+                    }
+                } 
     
                 setShifts(auxShiftsList);
+               
             }
         } catch (error) {
             console.error('Error al obtener el reporte de turnos:', error);
@@ -161,14 +181,15 @@ const ReportAttendedShift = () => {
 
     const handleCafChange = (event) => {
         const cafId = event.target.value;
-        setSelectedCaf(caf.find((item) => item.id === parseInt(cafId, 10)));
+        const selected = caf.find((item) => item.id === parseInt(cafId, 10));
+        setSelectedCaf(selected);
         console.log(selectedCaf);
     };
 
     const handleDayChange = (event) => {
         const dayId = event.target.value;
-        setSelectedDay(days.find((item) => item.id === parseInt(dayId, 10)));
-
+        const selected = days.find((item) => item.id === parseInt(dayId, 10));
+        setSelectedDay(selected);
         
     };
 
@@ -181,7 +202,8 @@ const ReportAttendedShift = () => {
                 id="cafSelect"
                 className="sltRegItem"
                 onChange={handleCafChange}
-                defaultValue=""
+                value={selectedCaf?.id || ""}
+                
             >
                 <option value="" disabled>
                     Seleccione un CAF
@@ -208,7 +230,7 @@ const ReportAttendedShift = () => {
                 id="daySelect"
                 className="sltRegItem"
                 onChange={handleDayChange}
-                defaultValue=""
+                value={selectedDay?.id || ""}
             >
                 <option value="" disabled>
                     Seleccione un día
@@ -227,35 +249,6 @@ const ReportAttendedShift = () => {
     );
 
     
-    const promiseFn = async () =>{
-        if (!selectedCaf) {
-            await showToastWarning(promiseFn(),
-                        "Debe seleccionar un dia de la semana para generar el reporte",
-                    "Error con el día seleccionado");
-            console.log("Error")
-            return;
-        }
-        if (!selectedDay) {
-            await showToastWarning(promiseFn(),
-                                "Debe seleccionar un dia de la semana para generar el reporte",
-                                "Error con el día seleccionado");
-            return;  
-        }
-        if (!startDate || !endDate) {
-            await showToastWarning(promiseFn(),
-                "Debe seleccionar un rango de fechas válido.",
-                "Error con el rango de fechas seleccionado");
-            return;
-        }
-        if (startDate > endDate) {
-            await showToastWarning(promiseFn(),
-                "Debe seleccionar una fecha de fin para generar el reporte",
-                "Error con el rango de fechas seleccionado");
-            return;
-        }
-        fetchShifts();
-    }
-   
 
     return (
         <div className="containerBody">
