@@ -148,12 +148,13 @@ const Login = ({
               >
                 Iniciar
               </button>
+              <p style={{ fontWeight: 'bold', fontSize: '1.2rem' }}>Registrarse o iniciar sesión</p>
               <button
                 onClick={googleLogin}
                 type="button"
                 className="google-button"
               >
-                Iniciar con Google <FcGoogle />
+                Google <FcGoogle />
               </button>
             </div>
           </form>

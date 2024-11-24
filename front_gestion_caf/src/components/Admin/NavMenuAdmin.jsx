@@ -49,7 +49,7 @@ const NavMenuAdmin = ({
     }
 
     return (
-        roleName !== USER_TYPE.USER && roleName !== "" && (
+        roleName !== USER_TYPE.USER && roleName !== USER_TYPE.SPORTSMAN && roleName !== "" && (
             <div
                 className={`menuNavContainer ${isExpanded ? "expanded" : "collapsed"}`}
                 onMouseEnter={handleMouseEnter}

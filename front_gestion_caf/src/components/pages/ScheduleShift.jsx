@@ -4,7 +4,7 @@ import 'react-calendar/dist/Calendar.css'; // Importa los estilos básicos de re
 import "../styles/SheduleShift.css";
 import { useNavigate } from "react-router-dom";
 import { MessagesError, MessagesSuccess } from "../gestion-caf/Messages";
-import { SERVICES_BACK } from "../../constants/constants";
+import { SERVICES_BACK, USER_TYPE } from "../../constants/constants";
 import { Toaster, toast } from "sonner";
 
 const ScheduleShift = () => {
@@ -46,35 +46,84 @@ const ScheduleShift = () => {
             }
         };
 
-
-        const fetchCAF = async () => {
-            try {
-                const response = await fetch(SERVICES_BACK.GET_USER_ACTIVE_INSCRIPTION + userEmail, {
-                    method: 'GET',
-                    headers: {
-                        'Authorization': `Bearer ${token}`,
-                        credentials: 'include',
+        
+        if (localStorage.getItem("roleName") === USER_TYPE.SPORTSMAN){
+            const fetchAllCAF = async () => {
+                try {
+                    const response = await fetch(SERVICES_BACK.GET__ALL_CAF, {
+                        method: 'GET',
+                        headers: {
+                            'Authorization': `Bearer ${token}`,
+                            credentials: 'include',
+                        }
+                    });
+                    const data = await response.json();
+                    if (Array.isArray(data)) {
+                        const processedInscriptions = data.map((item) => ({
+                            code: item.id, // Código de la inscripción
+                            fitnessCenterName: item.name, // Nombre del centro de fitness
+                            description: item.description, // Descripción del centro de fitness
+                            sectional: item.sectional.name, // Nombre de la sede
+                            inscriptionDate: "", // Fecha de inscripción
+                            status: "" // Estado de la inscripción
+                        }));
+                        setOneCAFOptions(processedInscriptions);
+    
+                    } else {
+                        setError("El formato de datos de CAF es incorrecto.");
                     }
-                });
-                const data = await response.json();
-                if (Array.isArray(data)) {
-                    const processedInscriptions = data.map((item) => ({
-                        code: item.fitnessCenterDTO.id, // Código de la inscripción
-                        fitnessCenterName: item.fitnessCenterDTO.name, // Nombre del centro de fitness
-                        description: item.fitnessCenterDTO.description, // Descripción del centro de fitness
-                        sectional: item.fitnessCenterDTO.sectional.name, // Nombre de la sede
-                        inscriptionDate: new Date(item.inscriptionDate).toLocaleString(), // Fecha de inscripción
-                        status: item.inscriptionStatus === "ACCEPTED" ? "Aceptado" : "Pendiente", // Estado de la inscripción
-                    }));
-                    setOneCAFOptions(processedInscriptions);
-
-                } else {
-                    setError("El formato de datos de CAF es incorrecto.");
+                } catch (error) {
+                    setError(error.message);
                 }
-            } catch (error) {
-                setError(error.message);
-            }
-        };
+            };
+
+            toast.promise(
+                fetchAllCAF(),
+                {
+                    loading: 'Cargando datos de CAF...',
+                    success: <b>Datos de CAF cargados correctamente.</b>,
+                    error: <b>Error al cargar los datos de CAF.</b>,
+                }
+            );
+        }else{
+            const fetchCAF = async () => {
+                try {
+                    const response = await fetch(SERVICES_BACK.GET_USER_ACTIVE_INSCRIPTION + userEmail, {
+                        method: 'GET',
+                        headers: {
+                            'Authorization': `Bearer ${token}`,
+                            credentials: 'include',
+                        }
+                    });
+                    const data = await response.json();
+                    if (Array.isArray(data)) {
+                        const processedInscriptions = data.map((item) => ({
+                            code: item.fitnessCenterDTO.id, // Código de la inscripción
+                            fitnessCenterName: item.fitnessCenterDTO.name, // Nombre del centro de fitness
+                            description: item.fitnessCenterDTO.description, // Descripción del centro de fitness
+                            sectional: item.fitnessCenterDTO.sectional.name, // Nombre de la sede
+                            inscriptionDate: new Date(item.inscriptionDate).toLocaleString(), // Fecha de inscripción
+                            status: item.inscriptionStatus === "ACCEPTED" ? "Aceptado" : "Pendiente", // Estado de la inscripción
+                        }));
+                        setOneCAFOptions(processedInscriptions);
+    
+                    } else {
+                        setError("El formato de datos de CAF es incorrecto.");
+                    }
+                } catch (error) {
+                    setError(error.message);
+                }
+            };
+
+            toast.promise(
+                fetchCAF(),
+                {
+                    loading: 'Cargando datos de CAF...',
+                    success: <b>Datos de CAF cargados correctamente.</b>,
+                    error: <b>Error al cargar los datos de CAF.</b>,
+                }
+            );
+        }
 
         toast.promise(
             fetchUserInscriptionToCAF(),
@@ -85,14 +134,7 @@ const ScheduleShift = () => {
             }
         );
 
-        toast.promise(
-            fetchCAF(),
-            {
-                loading: 'Cargando datos de CAF...',
-                success: <b>Datos de CAF cargados correctamente.</b>,
-                error: <b>Error al cargar los datos de CAF.</b>,
-            }
-        );
+
 
         toast.promise(
             fetchuser(),
