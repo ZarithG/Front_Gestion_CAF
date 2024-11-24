@@ -1,0 +1,111 @@
+/* General */
+body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+}
+
+h2, h3{
+    size:24px;
+}
+
+label{
+    size:12vb;
+    padding-left: 4px;
+    margin-right: 10px;
+}
+.containerBody {
+    padding: 20px;
+}
+
+.date{
+    size:24px;
+    color: "#706F6F";
+}
+
+.FiltersReport {
+    margin-bottom: 20px;
+}
+
+/* Flex container para ComboBoxes y Calendar */
+.FiltersContainer {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px; /* Espaciado entre los elementos */
+    justify-content: space-between; /* Asegura espacio uniforme entre elementos */
+    align-items: stretch;
+}
+
+/* Estilo de ComboBoxes */
+.ComboBoxes {
+    flex: 1; /* Ambos divs ocupan el mismo espacio */
+    min-width: 250px; /* Ancho mínimo para evitar colapsos */
+    display: flex;
+    flex-direction: column; /* Coloca los elementos en columna */
+    justify-content: space-between; /* Distribuye uniformemente los elementos dentro */
+    padding: 20px; /* Espaciado interno */
+    border: 1px solid #ddd; /* Opcional: agrega un borde para diferenciar */
+    border-radius: 8px; /* Opcional: esquinas redondeadas */
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Opcional: sombra para resaltar */
+}
+
+/* Estilo de Calendar */
+.Calendar {
+    flex: 1; /* Ambos divs ocupan el mismo espacio */
+    min-width: 250px; /* Ancho mínimo para evitar colapsos */
+    padding: 20px; /* Espaciado interno */
+    border: 1px solid #ddd; /* Opcional: agrega un borde */
+    border-radius: 8px; /* Opcional: esquinas redondeadas */
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Opcional: sombra para resaltar */
+    display: flex;
+    align-items: center; /* Centra el contenido verticalmente */
+    justify-content: center; /* Centra el contenido horizontalmente */
+}
+
+
+/* Ajusta el contenedor del combo box */
+.form-group-Reg {
+    display: flex;
+    flex-direction: column;
+    width: 100%; /* Ajusta el ancho al 100% del contenedor padre */
+    margin-bottom: 20px; /* Espaciado entre elementos */
+}
+
+/* Etiqueta del combo box */
+.lbRegItem {
+    font-size: 16px;
+    margin-bottom: 8px;
+    color: #333;
+}
+
+/* Combo box */
+.sltRegItem {
+    width: 100%; /* Ocupa todo el ancho del contenedor padre */
+    max-width: 300px; /* Establece un máximo opcional */
+    height: 40px; /* Altura del combo box */
+    padding: 5px;
+    font-size: 14px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    background-color: #fff;
+}
+
+/* Efecto al enfocar */
+.sltRegItem:focus {
+    border-color: #007bff;
+    outline: none;
+    background-color: #f9f9f9;
+}
+
+
+
+/* Responsive Design */
+@media screen and (max-width: 768px) {
+    .FiltersContainer {
+        flex-direction: column; /* Cambia a diseño vertical */
+    }
+
+    .ComboBoxes,
+    .Calendar {
+        width: 100%; /* Ocupa todo el ancho en pantallas pequeñas */
+    }
+}
