@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { FaUserTie, FaUsers } from "react-icons/fa6";
 import { GrYoga } from "react-icons/gr";
+import { BiSolidReport } from "react-icons/bi";
 import { LuDumbbell } from "react-icons/lu";
 import { MdMenu } from "react-icons/md";
 import { IoMdCalendar } from "react-icons/io";
@@ -68,6 +69,14 @@ const NavMenuAdmin = ({
                             <Link className="LinkNav" to="/admin/fitnessCenterCoordinators">
                                 <GrYoga className="menuNavIcon" />
                                 {isExpanded && <span>Coordinadores</span>}
+                            </Link>
+                        </li>
+                    )}
+                    {(roleName === USER_TYPE.DIRECTOR || roleName === USER_TYPE.ADMIN) && (
+                        <li className="menuNavItem">
+                            <Link className="LinkNav" to="/admin/reportAttendedShift">
+                                <BiSolidReport className="menuNavIcon" />
+                                {isExpanded && <span>Reportes</span>}
                             </Link>
                         </li>
                     )}

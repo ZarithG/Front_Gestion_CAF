@@ -41,6 +41,7 @@ import Information from "../../../components/pages/Register/Information";
 import ProtectedRoute from "../../../components/gestion-caf/ProtectedRoute";
 import NotFound from "../../../components/pages/NotFound";
 import { USER_TYPE } from "../../../constants/constants";
+import ReportAttendedShift from "../../../components/pages/pagesAdmin/reports/ReportAttendedShift";
 
 const AppRoutes = ({
     status, setStatus
@@ -85,6 +86,7 @@ const AppRoutes = ({
                     <Route path="fitnessCenterCoordinators/view" element={<ViewCoordinators/>} />
 
                     <Route path="registerAttendance" element={<RegisterAttendance />} />
+                    <Route path="reportAttendedShift" element={<ReportAttendedShift />} />
                     <Route path="fitnessCenters" element={<FitnessCenters />} />
                     <Route path="fitnessCenters/manageFitnessCenters" element={<ManageFitnessCenters />} />
                 </Route>

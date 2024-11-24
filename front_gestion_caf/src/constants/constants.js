@@ -51,6 +51,7 @@ export const SERVICES_BACK = {
     GET_SHIFT_INTANCE_ACT: 'http://localhost:9093/shift/shift-instances/actShift/',
     POST_FINISH_INSTANCE_ACT: 'http://localhost:9093/shift/shift-instances/finishShift/',
     PUT_DELETE_SHIFT: "http://localhost:9093/shift/deleteShift",
+    POST_SHIFTS_REPORTS_ATTENDED: "http://localhost:9093/shift/shiftsReportAttended" 
 
 }
 

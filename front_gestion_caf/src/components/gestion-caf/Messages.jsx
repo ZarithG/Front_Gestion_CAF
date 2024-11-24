@@ -32,3 +32,32 @@ export const showToastPromise = async (promiseFn, successMessage, errorMessage) 
         }
     );
 };
+
+export const showToastWarning = async (promise, warningMessage, errorMessage) => {
+    try {
+        const result = await promise;
+        return result; // Si el promiseFn se ejecuta correctamente
+    } catch (error) {
+        if (error.condition === 'missingEndDate') {
+            toast.warn(warningMessage, {
+                position: "top-right",
+                autoClose: 5000,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: true,
+                draggable: true,
+                progress: undefined,
+            });
+        } else {
+            toast.error(errorMessage, {
+                position: "top-right",
+                autoClose: 5000,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: true,
+                draggable: true,
+                progress: undefined,
+            });
+        }
+    }
+}
