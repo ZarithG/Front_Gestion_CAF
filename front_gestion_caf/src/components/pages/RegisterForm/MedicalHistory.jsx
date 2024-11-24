@@ -112,7 +112,7 @@ const MedicalHistory = () => {
         const selectedCAF = ({ id: values.CAF });
         
         const token = localStorage.getItem("authToken");
-        return fetch(SERVICES_BACK.GET_USER_ACTIVE_INSCRIPTION + localStorage.getItem("userName"), {
+        return fetch(SERVICES_BACK.GET_USER_ACTIVE_PENDING_INACTIVE_INSCRIPTION + localStorage.getItem("userName") + "?fitnessCenterId=" + values.CAF, {
             method: 'GET',
             headers: {
                 'Authorization': `Bearer ${token}`,
@@ -126,17 +126,16 @@ const MedicalHistory = () => {
                 const data = await response.json();
                 // Verifica que data sea un array antes de actualizar el estado    
                 if (Array.isArray(data)) {
-                    console.log(data)
-                    const alreadyRegistered = data.some(item => item.fitnessCenterDTO?.id === values.CAF);
-
+                    const alreadyRegistered = data.some(item => parseInt(item.fitnessCenterDTO.id , 10) === parseInt(values.CAF , 10));
                     if (alreadyRegistered) {
                         MessagesError("Señor usuario, usted ya tiene una inscripción activa en el CAF seleccionado");
                         return;
+                    }else{
+                        dispatch({ type: "SET_CAF_INFORMATION", data: selectedCAF });
+                        dispatch({ type: "SET_MEDICAL_HISTORY", data: transformedData })
+                        navigate("/registration/informedConsent");
                     }
-                    //Dispatching data to context
-                    dispatch({ type: "SET_CAF_INFORMATION", data: selectedCAF });
-                    dispatch({ type: "SET_MEDICAL_HISTORY", data: transformedData })
-                    navigate("/registration/informedConsent");
+
                 } else {
                     throw new Error("El formato de datos de CAF es incorrecto.");
                 }

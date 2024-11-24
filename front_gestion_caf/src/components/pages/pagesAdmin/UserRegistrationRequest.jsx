@@ -13,7 +13,9 @@ const UserRegistrationRequest = () => {
     const [users, setUsers] = useState(initialUsers);
     const [search, setSearch] = useState("");
 
-    const viewUser = (index) => navigate("/admin/fitnessCenterUser/view");
+    const viewUser = (user) => {
+        navigate("/admin/fitnessCenterUser/view", { state: { userData: user } });
+    }
 
     useEffect(() => {
         fetchCAFInscriptions(); // Llama a la función al cargar el componente
@@ -214,7 +216,7 @@ const UserTableRow = ({ user, index, acceptUser, declineUser, viewUser }) => (
                 <button className="button" onClick={() => declineUser(index)}>
                     ❌
                 </button>
-                <button className="button" onClick={() => viewUser(index)}>
+                <button className="button" onClick={() => viewUser(user)}>
                     👁
                 </button>
             </div>
