@@ -3,7 +3,7 @@ import Calendar from 'react-calendar';
 import 'react-calendar/dist/Calendar.css'; // Importa los estilos básicos de react-calendar
 import "../styles/SheduleShift.css";
 import { useNavigate } from "react-router-dom";
-import { MessagesError, MessagesSuccess } from "../gestion-caf/Messages";
+import { MessagesError, MessagesInfo, MessagesSuccess } from "../gestion-caf/Messages";
 import { SERVICES_BACK, USER_TYPE } from "../../constants/constants";
 import { Toaster, toast } from "sonner";
 
@@ -146,10 +146,41 @@ const ScheduleShift = () => {
         );
     }, []);
 
+    useEffect(() => {
+        const fetchShifts = async () => {
+            try {
+                const response = await fetch(
+                    `${SERVICES_BACK.GET_USER_INSTANCE_SHIFT}${selectedCaf.code}`,
+                    {
+                        method: "GET",
+                        headers: {
+                            Authorization: `Bearer ${token}`,
+                        },
+                    }
+                );
+                const data = await response.json();
+    
+                if (response.ok) {
+                    
+                    setShifts(data); // Actualiza el estado
+                } else {
+                    console.error("Error al cargar turnos:", data.message || "Error desconocido");
+                }
+            } catch (error) {
+                console.error("Error al cargar turnos:", error.message);
+            }
+        };
+    
+        if (selectedCaf) {
+            fetchShifts();
+        }
+    }, [selectedCaf, token])
+
+
     const fetchInstanceShif = async () => {
         toast.promise(
             (async () => {
-                console.log(selectedCaf)
+               
                 const response = await fetch(SERVICES_BACK.GET_USER_INSTANCE_SHIFT + selectedCaf.code, {
                     method: 'GET',
                     headers: {
@@ -159,6 +190,7 @@ const ScheduleShift = () => {
                 });
                 const data = await response.json();
                 setShifts(data);
+                
             })(),
             {
                 loading: 'Cargando turnos disponibles...',
@@ -195,41 +227,51 @@ const ScheduleShift = () => {
             MessagesError("Por favor selecciona un opción antes de agendar.");
             return;
         }
-        if (window.confirm(`Desea apartar un turno en el horario ${selectedCaf}`)) {
-            toast.promise(
-                (async () => {
-                    const response = await fetch(SERVICES_BACK.POST_SHIFT_RESERVE, {
-                        method: 'POST',
-                        headers: {
-                            'Authorization': `Bearer ${token}`,
-                            'Content-Type': 'application/json'
-                        },
-                        body: JSON.stringify({
-                            id: 0,
-                            idShiftInstance: selectedShift.id,
-                            idDayAssignment: selectedShift.dayAssignment.id,
-                            userId: user.id,
-                            dateReservation: null,
-                            reservationEnum: null,
-                        })
-                    });
 
-                    if (!response.ok) {
-                        throw new Error('Error al agendar turno.');
+        Swal({
+            title: "Agendar Turno",
+            text:`Desea apartar un turno en el horario ${selectedCaf}`,
+            icon: "warning",
+            buttons: ["No","Si"]
+        }).then(response =>{
+            if(response){
+                toast.promise(
+                    (async () => {
+                        const response = await fetch(SERVICES_BACK.POST_SHIFT_RESERVE, {
+                            method: 'POST',
+                            headers: {
+                                'Authorization': `Bearer ${token}`,
+                                'Content-Type': 'application/json'
+                            },
+                            body: JSON.stringify({
+                                id: 0,
+                                idShiftInstance: selectedShift.id,
+                                idDayAssignment: selectedShift.dayAssignment.id,
+                                userId: user.id,
+                                dateReservation: null,
+                                reservationEnum: null,
+                            })
+                        });
+    
+                        if (!response.ok) {
+                            throw new Error('Error al agendar turno.');
+                        }
+    
+                        const data = await response.json();
+                        if (data) {
+                            MessagesSuccess("Turno apartado correctamente.");
+                        }
+                    })(),
+                    {
+                        loading: 'Agendando turno...',
+                        success: <b>Turno agendado correctamente.</b>,
+                        error: <b>No se pudo agendar el turno.</b>,
                     }
-
-                    const data = await response.json();
-                    if (data) {
-                        MessagesSuccess("Turno apartado correctamente.");
-                    }
-                })(),
-                {
-                    loading: 'Agendando turno...',
-                    success: <b>Turno agendado correctamente.</b>,
-                    error: <b>No se pudo agendar el turno.</b>,
-                }
-            );
-        }
+                );
+            }
+        })
+        
+        
     };
 
     const handleDateChange = (newDate) => {
@@ -250,12 +292,21 @@ const ScheduleShift = () => {
         );
     };
 
-    const formatTime = (time) => {
-        if (!time) {
-            return "--:--"; // Devuelve un valor predeterminado si time no es válido
+    const formatTime = (time24) => {
+        if (!time24) {
+            return "--"; // O un valor predeterminado si lo prefieres
         }
-        const [hours, minutes] = time.split(':');
-        return `${hours}:${minutes}`; // Retorna el formato HH:mm
+        // Separar la hora, minuto y segundo
+        const [hours, minutes, seconds] = time24.split(":");
+    
+        // Convertir la hora de 24 horas a 12 horas
+        const hour12 = hours % 12 || 12; // Si la hora es 0 (medianoche), se muestra como 12.
+        
+        // Determinar AM o PM
+        const ampm = hours >= 12 ? "pm" : "am";
+    
+        // Retornar la hora en formato de 12 horas
+        return `${hour12}:${minutes} ${ampm}`;
     };
 
     const formatDate = (date) => {
@@ -275,11 +326,13 @@ const ScheduleShift = () => {
     const handleCafChange = (event) => {
         const cafId = parseInt(event.target.value);
         if (cafId) {
-            const selectedCaf = oneCAFOptions.find(item => item.code === cafId); // Guarda el CAF seleccionado
-            setShifts([]);
+            
+            const cafId = event.target.value;
+            const selected = oneCAFOptions.find((item) => item.id === parseInt(cafId, 10));
+            setSelectedCaf(selected);
+            
             toast.promise(
                 (async () => {
-                    console.log(selectedCaf.code)
                     const response = await fetch(SERVICES_BACK.GET_USER_INSTANCE_SHIFT + selectedCaf.code, {
                         method: 'GET',
                         headers: {
@@ -288,7 +341,15 @@ const ScheduleShift = () => {
                         }
                     });
                     const data = await response.json();
-                    setShifts(data);
+                    if(response.ok){
+                        
+                        setShifts(data);
+                    }else if(response.status == 204){
+                        MessagesInfo("No se encontraron turnos.");
+                    }else if(response.status == 404){
+                        MessagesInfo("Error al listar los turnos.");
+                    }
+                    
                 })(),
                 {
                     loading: 'Cargando turnos disponibles...',
@@ -298,6 +359,62 @@ const ScheduleShift = () => {
             );
         }
     };
+
+    const ComboBoxShifts = () =>(
+
+        <div className="containerShiftsAvailable">
+            <h2 className="titleShiftsAvailable">Turnos Disponibles</h2>
+            <p className="descriptionShiftsAvailable">Seleccione el turno al cual desea asistir</p>
+            <label htmlFor="shiftSelect" className="lbRegItem">
+                Día de la semana
+            </label>
+            <select 
+            className="sltRegItem" 
+            id="shiftSelect"
+            value={selectedShift?.id || ""}
+            onChange={handleShiftChange}>
+                <option value={""}>Seleccione un turno</option>
+                {shifts.length > 0 ? (
+                    shifts.map((shift, index) => (
+                        
+                        <option key={index} value={shift.id}>
+                            
+                            {`Turno ${index + 1}: ${(shift.date)}
+                            ${formatTime(shift.shift.startTime)} a 
+                            ${formatTime(shift.shift.endTime)}`}
+                        </option>
+                    ))
+                ) : (
+                    <option value="">No hay turnos disponibles</option>
+                )}
+            </select>
+
+        </div>
+    );
+
+    const ComboBoxCafs = () =>(
+        <div className="containerCAFSelection">
+                        <h2 className="titleCAF">CAF</h2>
+                        <p className="descriptionCAF">Seleccione el CAF en el cual desee agendar un turno.</p>
+                        <label htmlFor="cafSelect" className="lbRegItem">
+                            Centro de Acondicionamiento Físico
+                        </label>
+                        <select className="sltRegItem" 
+                        id="cafSelect"
+                        value={selectedCaf?.id || ""}
+                        onChange={handleCafChange}>
+                            <option value="">Seleccione un CAF</option>
+                            {oneCAFOptions.length > 0 ? (
+                                oneCAFOptions.map((item, index) => (
+                                    <option key={index} value={item.code}>{item.fitnessCenterName}</option>
+                                ))
+                            ) : (
+                                <option disabled>No se ha inscrito a ningun CAF aún</option>
+                            )}
+                        </select>
+
+                    </div>
+    );
 
     return (
         <div className="containerBodyScheduleShift">
@@ -311,40 +428,8 @@ const ScheduleShift = () => {
             <h1 className="titleScheduleShift">Agendar Turno</h1>
             <div className="flexContainer">
                 <div className="verticalContainer">
-                    <div className="containerCAFSelection">
-                        <h2 className="titleCAF">CAF</h2>
-                        <p className="descriptionCAF">Seleccione el CAF en el cual desee agendar un turno.</p>
-                        <select className="sltRegItem" onChange={handleCafChange}>
-                            <option value="">Seleccione un CAF</option>
-                            {oneCAFOptions.length > 0 ? (
-                                oneCAFOptions.map((item, index) => (
-                                    <option key={index} value={item.code}>{item.fitnessCenterName}</option>
-                                ))
-                            ) : (
-                                <option disabled>No se ha inscrito a ningun CAF aún</option>
-                            )}
-                        </select>
-
-                    </div>
-                    <div className="containerShiftsAvailable">
-                        <h2 className="titleShiftsAvailable">Turnos Disponibles</h2>
-                        <p className="descriptionShiftsAvailable">Seleccione el turno al cual desea asistir</p>
-                        <select className="sltRegItem" onChange={handleShiftChange}>
-                            <option value={0}>Seleccione un turno</option>
-                            {shifts.length > 0 ? (
-                                shifts.map((shift, index) => (
-                                    <option key={index} value={shift.id}>
-                                        {`Turno ${index + 1}: ${(shift.date)}
-                                        ${formatTime(shift.startTime)} a 
-                                        ${formatTime(shift.endTime)}`}
-                                    </option>
-                                ))
-                            ) : (
-                                <option value="">No hay turnos disponibles</option>
-                            )}
-                        </select>
-
-                    </div>
+                    <ComboBoxCafs />
+                    <ComboBoxShifts />
                 </div>
                 <div className="containerCalendar">
                     <Calendar
