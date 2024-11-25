@@ -122,7 +122,7 @@ const ReportAttendedShift = () => {
                 const auxShiftsList = [];
                 
                 if (Array.isArray(data) && (data.length >0)) {
-                    auxShiftsList.forEach((shift) => {
+                    data.forEach((shift) => {
                         console.log("E")
                         const auxShif = {
                             dayName: shift.day,
