@@ -108,7 +108,7 @@ const ReportAttendedShift = () => {
                     }
                 )
             });
-
+            console.log(response.status)
             if (response.status !== 200) {
                 if(response.status === 204){
                     MessagesInfo("No se encontraron turnos para el periodo de tiempo seleccionado");
@@ -123,6 +123,7 @@ const ReportAttendedShift = () => {
                 
                 if (Array.isArray(data) && (data.length >0)) {
                     auxShiftsList.forEach((shift) => {
+                        console.log("E")
                         const auxShif = {
                             dayName: shift.day,
                             shift: `${formatTime(shift.startTime)} a ${formatTime(shift.endTime)}`,
@@ -133,15 +134,16 @@ const ReportAttendedShift = () => {
                         };
                         auxShiftsList.push(auxShif);
                     });
-
+                    console.log("TAMAÑO"+auxShiftsList.length)
+                    console.log(auxShiftsList)
                     if(auxShiftsList.length > 0){
-                        if(auxShiftsList[0].total == 0){
-                            MessagesError("No se encontraron turnos para el periodo de tiempo seleccionado"); 
+                        if(auxShiftsList[0].total === 0){
+                            MessagesError("No se reservaron turnos para el periodo de tiempo seleccionado"); 
                         }else{
                             MessagesSuccess("Reporte generado"); 
                         }
                     }else{
-                        MessagesError("No se encontraron turnos para el periodo de tiempo seleccionado"); 
+                        MessagesError("Ocurrió un error"); 
                     }
                 } 
     
