@@ -17,6 +17,11 @@ const ReportAttendedShift = () => {
         //{ dayName: "Martes", shift: "8:10 a 9:00",placeAvailable:40, attended: 18, noAttended: 2, total: 20 },
         //{ dayName: "Miércoles", shift: "9:10 a 10:00", placeAvailable:40,attended: 10, noAttended: 10, total: 20 },
     ]);
+    const [shiftMoreAttended, setShiftMoreAttended] = useState([{
+       
+        shift: "",
+      
+    }]);
     const [token, setToken] = useState("");
     const [labelShifts, setLabelShifts] = useState([
         { id: 1, name: "LUNES" },
@@ -114,30 +119,38 @@ const ReportAttendedShift = () => {
                     MessagesInfo("No se encontraron turnos para el periodo de tiempo seleccionado");
                     return;
                 }else{
-                    throw new Error('Error al obtener los datos del reporte de turnos');
+                    MessagesError("Ocurrió un error"); 
+                    return;
+
                 }
-            }else{
+            }
                 const data = await response.json();
                 console.log(data)
-                const auxShiftsList = [];
-                
-                if (Array.isArray(data) && (data.length >0)) {
-                    data.forEach((shift) => {
-                        console.log("E")
-                        const auxShif = {
-                            dayName: shift.day,
+                if (Array.isArray(data)) {
+                    // Arreglo auxiliar para almacenar los turnos procesados
+                    const auxShifts = [];
+    
+                    // Recorrer los elementos de `data`
+                    for (const shift of data) {
+                        const auxShift = {
+                            dayName: shift.dayName,
                             shift: `${formatTime(shift.startTime)} a ${formatTime(shift.endTime)}`,
-                            placeAvailable: shift.maximumPlaceAvailable,
-                            attended: shift.attendedCount,
-                            noAttended: shift.noAttendedCount,
-                            total: shift.attendedCount + shift.noAttendedCount
+                            placeAvailable: shift.placeAvailable,
+                            attended: shift.attended,
+                            noAttended: shift.noAttended,
+                            total: shift.total,
                         };
-                        auxShiftsList.push(auxShif);
-                    });
-                    console.log("TAMAÑO"+auxShiftsList.length)
-                    console.log(auxShiftsList)
-                    if(auxShiftsList.length > 0){
-                        if(auxShiftsList[0].total === 0){
+                        auxShifts.push(auxShift);
+                    }
+                    console.log("TAMAÑO"+auxShifts.length)
+                    console.log(auxShifts)
+                    // Asignar el arreglo auxiliar a la variable `shifts`
+                    setShifts(auxShifts);
+                    const auxShiftsAttended = [];
+                    auxShiftsAttended.push(auxShifts[0])
+                    setShiftMoreAttended(auxShiftsAttended);
+                    if(auxShifts.length > 0){
+                        if(auxShifts[0].total === 0){
                             MessagesError("No se reservaron turnos para el periodo de tiempo seleccionado"); 
                         }else{
                             MessagesSuccess("Reporte generado"); 
@@ -145,11 +158,39 @@ const ReportAttendedShift = () => {
                     }else{
                         MessagesError("Ocurrió un error"); 
                     }
-                } 
+                   
+                } else {
+                    throw new Error("El formato de datos recibido es incorrecto.");
+                }
+                // if (Array.isArray(data) && (data.length >0)) {
+                //     data.forEach((shift) => {
+                //         console.log("E")
+                //         const auxShif = {
+                //             dayName: shift.day,
+                //             shift: `${formatTime(shift.startTime)} a ${formatTime(shift.endTime)}`,
+                //             placeAvailable: shift.maximumPlaceAvailable,
+                //             attended: shift.attendedCount,
+                //             noAttended: shift.noAttendedCount,
+                //             total: shift.attendedCount + shift.noAttendedCount
+                //         };
+                //         auxShiftsList.push(auxShif);
+                //     });
+                //     console.log("TAMAÑO"+auxShiftsList.length)
+                //     console.log(auxShiftsList)
+                //     if(auxShiftsList.length > 0){
+                //         if(auxShiftsList[0].total === 0){
+                //             MessagesError("No se reservaron turnos para el periodo de tiempo seleccionado"); 
+                //         }else{
+                //             MessagesSuccess("Reporte generado"); 
+                //         }
+                //     }else{
+                //         MessagesError("Ocurrió un error"); 
+                //     }
+                // } 
     
-                setShifts(auxShiftsList);
+                // setShifts(auxShiftsList);
                
-            }
+            
         } catch (error) {
             console.error('Error al obtener el reporte de turnos:', error);
         }
@@ -293,8 +334,8 @@ const ReportAttendedShift = () => {
                 <div className="Results">
                         <h1>Resumen reporte de Asistencias</h1>
                         <p>El turno mas concurrido en el periodo de {startDate.toLocaleDateString()} al {endDate ? endDate.toLocaleDateString() : "No seleccionada"
-                        } es el turno de 8:00 a 9:00 pm</p>
-                        <AttendanceTable columns={columnsGlobalResults} data={shifts} />
+                        } es el turno de {shiftMoreAttended[0].shift}</p>
+                        <AttendanceTable columns={columnsGlobalResults} data={shiftMoreAttended} />
                     
                 </div>
                 <div className="ResultsDateil">
