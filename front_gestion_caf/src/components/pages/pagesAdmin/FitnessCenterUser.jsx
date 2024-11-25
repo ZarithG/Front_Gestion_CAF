@@ -16,7 +16,15 @@ const FitnessCenterUser = () => {
     const [search, setSearch] = useState("");
 
     useEffect(() => {
-        fetchCAFActiveInscriptions(); // Llama a la función al cargar el componente
+        const userRole = localStorage.getItem("roleName");
+
+        if (userRole === "ROLE_WELLBEING_DIRECTOR" || userRole === "ROLE_ADMIN"){
+            fetchAllUsers();
+        }else{
+            fetchCAFActiveInscriptions(); // Llama a la función al cargar el componente
+        }
+
+        
       }, []);
 
     const editUser = (index) => navigate("/admin/fitnessCenterUser/modify");
@@ -125,6 +133,50 @@ const FitnessCenterUser = () => {
                     email: item.userAllDataDTO.email,
                     userType: classifyUser(item.userAllDataDTO.userType),
                     inscriptionStatus: item.inscriptionStatus
+                }));
+                setUsers(formattedUsers);
+            };
+            await showToastPromise(
+                promiseFn(),
+                "Datos del CAF cargados correctamente.",
+                "Error al cargar los datos."
+            );
+        } catch (error) {
+            MessagesError('Hubo un error en el servidor');
+        }
+    }
+
+    const fetchAllUsers = async () => {
+        try {
+            const token = localStorage.getItem("authToken");
+            const promiseFn = async () => {
+                const response = await fetch(SERVICES_BACK.GET_USER_ALL, {
+                    method: 'GET',
+                    headers: {
+                        'Authorization': `Bearer ${token}`,
+                        'Content-Type': 'application/json',
+                        credentials: 'include'
+                    }
+                });
+                if (!response.ok) {
+                    if (response.status === 204) {
+                        MessagesError('No hay usuarios en el sistema');
+                    } else {
+                        MessagesError('Hubo un error en el servidor');
+                    }
+                    return;
+                }
+                
+                const data = await response.json(); // Convierte la respuesta a JSON
+                console.log(data)
+                // Mapea los datos del backend al formato requerido por initialUsers
+                const formattedUsers = data.map((item) => ({
+                    inscriptionId: item.id,
+                    documentNumber: item.userAllDataDTO.documentNumber,
+                    name: item.userAllDataDTO.name,
+                    email: item.userAllDataDTO.email,
+                    userType: classifyUser(item.userAllDataDTO.userType),
+                    inscriptionStatus: item.active
                 }));
                 setUsers(formattedUsers);
             };

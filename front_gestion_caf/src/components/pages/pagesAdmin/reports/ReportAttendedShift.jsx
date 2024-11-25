@@ -8,7 +8,7 @@ import { SERVICES_BACK } from "../../../../constants/constants";
 import { MessagesError, MessagesInfo, MessagesSuccess, showToastPromise,showToastWarning } from "../../../gestion-caf/Messages";
 import AttendanceTable from "./AttendanceTable";
 import { Toaster, toast } from "sonner";
-import { is } from "date-fns/locale";
+import { da, is } from "date-fns/locale";
 
 const ReportAttendedShift = () => {
     
@@ -90,11 +90,8 @@ const ReportAttendedShift = () => {
             return;
         }
         try{
-            const token = localStorage.getItem("authToken");
-            console.log(selectedCaf);
             console.log(selectedDay);
-            console.log(formatDateToLocalDate(startDate));
-            console.log(formatDateToLocalDate(endDate));
+            const token = localStorage.getItem("authToken");
             const response = await fetch(SERVICES_BACK.POST_SHIFTS_REPORTS_ATTENDED, {
                 method: "POST",
                 headers: {
@@ -104,15 +101,13 @@ const ReportAttendedShift = () => {
                 },
                 body:JSON.stringify(
                     {
-                        "fitnessCenter": selectedCaf,
-                        "day": selectedDay,
-                        "startDate": formatDateToLocalDate(startDate),
-                        "endDate":formatDateToLocalDate(endDate)
+                        fitnessCenter: parseInt(selectedCaf.id, 10),
+                        day: selectedDay.name,
+                        startDate: formatDateToLocalDate(startDate),
+                        endDate: formatDateToLocalDate(endDate)
                     }
                 )
             });
-            
-            console.log(response.status)
 
             if (response.status !== 200) {
                 if(response.status === 204){
@@ -123,6 +118,7 @@ const ReportAttendedShift = () => {
                 }
             }else{
                 const data = await response.json();
+                console.log(data)
                 const auxShiftsList = [];
                 
                 if (Array.isArray(data) && (data.length >0)) {

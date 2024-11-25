@@ -7,6 +7,7 @@ import { SERVICES_BACK } from "../../../constants/constants";
 import { MessagesError, MessagesSuccess, showToastPromise } from "../../gestion-caf/Messages";
 import { Toaster,toast } from "sonner";
 import { ConfirmToast } from 'react-confirm-toast'
+import swal from 'sweetalert2';
 
 const initialUsers = [
     { code: "", fullName: " ", email: "", status: "" },
@@ -77,36 +78,47 @@ const ManageCenterDirector = () => {
             }
         );
         
-    }, []); // Dependencias vacías para ejecutar solo al montar
+    }, []);
 
 
     const assignCoordinador = async (user) => {
-                
-        try{
-            const token = localStorage.getItem("authToken");
-            const response = await fetch(SERVICES_BACK.POST_CHANGE_DIRECTOR, {
-                method: "POST",
-                headers: {
-                    'Authorization': `Bearer ${token}`,
-                    credentials: "include",
-                    'Content-Type': 'application/json'
-                },
-                body:JSON.stringify({
-                    userName: user.email
-                })
-            });
-
-            if(response.status === 200){
-                MessagesSuccess("Director cambiado satisfactoriamente");
-            }else{
-                MessagesError("No se pudo cambiar el director.");
+        swal({
+            title: "Asignar director",
+            text:`Desea cambiar el director por el usuario: ${user.name}`,
+            icon: "warning",
+            buttons: ["No","Si"]
+        }).then(response =>{
+            if(response){
+                toast.promise(
+                    (async () => {
+                        const token = localStorage.getItem("authToken");
+                        const response = await fetch(SERVICES_BACK.POST_CHANGE_DIRECTOR, {
+                            method: "POST",
+                            headers: {
+                                'Authorization': `Bearer ${token}`,
+                                credentials: "include",
+                                'Content-Type': 'application/json'
+                            },
+                            body:JSON.stringify({
+                                userName: user.email
+                            })
+                        });
+    
+                        if(response.status === 200){
+                            MessagesSuccess("Director cambiado satisfactoriamente");
+                        }else{
+                            MessagesError("No se pudo cambiar el director.");
+                        }
+                    })(),
+                    {
+                        loading: 'Asignando director...',
+                        success: <b>Director asignado correctamente.</b>,
+                        error: <b>No se pudo asignar el nuevo director.</b>,
+                    }
+                );
             }
-        }catch{
-            console.error("Error al cambiar el director:", error);
-            setError(error.message);
-        }
-
-        };
+        })            
+    };
 
     const handleSearch = (event) => setSearch(event.target.value);
 
@@ -194,11 +206,6 @@ const UserTableRow = ({ user, assignCoordinador, show, setShow}) => (
                 <button className="button" onClick={() => assignCoordinador(user)}>
                     Asignar
                 </button>
-                <ConfirmToast
-                    customFunction={assignCoordinador}
-                    setShowConfirmToast={setShow}
-                    showConfirmToast={show}
-                />
             </div>
         </td>
     </tr>

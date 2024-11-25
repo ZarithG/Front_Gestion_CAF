@@ -73,7 +73,7 @@ const Header = ({
 
     return (
         <div className="headerContainer">
-            <img className="headerLogo" src={Logo} alt="Logo UPTC" />
+            <img className="headerLogo" src={Logo} alt="Logo UPTC" to="/"/>
             <div className="menuContainer">
                 <ul className="menuList">
                     <li className="menuItem">

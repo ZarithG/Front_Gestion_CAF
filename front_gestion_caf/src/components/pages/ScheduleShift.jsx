@@ -162,7 +162,6 @@ const ScheduleShift = () => {
                 const data = await response.json();
     
                 if (response.ok) {
-                    console.log(data)
                     setShifts(data); // Actualiza el estado
                 } else {
                     console.error("Error al cargar turnos:", data.message || "Error desconocido");
@@ -241,7 +240,6 @@ const ScheduleShift = () => {
             if (response.isConfirmed) {
                 toast.promise(
                     (async () => {
-                        console.log("ENTRO 1")
                         try{
                             const res = await fetch(SERVICES_BACK.POST_SHIFT_RESERVE, {
                                 method: 'POST',
@@ -251,26 +249,24 @@ const ScheduleShift = () => {
                                 },
                                 body: JSON.stringify({
                                     idShiftInstance: selectedShift.id,
-                                    idDayAssignment: selectedShift.dayAssignment.id,
+                                    idDayAssignment: selectedShift.shift.dayAssignment.id,
                                     userId: user.id
                                    
                                 })
                             });
-                            console.log("ENTRO")
                             if (!res.ok) {
                                 throw new Error('Error al agendar turno.');
                             }
         
-                            const data = await res.json();
-                            if (res.ok) {
+                            if (res.status === 2000) {
                                 MessagesSuccess("Turno apartado correctamente.");
                             }else if (res.status === 204){
-                                MessagesError("No fue posible crear el turno.")
+                                MessagesError("Ya ha agendado un turno para ese día.")
                             }
                         } catch (error) {
                             console.log(error)
                             setError(error.message);
-                        }
+                        }
                     })(),
                     {
                         loading: 'Agendando turno...',
@@ -330,14 +326,9 @@ const ScheduleShift = () => {
 
     const handleShiftChange = (event) => {
         const shiftId = parseInt(event.target.value);
-        console.log(shiftId);
         if (shiftId) {
             const select = shifts.find(item => item.id === shiftId);
             setSelectedShift(select)
-            console.log("OBJETO SHIFT")
-            console.log(selectedShift)
-            //setSelectedShift(shifts.find(item => item.id === shiftId)); // Guarda el CAF seleccionado
-
         }
     }
 
@@ -395,8 +386,8 @@ const ScheduleShift = () => {
                         <option key={index} value={shift.id}>
                             
                             {`Turno ${index + 1}: ${(shift.date)}
-                            ${formatTime(shift.startTime)} a 
-                            ${formatTime(shift.endTime)}`}
+                            ${formatTime(shift.shift.startTime)} a 
+                            ${formatTime(shift.shift.endTime)}`}
                         </option>
                     ))
                 ) : (
