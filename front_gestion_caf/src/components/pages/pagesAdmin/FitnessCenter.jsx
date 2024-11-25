@@ -6,6 +6,7 @@ import { IoMdSearch } from "react-icons/io";
 import { SERVICES_BACK } from "../../../constants/constants";
 import { showToastPromise } from "../../gestion-caf/Messages";
 import { Toaster } from "sonner";
+import { FaEye, FaEdit } from "react-icons/fa";
 
 // Datos iniciales
 const initialCAF = [
@@ -72,11 +73,13 @@ const FitnessCenters = () => {
         fetchCAFAll();
     }, []);
 
-    const editUser = (index) => {
-        navigate("/admin/fitnessCenters/manageFitnessCenters");
+    const editCAF = (index) => {
+        navigate("/admin/fitnessCenters/manage");
     };
 
-    const removeUser = (index) => {};
+    const viewCAF = (index) => {
+        navigate("/admin/fitnessCenters/view")
+    };
 
     const handleSearch = (event) => {
         setSearch(event.target.value);
@@ -104,8 +107,8 @@ const FitnessCenters = () => {
                 <div className="table-content">
                     <UserTable
                         CAF={filteredCAF}
-                        editUser={editUser}
-                        removeUser={removeUser}
+                        editCAF={editCAF}
+                        viewCAF={viewCAF}
                     />
                 </div>
             </div>
@@ -131,7 +134,7 @@ const SearchBar = ({ search, handleSearch }) => (
     </div>
 );
 
-const UserTable = ({ CAF }) => (
+const UserTable = ({ CAF, editCAF, viewCAF }) => (
     <table className="table">
         <thead className="table-header-head">
             <tr className="table-row">
@@ -144,13 +147,13 @@ const UserTable = ({ CAF }) => (
         </thead>
         <tbody>
             {CAF.map((user, index) => (
-                <UserTableRow key={`${user.code}-${index}`} user={user} index={index} />
+                <UserTableRow key={`${user.code}-${index}`} user={user} index={index} editCAF={editCAF} viewCAF={viewCAF} />
             ))}
         </tbody>
     </table>
 );
 
-const UserTableRow = ({ user }) => (
+const UserTableRow = ({ user, editCAF, viewCAF }) => (
     <tr className="table-row">
         <td className="table-cell">{user.code}</td>
         <td className="table-cell">{user.fullName}</td>
@@ -158,7 +161,9 @@ const UserTableRow = ({ user }) => (
         <td className="table-cell">{user.coordinator}</td>
         <td className="table-cell">
             <div className="button-container">
-                <button className="button">Asignar</button>
+                <button className="button" onClick={() => editCAF(user.code)}><FaEdit /></button>
+                <button className="button" onClick={() => viewCAF(user.code)}><FaEye /></button>
+
             </div>
         </td>
     </tr>

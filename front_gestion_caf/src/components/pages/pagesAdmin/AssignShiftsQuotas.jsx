@@ -21,8 +21,8 @@ const initialTurnos = {
 
 const AssignShiftsQuotas = () => {
     const [caf, setCaf] = useState([]);
-    const [cafId ,setCafId] = useState(0);
-    const [cafName ,setCafName] = useState("");
+    const [cafId, setCafId] = useState(0);
+    const [cafName, setCafName] = useState("");
     const [turnos, setTurnos] = useState(initialTurnos);
     const [activeDay, setActiveDay] = useState(null);
     const [isModalOpen, setModalOpen] = useState(false);
@@ -39,7 +39,7 @@ const AssignShiftsQuotas = () => {
         getCafId();
         if (cafId > 0) {
             console.log("CAF ID recibido:", cafId);
-            
+
             const promiseFn = async () => {
                 const token = localStorage.getItem("authToken");
                 const response = await fetch(SERVICES_BACK.GET_CAF_INFO + cafId, {
@@ -50,15 +50,15 @@ const AssignShiftsQuotas = () => {
                     },
                 });
                 const data = await response.json();
-                
-                if(response.ok){
+
+                if (response.ok) {
                     setCafName(data.name);
-                }else if(response.status === 204){
+                } else if (response.status === 204) {
                     MessagesInfo("No se ha cargado la información del CAF");
-                }else{
+                } else {
                     MessagesError("Error en el servidor")
                 }
-                
+
             };
             handleViewShift();
             toast.promise(
@@ -67,12 +67,12 @@ const AssignShiftsQuotas = () => {
                     loading: 'Cargando información del CAF...',
                     success: <b>Datos del CAF cargados correctamente.</b>,
                     error: <b>Error al cargar los datos.</b>,
-                }
-            );
-            
+                }
+            );
 
-            
-            
+
+
+
         } else {
             console.error("No se recibió cafId");
         }
@@ -80,7 +80,7 @@ const AssignShiftsQuotas = () => {
 
     //Método para obtener el id del CAF de un coodinador
     const getCafId = async () => {
-        
+
         try {
             const token = localStorage.getItem("authToken");
             const response = await fetch(SERVICES_BACK.GET_IDCAF_BY_USER_EMAIL + localStorage.getItem('userName'), {
@@ -91,19 +91,19 @@ const AssignShiftsQuotas = () => {
                 },
             });
 
-            if(response.ok){
+            if (response.ok) {
                 const data = await response.json();
                 console.log(data)
                 setCafId(data);
-            }else if(response.status === 204){
-                MessagesError("Recargar la página para carga datos");    
+            } else if (response.status === 204) {
+                MessagesError("Recargar la página para carga datos");
             }
 
         } catch (error) {
             console.error("Error al obtener id del fitnessCenter:", error);
             MessagesError("Error al obtener id del CAF.");
         }
-    
+
     };
 
     const toggleDay = (day) => {
@@ -147,11 +147,11 @@ const AssignShiftsQuotas = () => {
                         startTime: turnos[day][index].inicio,
                         endTime: turnos[day][index].fin,
                         placeAvailable: turnos[day][index].cupos,
-                        status:true
+                        status: true
                     }]
                 })
             });
-            
+
 
             if (!response.ok) {
                 console.log('Error:', response.status);  // Verifica el código de estado
@@ -160,24 +160,24 @@ const AssignShiftsQuotas = () => {
                 if (response.status === 400) {
                     MessagesError('Bad request');
                     return;
-                } else if(response.status === 404) {
+                } else if (response.status === 404) {
                     MessagesError('Hubo un error al eliminar el turno.');
                     return;
-                } else{
+                } else {
                     MessagesError('Hubo un error en el servidor.');
                     return;
                 }
-                
-            } else if(response.ok){
+
+            } else if (response.ok) {
                 const data = await response.json();
-                console.log(data);  
+                console.log(data);
                 if (data) {
                     MessagesSuccess('Turno eliminado exitosamente');
                 }
                 else {
                     MessagesError('No se pudieron guardar los datos');
                 }
-            }     
+            }
         } catch (error) {
             MessagesError('Hubo un error en el servidor');
         }
@@ -213,7 +213,7 @@ const AssignShiftsQuotas = () => {
                             inicio: shift.startTime || "00:00", // Hora de inicio del turno
                             fin: shift.endTime || "00:00", // Hora de fin del turno
                             dayAssignment: shift.dayAssignment,
-                            cupos: shift.maximumPlaceAvailable , // Cambiar según la propiedad real para "cupos"
+                            cupos: shift.maximumPlaceAvailable, // Cambiar según la propiedad real para "cupos"
                         });
                     }
                 });
@@ -225,24 +225,24 @@ const AssignShiftsQuotas = () => {
     const handleInstance = async () => {
         try {
             const token = localStorage.getItem("authToken");
-            const response = await fetch(SERVICES_BACK.POST_INSTANCE_SHIFT+selectedCaf.id, {
-                method: 'POST', 
+            const response = await fetch(SERVICES_BACK.POST_INSTANCE_SHIFT + selectedCaf.id, {
+                method: 'POST',
                 headers: {
                     'Authorization': `Bearer ${token}`,
                     'Content-Type': 'application/json'
                 },
-                
+
             });
-            
+
             if (!response.ok) {
                 console.log('Error:', response.status);  // Verifica el código de estado
                 const errorData = await response.json();
                 console.log('Error Data:', errorData);  // Imprime la respuesta completa de error
                 if (response.status === 400) {
                     MessagesError('Bad request');
-                } else if(response.status === 204){
+                } else if (response.status === 204) {
                     MessagesError('No es posible cargar los turnos');
-                } 
+                }
                 else {
                     MessagesError('Hubo un error en el servidor');
                 }
@@ -287,15 +287,15 @@ const AssignShiftsQuotas = () => {
             }
         };
         toast.promise(
-            fetchShift(),{
-                loading: 'Cargando turnos...',
-                success: <b>Cargando información de los turnos del CAF</b>,
-                error: <b>Error al cargar los datos.</b>,
-            }
-         );
-        
+            fetchShift(), {
+            loading: 'Cargando turnos...',
+            success: <b>Cargando información de los turnos del CAF</b>,
+            error: <b>Error al cargar los datos.</b>,
+        }
+        );
+
     };
-    
+
 
 
     return (
@@ -309,16 +309,16 @@ const AssignShiftsQuotas = () => {
             />
             <h1>Asignar turnos y cupos</h1>
             <div>
-                
+
                 <div className="inline-container">
-                    
+
                     <h1>{cafName}</h1>
-                    
+
                     <button onClick={handleViewShift}>Mostrar Turnos</button>
                     <p>Selecciona el día de la semana y añade los turnos disponibles y los cupos</p>
                 </div>
 
-                
+
                 <div className="containerDays">
                     {Object.keys(turnos).map((day) => (
                         <div key={day} className="day-section">
@@ -346,7 +346,7 @@ const AssignShiftsQuotas = () => {
                                                     <td>{turno.cupos}</td>
                                                     <td className="tdbutton">
                                                         <div className="containerButtons">
-                                                            
+
                                                             {/* <button className="buttonAssign" onClick={() => editShift(turnos[day][index].dayAssignment,turnos[day][index].id, turnos[day][index].inicio, turnos[day][index].fin, turnos[day][index].cupos)}><FaEdit /></button> */}
                                                             <button className="buttonAssign" onClick={() => removeTurno(day, index)}><MdDelete /></button>
                                                         </div>
@@ -362,7 +362,7 @@ const AssignShiftsQuotas = () => {
                             )}
                         </div>
                     ))}
-                    
+
                     <button onClick={handleInstance}>Finalizar semestre</button>
                 </div>
             </div>
@@ -374,15 +374,15 @@ const AssignShiftsQuotas = () => {
                 day={selectedDay}
                 cafId={selectedCaf?.id} // Pasa el ID del CAF seleccionado
             />
-            <ModifyShiftModal 
+            <ModifyShiftModal
                 isOpen={isModalEditOpen}
                 onClose={() => setModalEditOpen(false)}
-                day= {selectedDay}
-                cafId = {selectedCaf} 
+                day={selectedDay}
+                cafId={selectedCaf}
                 shiftIdEdit={shiftIdEdit}
-                startTimeEdit = {startTimeEdit}
-                endTimeEdit = {endTimeEdit}
-                placeAvailableEdit = {placeAvailableEdit}/>
+                startTimeEdit={startTimeEdit}
+                endTimeEdit={endTimeEdit}
+                placeAvailableEdit={placeAvailableEdit} />
         </div>
     );
 };

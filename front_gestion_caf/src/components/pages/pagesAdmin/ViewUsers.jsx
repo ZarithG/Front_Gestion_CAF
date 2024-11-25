@@ -15,10 +15,10 @@ const UserDataDetail = () => {
     const location = useLocation();
     const userData = location.state?.userData;
     const [userCompleteData, setUserCompleteData] = useState({});
-    const [userBirthDate, setUserBirthDate] = useState(""); 
+    const [userBirthDate, setUserBirthDate] = useState("");
 
     useEffect(() => {
-        
+
         const fetchUserData = async () => {
             try {
                 const token = localStorage.getItem("authToken");
@@ -133,13 +133,13 @@ const UserDataDetail = () => {
     }, [userData]);
 
     const classifyUser = (userType) => {
-        if(userType === "STUDENT"){
+        if (userType === "STUDENT") {
             return "ESTUDIANTE";
-        }else{
-            if(userType === "EXTERN"){
+        } else {
+            if (userType === "EXTERN") {
                 return "EXTERNO";
-            }else{
-                if(userType === "ADMINISTRATIVE"){
+            } else {
+                if (userType === "ADMINISTRATIVE") {
                     return "ADMINISTRATIVO";
                 }
             }
@@ -147,45 +147,45 @@ const UserDataDetail = () => {
         return "NA";
     }
 
-    const handleDownload = async (inscriptionId, consentType) =>{
-        try{
+    const handleDownload = async (inscriptionId, consentType) => {
+        try {
             const token = localStorage.getItem("authToken");
             if (!token) {
                 throw new Error("Token de autenticación no encontrado.");
             }
 
             const response = await fetch(
-              `${SERVICES_BACK.GET_USER_INSCRIPTION_FILE}?inscriptionId=${inscriptionId}&consentType=${consentType}`,
-              {
-                method: "GET",
+                `${SERVICES_BACK.GET_USER_INSCRIPTION_FILE}?inscriptionId=${inscriptionId}&consentType=${consentType}`,
+                {
+                    method: "GET",
                     headers: {
                         Authorization: `Bearer ${token}`,
                     },
-              }
+                }
             );
-        
-              if (response.ok) {
+
+            if (response.ok) {
                 console.log(response)
                 const blob = await response.blob();
                 const url = window.URL.createObjectURL(blob);
-                
+
                 // Crear un enlace temporal para descargar el archivo
                 const link = document.createElement('a');
                 link.href = url;
                 link.setAttribute('download', `${inscriptionId}_${consentType}.pdf`); // Puedes cambiar el nombre según lo necesites
                 document.body.appendChild(link);
                 link.click();
-                
+
                 // Limpiar el enlace temporal
                 link.parentNode.removeChild(link);
 
                 MessagesSuccess("Consentimiento descargado correctamente.");
-              } else {
+            } else {
                 MessagesError("No se pudo descargar el consentimiento");
-              }
-            }catch (error) {
-              console.error("Error al descargar el archivo:", error);
-            }    
+            }
+        } catch (error) {
+            console.error("Error al descargar el archivo:", error);
+        }
     }
 
     return (
@@ -215,7 +215,7 @@ const UserDataDetail = () => {
 
                             <div className="form-group">
                                 <label className="lbInItem">Nombre</label>
-                                <input type="text" value={userCompleteData?.name || ''} readOnly/>
+                                <input type="text" value={userCompleteData?.name || ''} readOnly />
                             </div>
 
                             <div className="form-group">
@@ -248,7 +248,7 @@ const UserDataDetail = () => {
                                 <input type="text" value={userCompleteData?.residenceAddress || ''} readOnly />
                             </div>
 
-                            
+
                             <div className="form-group">
                                 <label className="lbInItem">Estamento</label>
                                 <input type="text" value={classifyUser(userCompleteData?.userType) || ''} readOnly />
@@ -269,24 +269,24 @@ const UserDataDetail = () => {
                         Información salud
                     </h2>
                     <p style={{ textAlign: "center" }}>
-                        Datos personales sobre salud     
+                        Datos personales sobre salud
                     </p>
                     <div className="containerForm">
                         <form className="info-form" >
 
                             <div className="form-group">
                                 <label className="lbInItem">EPS</label>
-                                <input type="text" value={userCompleteData?.medicalInformation.eps || ''} readOnly/>
+                                <input type="text" value={userCompleteData?.medicalInformation.eps || ''} readOnly />
                             </div>
 
                             <div className="form-group">
                                 <label className="lbInItem">Grupo sanguineo RH</label>
-                                <input type="text" value={userCompleteData?.medicalInformation.bloodGroup || ''} readOnly/>
+                                <input type="text" value={userCompleteData?.medicalInformation.bloodGroup || ''} readOnly />
                             </div>
 
                             <div className="form-group">
                                 <label className="lbInItem">Alergias</label>
-                                <input type="text" value={userCompleteData?.medicalInformation.allergies || ''} readOnly/>
+                                <input type="text" value={userCompleteData?.medicalInformation.allergies || ''} readOnly />
                             </div>
 
                         </form>
@@ -295,45 +295,45 @@ const UserDataDetail = () => {
             ) : (
                 <p>Cargando datos...</p>
             )}
-            
+
             {userCompleteData?.userType === "STUDENT" && (
                 <div className="containerPersonalInformation">
-                <br /><br />
-                <h2 style={{ textAlign: "center" }}>
-                    Información universitaria
-                </h2>
-                <p style={{ textAlign: "center" }}>
-                    Datos personales sobre carrera y facultad a la que pertenece el estudiante.    
-                </p>
-                <div className="containerForm">
-                    <form className="info-form" >
+                    <br /><br />
+                    <h2 style={{ textAlign: "center" }}>
+                        Información universitaria
+                    </h2>
+                    <p style={{ textAlign: "center" }}>
+                        Datos personales sobre carrera y facultad a la que pertenece el estudiante.
+                    </p>
+                    <div className="containerForm">
+                        <form className="info-form" >
 
-                        <div className="form-group">
-                            <label className="lbInItem">Programa</label>
-                            <input type="text" value={userCompleteData?.universityInformation.program.programName || ''} readOnly/>
-                        </div>
+                            <div className="form-group">
+                                <label className="lbInItem">Programa</label>
+                                <input type="text" value={userCompleteData?.universityInformation.program.programName || ''} readOnly />
+                            </div>
 
-                        <div className="form-group">
-                            <label className="lbInItem">Facultad</label>
-                            <input type="text" value={userCompleteData?.universityInformation.program.faculty.facultyName || ''} readOnly/>
-                        </div>
+                            <div className="form-group">
+                                <label className="lbInItem">Facultad</label>
+                                <input type="text" value={userCompleteData?.universityInformation.program.faculty.facultyName || ''} readOnly />
+                            </div>
 
-                        <div className="form-group">
-                            <label className="lbInItem">Semestre Actual</label>
-                            <input type="text"value={userCompleteData?.universityInformation.actualSemester || ''} readOnly/>
-                        </div>
-                    </form>
+                            <div className="form-group">
+                                <label className="lbInItem">Semestre Actual</label>
+                                <input type="text" value={userCompleteData?.universityInformation.actualSemester || ''} readOnly />
+                            </div>
+                        </form>
+                    </div>
                 </div>
-            </div>
             )}
-            
+
             <div className="containerPersonalInformation">
-            <br />
-            <br />
-            
-            <h2 style={{ textAlign: "center" }}>
-            Respuestas Formulario de valoración e Historia médica
-            </h2>
+                <br />
+                <br />
+
+                <h2 style={{ textAlign: "center" }}>
+                    Respuestas Formulario de valoración e Historia médica
+                </h2>
                 <br />
                 <div className="containerForm">
                     <form className="user-info-form" >
@@ -354,7 +354,7 @@ const UserDataDetail = () => {
                                                 value={item.questionAnswer}
                                                 readOnly
                                             />
-                                            
+
                                         </div>
                                         <br />
                                     </div>
@@ -364,18 +364,18 @@ const UserDataDetail = () => {
                             )}
                         </div>
 
-                        
+
                     </form>
                 </div>
             </div>
-                            
+
             <div className="containerConsents">
-            <br />
-            <br />
-            
-            <h2 style={{ textAlign: "center" }}>
-            Consentimientos adjuntos a la inscripción.
-            </h2>
+                <br />
+                <br />
+
+                <h2 style={{ textAlign: "center" }}>
+                    Consentimientos adjuntos a la inscripción.
+                </h2>
                 <br />
                 <div className="containerForm">
                     <form className="user-info-form" >
@@ -384,8 +384,8 @@ const UserDataDetail = () => {
                                 consents.map((item) => (
                                     <div className="consent-item">
                                         {item.consentType === "RISKS" && (
-                                            <button 
-                                                type="button" 
+                                            <button
+                                                type="button"
                                                 onClick={() => handleDownload(userData.inscriptionId, item.consentType)} // Reemplaza por tu función
                                                 className="risk-button"
                                             >
@@ -393,8 +393,8 @@ const UserDataDetail = () => {
                                             </button>
                                         )}
                                         {item.consentType === "MEDICAL" && (
-                                            <button 
-                                                type="button" 
+                                            <button
+                                                type="button"
                                                 onClick={() => handleDownload(userData.inscriptionId, item.consentType)} // Reemplaza por tu función
                                                 className="risk-button"
                                             >
@@ -402,8 +402,8 @@ const UserDataDetail = () => {
                                             </button>
                                         )}
                                         {item.consentType === "TUTOR" && (
-                                            <button 
-                                                type="button" 
+                                            <button
+                                                type="button"
                                                 onClick={() => handleDownload(userData.inscriptionId, item.consentType)} // Reemplaza por tu función
                                                 className="risk-button"
                                             >
@@ -417,7 +417,7 @@ const UserDataDetail = () => {
                             )}
                         </div>
 
-                        
+
                     </form>
                 </div>
             </div>
