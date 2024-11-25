@@ -88,7 +88,7 @@ const TurnoModal = ({ isOpen, onClose, onSave, day, cafId }) => {
                         startTime: formattedInicio,
                         endTime: formattedFin,
                         placeAvailable: cupos,
-                        status:true
+                        status:1
                     }
                     ]
                 })

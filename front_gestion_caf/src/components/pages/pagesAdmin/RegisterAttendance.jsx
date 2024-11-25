@@ -11,14 +11,17 @@ const RegisterAttendance = () => {
     const navigate = useNavigate();
     const [cafId ,setCafId] = useState(0);
     const [shiftReservations, setShiftReservations] = useState([]);
-
+    const [shift, setShift] = useState([]);
     const [search, setSearch] = useState("");
+    const [shiftSchedule, setShiftSchedule] = useState("");
     const [shiftActual, setShiftActual] = useState({
-        id:0,
-        state:true,
-        shift:0,
-        date:null,
-        placeAvailable:0
+        id: 0, // ID del turno
+        dayAssignment: 0,
+        startTime: "",
+        endTime: "", // Fecha del turno
+        placeAvailable: "",
+        status:0,
+        shiftInstanceId:0
     });
     const [reservation, setReservation] = useState({
         id: 0, // ID de la reservación
@@ -28,9 +31,7 @@ const RegisterAttendance = () => {
         dateReservation: null, // Fecha y hora de la reservación
         reservationEnum: '', // Estado de la reservación (puede ser un string o un valor predeterminado)
       });
-    const [shift, setShift] = useState("");
     const token = localStorage.getItem("authToken");
-    const [turno,setTurno] = useState("T-0 0:00 a 0:00 ");
 
     useEffect(() => {
         getCafId();
@@ -52,26 +53,27 @@ const RegisterAttendance = () => {
                 method: "GET",
                 headers: {
                     'Authorization': `Bearer ${token}`,
-                    credentials: "include",
+                    credentials: "include"
                 },
             });
             
-            if (response.status === 200) {
+            if (response.ok) {
                 const data = await response.json();
                 console.log("ACTUAL"+data);
-                setTurno(`T ${data.startTime} a ${data.endTime}`)
                 setShiftActual({
                     id: data.id, // ID del turno
-                    state: data.state, // Estado del turno
-                    shift: data.shift, // Número del turno
-                    date: data.date, // Fecha del turno
-                    placeAvailable: data.placeAvailable, // Lugares disponibles
+                    dayAssignment: data.dayAssignment,
+                    startTime: data.startTime,
+                    endTime: data.endTime, // Fecha del turno
+                    placeAvailable: data.maximumPlaceAvailable,
+                    status: data.status,
+                    shiftInstanceId: data.shiftInstanceId
                 });
-                
+                setShiftSchedule(`${formatTime(data.startTime)} a ${formatTime(data.endTime)}`);
             } else if(response.status === 204){
                 MessagesInfo("No hay un turno actual.");
                 return;
-            } else{
+            } else if(response.status === 404){
                 MessagesError("Error en el servidor");
                 return;
             }
@@ -127,9 +129,9 @@ const RegisterAttendance = () => {
     };
 
     const fetchShiftReservations  = async () => {
-        if(shiftActual.id != 0){
+        if(shiftActual.shiftInstanceId != 0){
             const token = localStorage.getItem("authToken");
-        const response = await fetch(SERVICES_BACK.GET_RESERVE_BY_SHIFT + shiftActual.id, {
+        const response = await fetch(SERVICES_BACK.GET_RESERVE_BY_SHIFT + shiftActual.shiftInstanceId, {
             method: 'GET',
                 headers: {
                     'Authorization': `Bearer ${token}`,
@@ -170,14 +172,13 @@ const RegisterAttendance = () => {
             });
             const data = await response.json();
             if (data.id) {
-                setTurno(`T ${data.startTime} a ${data.endTime}`)
-                setShiftActual({
-                    id: data.id, // ID del turno
-                    state: data.state, // Estado del turno
-                    shift: data.shift, // Número del turno
-                    date: data.date, // Fecha del turno
-                    placeAvailable: data.placeAvailable, // Lugares disponibles
-                });
+                // setShiftActual({
+                //     id: data.id, // ID del turno
+                //     state: data.state, // Estado del turno
+                //     shift: data.shift, // Número del turno
+                //     date: data.date, // Fecha del turno
+                //     placeAvailable: data.placeAvailable, // Lugares disponibles
+                // });
                 
             } else {
                 throw new Error("El formato de datos de CAF es incorrecto.");
@@ -242,7 +243,14 @@ const RegisterAttendance = () => {
             <h1>Registrar asistencia</h1>
             <div className="body-containerBody">
                 <div className="Turn-Shift">
-                    <ViewShift turno={turno} />
+                <div className="containerViewShift">
+                    <h1>Turno actual</h1>
+                    {typeof shiftSchedule === 'string' ? (
+                        <p>Horario: {shiftSchedule}</p>
+                    ) : (
+                        <p>No se pudo cargar el horario</p>
+                    )}
+                </div>
                     <SearchBar search={search} handleSearch={handleSearch} />
                 </div>
                 <div className="table-content">
@@ -256,12 +264,24 @@ const RegisterAttendance = () => {
     );
 };
 
-const ViewShift = ({ turno }) => (
-    <div className="containerViewShift">
-        <h1>Turno actual</h1>
-        <p>{turno}</p>
-    </div>
-);
+const formatTime = (time24) => {
+    if (!time24) {
+        return "--"; // O un valor predeterminado si lo prefieres
+    }
+    // Separar la hora, minuto y segundo
+    const [hours, minutes, seconds] = time24.split(":");
+
+    // Convertir la hora de 24 horas a 12 horas
+    const hour12 = hours % 12 || 12; // Si la hora es 0 (medianoche), se muestra como 12.
+    
+    // Determinar AM o PM
+    const ampm = hours >= 12 ? "pm" : "am";
+
+    // Retornar la hora en formato de 12 horas
+    return `${hour12}:${minutes} ${ampm}`;
+};
+
+
 
 const SearchBar = ({ search, handleSearch }) => (
     <div className="containerSearch">
