@@ -18,10 +18,15 @@ export const SERVICES_BACK = {
     GET__ALL_CAF: 'http://localhost:9093/caf/all' ,
     GETALLQUESTIONS: 'http://localhost:9093/caf/question/all',
     GET_USER_ACTIVE_INSCRIPTION: 'http://localhost:9093/caf/inscription/all-active/',
-    GET_USET_ALL_CAF: 'http://localhost:9093/caf/inscription/all/' ,
+    GET_USET_ALL_CAF: 'http://localhost:9093/caf/inscription/all/',
+    GET_USER_ACTIVE_PENDING_INACTIVE_INSCRIPTION: 'http://localhost:9093/caf/inscription/user-caf/',
+    GET_COMPLETE_USER_BY_EMAIL: 'http://localhost:9093/user/email/',
     
     GET_IS_USER_VERIFIED: 'http://localhost:9093/auth/isUserVerified/',
     GET_USER_ALL: 'http://localhost:9093/auth/user/all',
+    GET_USER_RESPONSES_BY_INSCRIPTION: 'http://localhost:9093/caf/inscription/user-responses/',
+    GET_USER_CONSENTS_BY_INSCRIPTION: 'http://localhost:9093/caf/files/obtain/',
+    GET_USER_INSCRIPTION_FILE: 'http://localhost:9093/caf/files/load',
     
     GET_SHIFT_LIST: 'http://localhost:9093/shift/allDayAssignments/',
     GET_USER_INSTANCE_SHIFT: 'http://localhost:9093/shift/reserve/shift-instances-caf/',
@@ -53,7 +58,9 @@ export const SERVICES_BACK = {
     PUT_DELETE_SHIFT: "http://localhost:9093/shift/deleteShift",
     PUT_EDIT_SHIFT: "http://localhost:9093/shift/editShift",
     POST_SHIFTS_REPORTS_ATTENDED: "http://localhost:9093/shift/shiftsReportAttended",
-    GET_CAF_INFO:"http://localhost:9093/caf/id/"
+    GET_CAF_INFO:"http://localhost:9093/caf/id/",
+
+    POST_CHANGE_DIRECTOR: "http://localhost:9093/auth/change-wellbeing-director"
 
 }
 

@@ -4,8 +4,9 @@ import "./styles/PagesAdmin.css";
 import "./styles/FitnessCenterCordinator.css";
 import { IoMdSearch } from "react-icons/io";
 import { SERVICES_BACK } from "../../../constants/constants";
-import { showToastPromise } from "../../gestion-caf/Messages";
+import { MessagesError, MessagesSuccess, showToastPromise } from "../../gestion-caf/Messages";
 import { Toaster,toast } from "sonner";
+import { ConfirmToast } from 'react-confirm-toast'
 
 const initialUsers = [
     { code: "", fullName: " ", email: "", status: "" },
@@ -17,6 +18,7 @@ const ManageCenterDirector = () => {
     const [search, setSearch] = useState("");
     const [token, setToken] = useState("");
     const [error, setError] = useState("");
+    const [show, setShow] = useState(false)
 
     useEffect(() => {
         const fetchCUserAll = async () => {
@@ -39,11 +41,16 @@ const ManageCenterDirector = () => {
                 console.log(data)
                 if (Array.isArray(data)) {
                     // Procesar los datos al formato deseado
-                    return data.map((user) => ({
-                        code: user.id.toString(), // Convertir el ID a una cadena
-                        fullName: user.name, // Usar el nombre completo del objeto
-                        email: user.userName, // Usar el correo como email
-                        status: user.active ? "Activo" : "Inactivo", // Convertir boolean a texto
+                    const activeUsers = data.filter(user => 
+                        user.active && !user.roles.includes("ROLE_WELLBEING_DIRECTOR")  // Filtra usuarios activos cuyo rol no contiene "ROLE_WELLBEING_DIRECTOR"
+                    );
+    
+                    // Procesar los datos al formato deseado
+                    return activeUsers.map((user) => ({
+                        code: user.id.toString(),       // Convertir el ID a una cadena
+                        fullName: user.name,            // Usar el nombre completo del objeto
+                        email: user.userName,           // Usar el correo como email
+                        status: "Activo",               // Asignar "Activo" ya que estamos filtrando por "activo"
                     }));
                 } else {
                     throw new Error("El formato de datos de CAF es incorrecto.");
@@ -60,14 +67,46 @@ const ManageCenterDirector = () => {
                 setError(error.message);
             }
         };
-
-        fetchCUserAll();
+        
+        toast.promise(
+            fetchCUserAll(),
+            {
+                loading: 'Cargando directores del CAF...',
+                success: <b>Directores del CAF cargados correctamente.</b>,
+                error: <b>Error al cargar los directores del CAF.</b>,
+            }
+        );
+        
     }, []); // Dependencias vacías para ejecutar solo al montar
 
 
-    const assignCoordinador = (index) => {
-        alert(`Coordinador asignado: ${users[index].name} ${users[index].lastname}`);
-    };
+    const assignCoordinador = async (user) => {
+                
+        try{
+            const token = localStorage.getItem("authToken");
+            const response = await fetch(SERVICES_BACK.POST_CHANGE_DIRECTOR, {
+                method: "POST",
+                headers: {
+                    'Authorization': `Bearer ${token}`,
+                    credentials: "include",
+                    'Content-Type': 'application/json'
+                },
+                body:JSON.stringify({
+                    userName: user.email
+                })
+            });
+
+            if(response.status === 200){
+                MessagesSuccess("Director cambiado satisfactoriamente");
+            }else{
+                MessagesError("No se pudo cambiar el director.");
+            }
+        }catch{
+            console.error("Error al cambiar el director:", error);
+            setError(error.message);
+        }
+
+        };
 
     const handleSearch = (event) => setSearch(event.target.value);
 
@@ -90,7 +129,7 @@ const ManageCenterDirector = () => {
             <div className="body-containerBody">
                 <SearchBar search={search} handleSearch={handleSearch} />
                 <div className="table-content">
-                    <UserTable users={filteredUsers} assignCoordinador={assignCoordinador} />
+                    <UserTable users={filteredUsers} assignCoordinador={assignCoordinador} show={show} setShow={setShow}/>
                 </div>
             </div>
         </div>
@@ -115,7 +154,7 @@ const SearchBar = ({ search, handleSearch }) => (
     </div>
 );
 
-const UserTable = ({ users, assignCoordinador }) => (
+const UserTable = ({ users, assignCoordinador, show, setShow }) => (
     <table className="table">
         <thead className="table-header-head">
             <tr className="table-row">
@@ -133,13 +172,15 @@ const UserTable = ({ users, assignCoordinador }) => (
                     user={user}
                     index={index}
                     assignCoordinador={assignCoordinador}
+                    show={show}
+                    setShow={setShow}
                 />
             ))}
         </tbody>
     </table>
 );
 
-const UserTableRow = ({ user, index, assignCoordinador }) => (
+const UserTableRow = ({ user, assignCoordinador, show, setShow}) => (
 
     <tr className="table-row">
         <td className="table-cell">{user.code}</td>
@@ -150,9 +191,14 @@ const UserTableRow = ({ user, index, assignCoordinador }) => (
         </td>
         <td className="table-cell">
             <div className="button-container">
-                <button className="button" onClick={() => assignCoordinador(index)}>
+                <button className="button" onClick={() => assignCoordinador(user)}>
                     Asignar
                 </button>
+                <ConfirmToast
+                    customFunction={assignCoordinador}
+                    setShowConfirmToast={setShow}
+                    showConfirmToast={show}
+                />
             </div>
         </td>
     </tr>
