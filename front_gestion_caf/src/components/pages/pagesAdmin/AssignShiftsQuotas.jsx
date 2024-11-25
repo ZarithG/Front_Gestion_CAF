@@ -214,7 +214,7 @@ const AssignShiftsQuotas = () => {
                             inicio: shift.startTime || "00:00", // Hora de inicio del turno
                             fin: shift.endTime || "00:00", // Hora de fin del turno
                             dayAssignment: shift.dayAssignment,
-                            cupos: shift.placeAvailable , // Cambiar según la propiedad real para "cupos"
+                            cupos: shift.maximumPlaceAvailable , // Cambiar según la propiedad real para "cupos"
                         });
                     }
                 });
@@ -278,7 +278,7 @@ const AssignShiftsQuotas = () => {
             });
 
             const data = await response.json();
-            console.log("DATA"+data)
+            console.log(data)
             if (Array.isArray(data)) {
                 const classifiedShifts = classifyShiftsByDay(data);
                 setTurnos(classifiedShifts);
@@ -347,7 +347,8 @@ const AssignShiftsQuotas = () => {
                                                     <td>{turno.cupos}</td>
                                                     <td className="tdbutton">
                                                         <div className="containerButtons">
-                                                            <button className="buttonAssign" onClick={() => editShift(turnos[day][index].dayAssignment,turnos[day][index].id, turnos[day][index].inicio, turnos[day][index].fin, turnos[day][index].cupos)}><FaEdit /></button>
+                                                            
+                                                            {/* <button className="buttonAssign" onClick={() => editShift(turnos[day][index].dayAssignment,turnos[day][index].id, turnos[day][index].inicio, turnos[day][index].fin, turnos[day][index].cupos)}><FaEdit /></button> */}
                                                             <button className="buttonAssign" onClick={() => removeTurno(day, index)}><MdDelete /></button>
                                                         </div>
                                                     </td>

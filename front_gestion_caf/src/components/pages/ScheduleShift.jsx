@@ -6,6 +6,7 @@ import { useNavigate } from "react-router-dom";
 import { MessagesError, MessagesInfo, MessagesSuccess } from "../gestion-caf/Messages";
 import { SERVICES_BACK, USER_TYPE } from "../../constants/constants";
 import { Toaster, toast } from "sonner";
+import swal from 'sweetalert2';
 
 const ScheduleShift = () => {
     const [date, setDate] = useState(new Date());
@@ -228,9 +229,9 @@ const ScheduleShift = () => {
             return;
         }
 
-        Swal({
+        swal({
             title: "Agendar Turno",
-            text:`Desea apartar un turno en el horario ${selectedCaf}`,
+            text:`Desea apartar un turno en el horario ${selectedCaf.code}`,
             icon: "warning",
             buttons: ["No","Si"]
         }).then(response =>{
@@ -326,14 +327,12 @@ const ScheduleShift = () => {
     const handleCafChange = (event) => {
         const cafId = parseInt(event.target.value);
         if (cafId) {
+            const select = oneCAFOptions.find(item => item.code === cafId);
             
-            const cafId = event.target.value;
-            const selected = oneCAFOptions.find((item) => item.id === parseInt(cafId, 10));
-            setSelectedCaf(selected);
-            
+            console.log("IMPORTA"+setSelectedCaf);
             toast.promise(
                 (async () => {
-                    const response = await fetch(SERVICES_BACK.GET_USER_INSTANCE_SHIFT + selectedCaf.code, {
+                    const response = await fetch(SERVICES_BACK.GET_USER_INSTANCE_SHIFT + select.code, {
                         method: 'GET',
                         headers: {
                             'Authorization': `Bearer ${token}`,
