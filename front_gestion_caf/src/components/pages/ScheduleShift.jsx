@@ -3,10 +3,10 @@ import Calendar from 'react-calendar';
 import 'react-calendar/dist/Calendar.css'; // Importa los estilos básicos de react-calendar
 import "../styles/SheduleShift.css";
 import { useNavigate } from "react-router-dom";
-import { MessagesError, MessagesInfo, MessagesSuccess } from "../gestion-caf/Messages";
 import { SERVICES_BACK, USER_TYPE } from "../../constants/constants";
 import { Toaster, toast } from "sonner";
-import swal from 'sweetalert2';
+import { MessagesError, MessagesInfo, MessagesSuccess, showToastPromise } from "../gestion-caf/Messages";
+import Swal from 'sweetalert2';
 
 const ScheduleShift = () => {
     const [date, setDate] = useState(new Date());
@@ -162,7 +162,7 @@ const ScheduleShift = () => {
                 const data = await response.json();
     
                 if (response.ok) {
-                    
+                    console.log(data)
                     setShifts(data); // Actualiza el estado
                 } else {
                     console.error("Error al cargar turnos:", data.message || "Error desconocido");
@@ -229,39 +229,48 @@ const ScheduleShift = () => {
             return;
         }
 
-        swal({
+        Swal.fire({
             title: "Agendar Turno",
-            text:`Desea apartar un turno en el horario ${selectedCaf.code}`,
+            text: `Desea apartar un turno en el horario `,
             icon: "warning",
-            buttons: ["No","Si"]
-        }).then(response =>{
-            if(response){
+            showDenyButton: true,
+            showCancelButton: true, // Muestra el botón "No"
+            confirmButtonText: 'Sí', // Botón "Sí"
+            denyButtonText: 'No',  // Botón "No"
+        }).then(response => {
+            if (response.isConfirmed) {
                 toast.promise(
                     (async () => {
-                        const response = await fetch(SERVICES_BACK.POST_SHIFT_RESERVE, {
-                            method: 'POST',
-                            headers: {
-                                'Authorization': `Bearer ${token}`,
-                                'Content-Type': 'application/json'
-                            },
-                            body: JSON.stringify({
-                                id: 0,
-                                idShiftInstance: selectedShift.id,
-                                idDayAssignment: selectedShift.dayAssignment.id,
-                                userId: user.id,
-                                dateReservation: null,
-                                reservationEnum: null,
-                            })
-                        });
-    
-                        if (!response.ok) {
-                            throw new Error('Error al agendar turno.');
-                        }
-    
-                        const data = await response.json();
-                        if (data) {
-                            MessagesSuccess("Turno apartado correctamente.");
-                        }
+                        console.log("ENTRO 1")
+                        try{
+                            const res = await fetch(SERVICES_BACK.POST_SHIFT_RESERVE, {
+                                method: 'POST',
+                                headers: {
+                                    'Authorization': `Bearer ${token}`,
+                                    'Content-Type': 'application/json'
+                                },
+                                body: JSON.stringify({
+                                    idShiftInstance: selectedShift.id,
+                                    idDayAssignment: selectedShift.dayAssignment.id,
+                                    userId: user.id
+                                   
+                                })
+                            });
+                            console.log("ENTRO")
+                            if (!res.ok) {
+                                throw new Error('Error al agendar turno.');
+                            }
+        
+                            const data = await res.json();
+                            if (res.ok) {
+                                MessagesSuccess("Turno apartado correctamente.");
+                            }else if (res.status === 204){
+                                MessagesError("No fue posible crear el turno.")
+                            }
+                        } catch (error) {
+                            console.log(error)
+                            setError(error.message);
+                        }
                     })(),
                     {
                         loading: 'Agendando turno...',
@@ -269,8 +278,11 @@ const ScheduleShift = () => {
                         error: <b>No se pudo agendar el turno.</b>,
                     }
                 );
+            } else if (response.isDismissed) {
+                console.log('El usuario canceló la acción');
             }
-        })
+        });
+        
         
         
     };
@@ -318,8 +330,13 @@ const ScheduleShift = () => {
 
     const handleShiftChange = (event) => {
         const shiftId = parseInt(event.target.value);
+        console.log(shiftId);
         if (shiftId) {
-            setSelectedShift(shifts.find(item => item.id === shiftId)); // Guarda el CAF seleccionado
+            const select = shifts.find(item => item.id === shiftId);
+            setSelectedShift(select)
+            console.log("OBJETO SHIFT")
+            console.log(selectedShift)
+            //setSelectedShift(shifts.find(item => item.id === shiftId)); // Guarda el CAF seleccionado
 
         }
     }
@@ -328,8 +345,7 @@ const ScheduleShift = () => {
         const cafId = parseInt(event.target.value);
         if (cafId) {
             const select = oneCAFOptions.find(item => item.code === cafId);
-            
-            console.log("IMPORTA"+setSelectedCaf);
+            setSelectedCaf(select)
             toast.promise(
                 (async () => {
                     const response = await fetch(SERVICES_BACK.GET_USER_INSTANCE_SHIFT + select.code, {
@@ -379,8 +395,8 @@ const ScheduleShift = () => {
                         <option key={index} value={shift.id}>
                             
                             {`Turno ${index + 1}: ${(shift.date)}
-                            ${formatTime(shift.shift.startTime)} a 
-                            ${formatTime(shift.shift.endTime)}`}
+                            ${formatTime(shift.startTime)} a 
+                            ${formatTime(shift.endTime)}`}
                         </option>
                     ))
                 ) : (

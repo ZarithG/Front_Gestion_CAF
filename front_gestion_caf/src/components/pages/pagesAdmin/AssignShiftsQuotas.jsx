@@ -122,7 +122,6 @@ const AssignShiftsQuotas = () => {
         setEndTimeEdit(endTime);
         setStartTimeEdit(startTime);
         setPlaceAvailableEdit(places);
-        console.log("HOLA"+startTimeEdit);
         setModalEditOpen(true);
     };
 
