@@ -59,7 +59,7 @@
 }
 
 .tdbutton{
-  width: 9%;
+  width: 2%;
 }
 
 .thAsSh{
@@ -146,5 +146,6 @@ td{
 .inline-container {
   display: flex;
   align-items: center;
+  flex-direction: column;
   gap: 10px;
 }
