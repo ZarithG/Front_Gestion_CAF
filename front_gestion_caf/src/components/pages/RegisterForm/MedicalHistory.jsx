@@ -126,7 +126,8 @@ const MedicalHistory = () => {
                 const data = await response.json();
                 // Verifica que data sea un array antes de actualizar el estado    
                 if (Array.isArray(data)) {
-                    const alreadyRegistered = data.some(item => parseInt(item.fitnessCenterDTO.id , 10) === parseInt(values.CAF , 10));
+                    const alreadyRegistered = data.some(item => parseInt(item.fitnessCenterDTO.id , 10) === parseInt(values.CAF , 10) && item.userId === 23);
+                    console.log(data)
                     if (alreadyRegistered) {
                         MessagesError("Señor usuario, usted ya tiene una inscripción activa en el CAF seleccionado");
                         return;

@@ -6,6 +6,7 @@ import { MessagesError, MessagesSuccess } from '../../gestion-caf/Messages';
 import { SERVICES_BACK } from "../../../constants/constants";
 import "../../styles/Register.css";
 import InformationData from "./InformationData";
+import { Toaster, toast } from "sonner";
 
 const EmergencyContact = () => {
     const [error, setError] = useState('');
@@ -172,6 +173,13 @@ const EmergencyContact = () => {
 
     return (
         <div className="InformationDataRegister">
+            <Toaster
+                position="top-center"
+                dir="auto"
+                duration={2000}
+                visibleToasts={4}
+                richColors
+            />
             <div className="containerPersonalInformation">
                 <h2 className="h2Register">Contacto de emergencia</h2>
                 <p className="pRegister">Agregue sus datos de contacto de emergencia los cuales son indispensables para informar en caso de una eventualidad.</p>
