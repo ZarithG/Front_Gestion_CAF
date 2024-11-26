@@ -186,7 +186,7 @@ const AssignShiftsQuotas = () => {
 
     const handleSaveTurno = (newTurno) => {
         const updatedTurno = {
-            id: `T${turnos[selectedDay].length + 1}`,
+            id: `${turnos[selectedDay].length + 1}`,
             ...newTurno,
         };
         setTurnos({

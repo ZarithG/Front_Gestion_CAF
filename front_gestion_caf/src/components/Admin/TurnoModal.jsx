@@ -71,7 +71,7 @@ const TurnoModal = ({ isOpen, onClose, onSave, day, cafId }) => {
         }))
         try {
             const token = storageToken;
-
+            console.log(cupos)
             const response = await fetch(SERVICES_BACK.POST_SAVE_SHIFT, {
                 method: 'POST',
                 headers: {
@@ -87,20 +87,27 @@ const TurnoModal = ({ isOpen, onClose, onSave, day, cafId }) => {
                         dayAssignment: 1,
                         startTime: formattedInicio,
                         endTime: formattedFin,
-                        placeAvailable: cupos,
+                        maximumPlaceAvailable: cupos,
                         status:1
                     }
                     ]
                 })
             });
 
-            if (!response.ok) {
-                if (response.status === 400) {
-
-                } else {
-                    MessagesError('Hubo un error en el servidor');
+            console.log(response.status)
+            if (response.status !== 200) {
+                if (response.status == 409) {
+                    MessagesError('No se pudo crear el turno debido a un conflicto entre los horarios');
+                    
+                } else if (response.status === 422){
+                    MessagesError('Error: La hora de inicio y fin son incorrectas');
+                }else{
+                    MessagesError("Hubo un error en el servidor");
                 }
+                onClose();
                 return;
+            }else{
+                MessagesSuccess("Turno creado exitosamente");
             }
 
             const data = await response.json();
@@ -110,7 +117,9 @@ const TurnoModal = ({ isOpen, onClose, onSave, day, cafId }) => {
                 setInicio(null);
                 setFin(null);
                 setCupos(1);
+                
                 onClose(); // Opcional, según tu flujo
+                onSave();
             }
             else {
                 MessagesError('No se pudieron guardar los datos');
