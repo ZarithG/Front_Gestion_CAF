@@ -126,10 +126,20 @@ const Header = ({
                                 </span>
                             </li>
 
-                            <li className="menuItem">
+                            <li className="menuItem" onClick={async (e) =>{
+                                e.preventDefault();
+                                
+                                const isVerified = await isUserVerified();
+                                if (!isVerified) {
+                                    navigate('/register/informationData');
+                                }else{
+                                    navigate('/notifications');
+                                }
+                            }}>
                                 <Link className="Link" to="/notifications">
                                     <label> Notificaciones </label>
                                     <MdNotifications className="icons" />
+                                    
                                 </Link>
                             </li>
                         </>

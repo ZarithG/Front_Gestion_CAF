@@ -120,6 +120,10 @@ const ManageCenterDirector = () => {
         })            
     };
 
+    const newDirector = () =>{
+        navigate("/admin/fitnessCenterDirector/registerNew")
+    };
+
     const handleSearch = (event) => setSearch(event.target.value);
 
     const filteredUsers = users.filter(
@@ -139,7 +143,7 @@ const ManageCenterDirector = () => {
             />
             <h1>Asignar Director de Bienestar</h1>
             <div className="body-containerBody">
-                <SearchBar search={search} handleSearch={handleSearch} />
+                <SearchBar search={search} handleSearch={handleSearch} newDirector={newDirector} />
                 <div className="table-content">
                     <UserTable users={filteredUsers} assignCoordinador={assignCoordinador} show={show} setShow={setShow}/>
                 </div>
@@ -148,7 +152,7 @@ const ManageCenterDirector = () => {
     );
 };
 
-const SearchBar = ({ search, handleSearch }) => (
+const SearchBar = ({ search, handleSearch, newDirector}) => (
     <div className="containerSearch">
         <div className="search-bar-field">
             <label className="lbInItem">Ingrese el código o el número de documento del director</label>
@@ -161,6 +165,7 @@ const SearchBar = ({ search, handleSearch }) => (
                     className="search-bar-input"
                 />
                 <IoMdSearch className="search-icon" />
+                <button onClick={() => newDirector()}>Registrar director</button>
             </div>
         </div>
     </div>

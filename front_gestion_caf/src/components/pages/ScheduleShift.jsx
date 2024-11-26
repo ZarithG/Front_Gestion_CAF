@@ -258,7 +258,7 @@ const ScheduleShift = () => {
                                 throw new Error('Error al agendar turno.');
                             }
         
-                            if (res.status === 2000) {
+                            if (res.status === 200) {
                                 MessagesSuccess("Turno apartado correctamente.");
                             }else if (res.status === 204){
                                 MessagesError("Ya ha agendado un turno para ese día.")
