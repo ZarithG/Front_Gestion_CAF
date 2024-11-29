@@ -16,6 +16,15 @@
     padding: 0 1vh;
 }
 
+.HomeContainer h2 {
+    padding: 5vh;
+}
+
+.Description h2{
+    margin-top: 0;
+    padding-top: 0;
+    padding-bottom: 2vh;
+}
 .containerDescription{
     padding-top: 1vh;
     display: flex;

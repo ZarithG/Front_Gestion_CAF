@@ -48,10 +48,10 @@ const MedicalDocument = () => {
                 });        
             
                 if (response.ok) {
-                    MessagesSuccess("Consentimiento médico almacenado correctamente")
+                    MessagesSuccess("Recomendación médica almacenada correctamente")
                 }
             }catch (error) {
-                MessagesError("Error al eviar el consentimiento");
+                MessagesError("Error al eviar la recomendación");
             }
 
             const response = await fetch(SERVICES_BACK.GET_IS_USER_OLD_MAYOR + localStorage.getItem("userName"), {
@@ -89,7 +89,7 @@ const MedicalDocument = () => {
                     richColors
                 />
             <div className="containerPersonalInformation">
-                <h2>Carga de consentimiento medico</h2>
+                <h2>Carga de recomendación medico</h2>
                 <p>Por favor adjunte un archivo con la autorización de médica indicando que puede realizar actividad física sin
                     tener algun inconveniente. Esto debido a que contesto afirmativamente alguna de las preguntas del formulario PAR-Q.
                 </p>
@@ -97,7 +97,7 @@ const MedicalDocument = () => {
                 <div className="containerForm">
                     <form className="personal-info-form" onSubmit={handleSubmit(onSubmit)}>
                         <div className="form-group">
-                        <label>Archivo de consentimiento médico</label>
+                        <label>Archivo de recomendación médico</label>
                             <input
                                 type="file"
                                 accept=".pdf"

@@ -155,7 +155,7 @@ const UserDataDetail = () => {
             }
 
             const response = await fetch(
-                `${SERVICES_BACK.GET_USER_INSCRIPTION_FILE}?inscriptionId=${inscriptionId}&consentType=${consentType}`,
+                `${SERVICES_BACK.GETUSER}?inscriptionId=${inscriptionId}&consentType=${consentType}`,
                 {
                     method: "GET",
                     headers: {

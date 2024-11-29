@@ -62,7 +62,7 @@ const InformationData = () => {
         fetchDeparments();
 
     }, []);
-    
+
 
     const handleRedirect = () => {
         const params = new URLSearchParams(window.location.search);
@@ -82,12 +82,14 @@ const InformationData = () => {
         }
     };
 
-    const { register, handleSubmit, formState: { errors, isValid } } = useForm({ mode: "onChange" });
+    const { register, handleSubmit, formState: { errors } } = useForm({ mode: "onBlur" });
 
     const onSubmit = (values) => {
         setSubmitted(true);
+        if (values) {
 
-        if (isValid) {
+        }
+        
             // Guardar los datos generales en 'informationData'
             dispatch({ type: "SET_INFORMATION", data: values });
             // Guardar los datos del usuario (correo, nombre) en 'userData'
@@ -96,9 +98,9 @@ const InformationData = () => {
                 password: values.password,
             };
             dispatch({ type: "SET_USERDATA", data: userData });
-            
+
             navigate("/register/information");
-        }
+        
     };
 
     return (
@@ -111,7 +113,7 @@ const InformationData = () => {
                     <form className="info-form" onSubmit={handleSubmit(onSubmit)}>
                         <div className="form-group-Reg">
                             <label className="lbRegItem">Tipo de documento</label>
-                            <select className="sltRegItem" {...register("documentType", { required: true })}>
+                            <select className="sltRegisItem" {...register("documentType", { required: true })}>
                                 <option value="">Seleccione su tipo de documento</option>
                                 <option value="CC">Cedula de Ciudadania</option>
                                 <option value="TI">Tarjeta de identidad</option>
@@ -122,9 +124,30 @@ const InformationData = () => {
 
                         <div className="form-group-Reg">
                             <label className="lbRegItem">Número de documento de identidad</label>
-                            <input className="inpRegItem" type="number" {...register("documentNumber", { required: true })} />
-                            {submitted && errors.document && <p className="error">Este campo es obligatorio.</p>}
+                            <input
+                                className="inpRegItem"
+                                type="text"
+                                {...register("documentNumber", {
+                                    required: "Este campo es obligatorio.",
+                                    pattern: {
+                                        value: /^[0-9]+$/, // Solo números
+                                        message: "Solo se permiten números."
+                                    },
+                                    minLength: {
+                                        value: 5,
+                                        message: "El número de documento debe tener al menos 5 dígitos."
+                                    },
+                                    maxLength: {
+                                        value: 15,
+                                        message: "El número de documento no debe exceder los 15 dígitos."
+                                    }
+                                })}
+                            />
+                            {errors.documentNumber && (
+                                <p className="error">{errors.documentNumber.message}</p>
+                            )}
                         </div>
+
 
                         <div className="form-group-Reg">
                             <label className="lbRegItem">Número de teléfono</label>
@@ -159,14 +182,14 @@ const InformationData = () => {
                         <div className="form-group-Reg">
                             <label className="lbRegItem">Dirección</label>
                             <input className="inpRegItem" type="text" {...register("address", { required: true })} />
-                            {submitted && errors.address && <p className="error">{errors.password.message}Este campo es obligatorio.</p>}
+                            {errors.password && <p className="error">{errors.password.message}</p>}
 
                         </div>
 
                         <div className="form-group-Reg">
                             <label className="lbRegItem">Departamento</label>
                             <select
-                                className="sltRegItem"
+                                className="sltRegisItem"
                                 {...register("department", { required: true })}
                                 onChange={(e) => {
                                     const selectedDepartmentId = parseInt(e.target.value, 10); // Obtén el id del departamento seleccionado
@@ -189,7 +212,8 @@ const InformationData = () => {
 
                         <div className="form-group-Reg">
                             <label className="lbRegItem">Municipio</label>
-                            <select className="sltRegItem"  {...register("city", { required: true })}>
+                            <select className="sltRegisItem"
+                                {...register('city', { required: "Seleccione una ciudad." })}>
                                 <option value="">Seleccione su ciudad</option>
                                 {cities.length > 0 ? (
                                     cities.map((item, index) => (
@@ -199,6 +223,7 @@ const InformationData = () => {
                                     <option value="">Cargando Municipio...</option>
                                 )}
                             </select>
+                            {errors.city && <p className="error">{errors.city.message}</p>}
                         </div>
                     </form>
                 </div>

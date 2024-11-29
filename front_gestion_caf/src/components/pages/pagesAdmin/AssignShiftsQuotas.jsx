@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import TurnoModal from "../../Admin/TurnoModal";
+import { TurnoModal, TurnoModalEdit } from "../../Admin/TurnoModal";
 import "./styles/PagesAdmin.css";
 import { MdDelete } from "react-icons/md";
 import { FaEdit } from "react-icons/fa";
@@ -23,6 +23,7 @@ const AssignShiftsQuotas = () => {
     const [caf, setCaf] = useState([]);
     const [cafId, setCafId] = useState(0);
     const [cafName, setCafName] = useState("");
+    const [oneShift, setOneShift] = useState("");
     const [turnos, setTurnos] = useState(initialTurnos);
     const [activeDay, setActiveDay] = useState(null);
     const [isModalOpen, setModalOpen] = useState(false);
@@ -108,7 +109,6 @@ const AssignShiftsQuotas = () => {
 
     const toggleDay = (day) => {
         setActiveDay(activeDay === day ? null : day);
-        console.log(activeDay)
         setSelectedDay(day);
     };
 
@@ -116,20 +116,23 @@ const AssignShiftsQuotas = () => {
         setModalOpen(true);
     };
 
-    const editShift = (dayAssignmentId, shiftId, startTime, endTime, places) => {
-        setSelectedDay(dayAssignmentId);
-        setShiftIdEdit(shiftId);
-        setEndTimeEdit(endTime);
-        setStartTimeEdit(startTime);
-        setPlaceAvailableEdit(places);
-        setModalEditOpen(true);
+    const editShift = (day, index) => {
+        if (turnos[day] && turnos[day].length > index) {
+            setModalEditOpen(true);
+            setOneShift(turnos[day][index]);
+        } else {
+            console.error(`No turno found for ${index} at day ${day}`);
+        }
     };
+
 
 
     // Definición de la función removeTurno
     const removeTurno = async (day, index) => {
         try {
-            console.log("DELETE ID:" + turnos[day][index].id);
+            console.log("DELETE ID:", turnos[day][index].id);
+
+
             const token = localStorage.getItem("authToken");
             const response = await fetch(SERVICES_BACK.PUT_DELETE_SHIFT, {
                 method: 'PUT', // Asegúrate de que el método coincide con el de Postman
@@ -139,18 +142,20 @@ const AssignShiftsQuotas = () => {
                 },
                 body: JSON.stringify({
                     id: turnos[day][index].dayAssignment,
-                    fitnessCenter: selectedCaf.id,
+                    fitnessCenter: cafId,
                     day: day,
                     shifts: [{
                         id: turnos[day][index].id,
                         dayAssignment: turnos[day][index].dayAssignment,
                         startTime: turnos[day][index].inicio,
                         endTime: turnos[day][index].fin,
-                        placeAvailable: turnos[day][index].cupos,
-                        status: true
+                        maximumPlaceAvailable: turnos[day][index].cupos,
+                        status: 1,
                     }]
                 })
             });
+            console.log("put")
+            console.log(response)
 
 
             if (!response.ok) {
@@ -313,8 +318,6 @@ const AssignShiftsQuotas = () => {
                 <div className="inline-container">
 
                     <h1>{cafName}</h1>
-
-                    <button onClick={handleViewShift}>Mostrar Turnos</button>
                     <p>Selecciona el día de la semana y añade los turnos disponibles y los cupos</p>
                 </div>
 
@@ -347,7 +350,7 @@ const AssignShiftsQuotas = () => {
                                                     <td className="tdbutton">
                                                         <div className="containerButtons">
 
-                                                            {/* <button className="buttonAssign" onClick={() => editShift(turnos[day][index].dayAssignment,turnos[day][index].id, turnos[day][index].inicio, turnos[day][index].fin, turnos[day][index].cupos)}><FaEdit /></button> */}
+                                                            <button className="buttonAssign" onClick={() => editShift(day, index)}><FaEdit /></button>
                                                             <button className="buttonAssign" onClick={() => removeTurno(day, index)}><MdDelete /></button>
                                                         </div>
                                                     </td>
@@ -372,17 +375,15 @@ const AssignShiftsQuotas = () => {
                 onClose={() => setModalOpen(false)}
                 onSave={handleSaveTurno}
                 day={selectedDay}
-                cafId={selectedCaf?.id} // Pasa el ID del CAF seleccionado
+                cafId={cafId} // Pasa el ID del CAF seleccionado
             />
             <ModifyShiftModal
                 isOpen={isModalEditOpen}
                 onClose={() => setModalEditOpen(false)}
                 day={selectedDay}
-                cafId={selectedCaf}
-                shiftIdEdit={shiftIdEdit}
-                startTimeEdit={startTimeEdit}
-                endTimeEdit={endTimeEdit}
-                placeAvailableEdit={placeAvailableEdit} />
+                oneShift={oneShift}  // Aquí pasas oneShift
+            />
+            {console.log("un turno", oneShift)}
         </div>
     );
 };

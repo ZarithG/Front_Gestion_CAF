@@ -3,7 +3,7 @@ import "./styles/Regulation.css";
 import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
 import { useRegFormContext } from "../../../providers/RegFormProvider";
-import { MessagesError, MessagesSuccess } from "../../gestion-caf/Messages"
+import { MessagesError, MessagesSuccess, MessagesWarning } from "../../gestion-caf/Messages"
 import { toast, Toaster } from "sonner";
 
 const Regulation = () => {
@@ -22,7 +22,7 @@ const Regulation = () => {
             dispatch({ type: "SET_REGULATION", data: values });
             navigate('/registration/medicalHistory');
         } else {
-            MessagesError("Debes aceptar el reglamento para continuar.");
+            MessagesWarning("Debes aceptar el reglamento para continuar.");
         }
     };
 
@@ -58,14 +58,6 @@ const Regulation = () => {
                                     información
                                 </label>
                             </div>
-                            <div >
-                                <input className="rInput"
-                                    {...register("termsAccepted", { required: true })}
-                                    type="radio"
-                                    value={true}
-                                />
-                                <label className="rLabel">Si</label>
-                            </div>
                             <div>
                                 <input className="rInput"
                                     {...register("termsAccepted", { required: true })}
@@ -74,6 +66,14 @@ const Regulation = () => {
                                     checked
                                 />
                                 <label className="rLabel">No</label>
+                            <div >
+                                <input className="rInput"
+                                    {...register("termsAccepted", { required: true })}
+                                    type="radio"
+                                    value={true}
+                                />
+                                <label className="rLabel">Si</label>
+                            </div>
                             </div>
                             <button type="submit" disabled={!isValid}>
                                 Siguiente

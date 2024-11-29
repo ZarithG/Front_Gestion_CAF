@@ -32,6 +32,7 @@ export const SERVICES_BACK = {
     GET_USER_INSTANCE_SHIFT: 'http://localhost:9093/shift/reserve/shift-instances-caf/',
     GET_RESERVE_ALL: 'http://localhost:9093/shift/reserve/shift-instances-caf/',
     GET_RESERVE_BY_SHIFT: 'http://localhost:9093/shift/reserve/all-reservations-by-shift-instance/',
+    GET_RESERBE_BY_USER: 'http://localhost:9093/shift/reserve//allReservationForUser/',
     
     SAVEUSER: 'http://localhost:9093/user/save',
     GET_DEPARTMETS: 'http://localhost:9093/user/departments',
@@ -47,18 +48,21 @@ export const SERVICES_BACK = {
     POST_CAF_INACTIVE_INSCRIPTION: 'http://localhost:9093/caf/inscription/inactive-inscription/',
     POST_CAF_ACTIVE_INSCRIPTION: 'http://localhost:9093/caf/inscription/active-inscription/',
     POST_CONSENT_FILE: "http://localhost:9093/caf/files/upload/",
-    GET_ALL_CAF_INSCRIPTIONS: "http://localhost:9093/caf/inscription/all/coordinator-email/",
-    GET_ALL_CAF_ACTIVE_INSCRIPTIONS: "http://localhost:9093/caf/inscription/all-active/coordinator-email/",
     POST_SAVE_SHIFT: "http://localhost:9093/shift/saveShift",
     POST_INSTANCE_SHIFT: "http://localhost:9093/shift/reserve/create-shift-instances/",
     POST_SHIFT_RESERVE: 'http://localhost:9093/shift/reserve/reserve-shift-user',
     POST_REGISTRY_ATTENDED_RESERVE: 'http://localhost:9093/shift/reserve/registry-attended-reserve',
-    GET_SHIFT_INTANCE_ACT: 'http://localhost:9093/shift/shift-instances/actShift/',
+    POST_SHIFTS_REPORTS_ATTENDED: "http://localhost:9093/shift/shiftsReportAttended",
+    POST_SHIFTS_CANCEL: "http://localhost:9093/shift/reserve/cancelReservationForUser",
     POST_FINISH_INSTANCE_ACT: 'http://localhost:9093/shift/shift-instances/finishShift/',
+    
     PUT_DELETE_SHIFT: "http://localhost:9093/shift/deleteShift",
     PUT_EDIT_SHIFT: "http://localhost:9093/shift/editShift",
-    POST_SHIFTS_REPORTS_ATTENDED: "http://localhost:9093/shift/shiftsReportAttended",
+
     GET_CAF_INFO:"http://localhost:9093/caf/id/",
+    GET_ALL_CAF_INSCRIPTIONS: "http://localhost:9093/caf/inscription/all/coordinator-email/",
+    GET_ALL_CAF_ACTIVE_INSCRIPTIONS: "http://localhost:9093/caf/inscription/all-active/coordinator-email/",
+    GET_SHIFT_INTANCE_ACT: 'http://localhost:9093/shift/shift-instances/actShift/',
 
     POST_CHANGE_DIRECTOR: "http://localhost:9093/auth/change-wellbeing-director"
 
