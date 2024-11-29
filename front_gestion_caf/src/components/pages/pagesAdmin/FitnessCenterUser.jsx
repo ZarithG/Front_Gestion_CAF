@@ -6,7 +6,9 @@ import {FaRegEye} from "react-icons/fa6";
 import {IoMdSearch} from "react-icons/io";
 import { SERVICES_BACK } from "../../../constants/constants";
 import { MessagesError, MessagesSuccess, showToastPromise } from "../../gestion-caf/Messages";
-import { Toaster } from "sonner";
+import { Toaster, toast } from "sonner";
+import Swal from 'sweetalert2';
+import { USER_TYPE } from "../../../constants/constants";
 
 const initialUsers = [];
 
@@ -23,8 +25,6 @@ const FitnessCenterUser = () => {
         }else{
             fetchCAFActiveInscriptions(); // Llama a la función al cargar el componente
         }
-
-        
       }, []);
 
     const editUser = (index) => navigate("/admin/fitnessCenterUser/modify");
@@ -73,6 +73,110 @@ const FitnessCenterUser = () => {
             MessagesSuccess("Inscripción activada correctamente");
             window.location.reload();
         }
+    };
+
+    const inactiveUser = async (index, user) => {
+        Swal.fire({
+            title: "Inactivar usuario",
+            text: `¿Esta seguro de inactivar el usuario ${user.name}?`,
+            icon: "warning",
+            showDenyButton: true,
+            showCancelButton: true, // Muestra el botón "No"
+            confirmButtonText: 'Sí', // Botón "Sí"
+            denyButtonText: 'No',  // Botón "No"
+        }).then(response => {
+            if (response.isConfirmed) {
+                toast.promise(
+                    (async () => {
+                        try{
+                            const token = localStorage.getItem("authToken");
+                            const response = await fetch(SERVICES_BACK.INACTIVE_USER + index, {
+                                method: 'POST',
+                                headers: {
+                                    'Authorization': `Bearer ${token}`,
+                                    'Content-Type': 'application/json',
+                                    credentials: 'include'
+                                }
+                            });
+                            if (response.status !== 200) {
+                                if (response.status === 204) {
+                                    MessagesError('No hay usarios registrados en el sistema.');
+                                } else {
+                                    MessagesError('Hubo un error en el servidor');
+                                }
+                                return;
+                            }else{
+                                MessagesSuccess("Usuario desactivado correctamente");
+                                setTimeout(() => {
+                                    window.location.reload();
+                                }, 3000);
+                            }
+                        } catch (error) {
+                            console.log(error)
+                        }
+                    })(),
+                    {
+                        loading: 'Inactivando usuario...',
+                        success: <b>Usuario inactivado satisfactoriamente.</b>,
+                        error: <b>No se pudo inactivar el usuario.</b>,
+                    }
+                );
+            } else if (response.isDismissed) {
+                console.log('El usuario canceló la acción');
+            }
+        });      
+    };
+
+    const activeUser = async (index, user) => {
+        Swal.fire({
+            title: "Activar usuario",
+            text: `¿Esta seguro de activar el usuario ${user.name}?`,
+            icon: "warning",
+            showDenyButton: true,
+            showCancelButton: true, // Muestra el botón "No"
+            confirmButtonText: 'Sí', // Botón "Sí"
+            denyButtonText: 'No',  // Botón "No"
+        }).then(response => {
+            if (response.isConfirmed) {
+                toast.promise(
+                    (async () => {
+                        try{
+                            const token = localStorage.getItem("authToken");
+                            const response = await fetch(SERVICES_BACK.ACTIVE_USER + index, {
+                                method: 'POST',
+                                headers: {
+                                    'Authorization': `Bearer ${token}`,
+                                    'Content-Type': 'application/json',
+                                    credentials: 'include'
+                                }
+                            });
+                            if (response.status !== 200) {
+                                if (response.status === 204) {
+                                    MessagesError('No hay usarios registrados en el sistema.');
+                                } else {
+                                    MessagesError('Hubo un error en el servidor');
+                                }
+                                return;
+                            }else{
+                                MessagesSuccess("Usuario activado correctamente");
+                                setTimeout(() => {
+                                    window.location.reload();
+                                }, 3000);
+                            }
+                        } catch (error) {
+                            console.log(error)
+                        }
+                    })(),
+                    {
+                        loading: 'Activado usuario...',
+                        success: <b>Usuario activado satisfactoriamente.</b>,
+                        error: <b>No se pudo activado el usuario.</b>,
+                    }
+                );
+            } else if (response.isDismissed) {
+                console.log('El usuario canceló la acción');
+            }
+        });  
     };
 
     const viewApplications = () => navigate("/admin/fitnessCenterUser/registrationRequest");
@@ -168,15 +272,18 @@ const FitnessCenterUser = () => {
                 }
                 
                 const data = await response.json(); // Convierte la respuesta a JSON
-                console.log(data)
                 // Mapea los datos del backend al formato requerido por initialUsers
-                const formattedUsers = data.map((item) => ({
-                    inscriptionId: item.id,
-                    documentNumber: item.userAllDataDTO.documentNumber,
-                    name: item.userAllDataDTO.name,
-                    email: item.userAllDataDTO.email,
-                    userType: classifyUser(item.userAllDataDTO.userType),
-                    inscriptionStatus: item.active
+                const allowedRoles = ['ROLE_SPORTSMAN', 'ROLE_USER', 'ROLE_CAF_COORDINATOR'];
+
+                const filteredUsers = data.filter((item) =>
+                    item.roles.some((role) => allowedRoles.includes(role))
+                );
+
+                const formattedUsers = filteredUsers.map((item) => ({
+                    name: item.name,
+                    email: item.userName,
+                    active: item.active,
+                    roles: item.roles
                 }));
                 setUsers(formattedUsers);
             };
@@ -203,7 +310,14 @@ const FitnessCenterUser = () => {
             <div className="body-containerBody">
                 <SearchBar search={search} handleSearch={handleSearch} viewApplications={viewApplications}/>
                 <div className="table-content">
+
+                {localStorage.getItem("roleName") === "ROLE_CAF_COORDINATOR" ? (
                     <UserTable users={filteredUsers} editUser={editUser} inactiveInscription={inactiveInscription} activeInscription={activeInscription}/>
+                ) : localStorage.getItem("roleName") !== "ROLE_CAF_COORDINATOR" ? (
+                    <UserTableForDirectorAndAdmin users={filteredUsers} activeUser={activeUser} inactiveUser={inactiveUser} editUser={editUser}/>
+                ) : null}
+                    
+                   
                 </div>
             </div>
         </div>
@@ -225,9 +339,11 @@ const SearchBar = ({search, handleSearch, viewApplications}) => (
                 <IoMdSearch className="search-icon"/>
             </div>
         </div>
-        <div className="register-new-button-container">
-            <button onClick={viewApplications} className="register-new-button">Ver solicitudes</button>
-        </div>
+        {(localStorage.getItem("roleName") === "ROLE_CAF_COORDINATOR") && (
+            <div className="register-new-button-container">
+                <button onClick={viewApplications} className="register-new-button">Ver solicitudes</button>
+            </div>
+        )}
     </div>
 );
 
@@ -251,6 +367,32 @@ const UserTable = ({users, editUser, inactiveInscription, activeInscription}) =>
                 editUser={editUser}
                 inactiveInscription={inactiveInscription}
                 activeInscription={activeInscription}
+            />
+        ))}
+        </tbody>
+    </table>
+);
+
+const UserTableForDirectorAndAdmin = ({users, inactiveUser, activeUser, editUser}) => (
+    <table className="table">
+        <thead className="table-header-head">
+        <tr className="table-row">
+            <th className="table-cell">Nombre</th>
+            <th className="table-cell">Correo Electrónico</th>
+            <th className="table-cell">Rol</th>
+            <th className="table-cell">Estado</th>
+            <th className="table-cell">Opciones</th>
+        </tr>
+        </thead>
+        <tbody>
+        {users.map((user, index) => (
+            <UserTableRowForDirectorAndAdmin
+                key={`${user.code}-${index}`}
+                user={user}
+                index={user.inscriptionId}
+                inactiveUser={inactiveUser}
+                activeUser={activeUser}
+                editUser={editUser}
             />
         ))}
         </tbody>
@@ -291,6 +433,47 @@ const UserTableRow = ({ user, index, editUser, inactiveInscription, activeInscri
     );
 };
 
+const UserTableRowForDirectorAndAdmin = ({ user, inactiveUser, activeUser, editUser}) => {
+    const allowedRoles = ['ROLE_SPORTSMAN', 'ROLE_USER'];
+    
+    // Determinar la acción y el texto del botón según el estado
+    return (
+        <tr className="table-row">
+            <td className="table-cell">{user.name}</td>
+            <td className="table-cell">{user.email}</td>
+            {user.roles && user.roles.length > 0 && (
+                <td className="table-cell">{classifyUserByRole(user.roles[0])}</td>
+            )}
+                        
+            <td className="table-cell">
+                <StatusUser status={user.active} />
+            </td>
+            <td className="table-cell">
+                <div className="button-container">
+                {
+                    // Verificar si el usuario tiene un rol permitido
+                    user.roles.some((role) => allowedRoles.includes(role)) && (
+                        <button className="button" onClick={() => { editUser(user.email); }}>
+                            MODIFICAR
+                        </button>
+                    )
+                }
+                    {/* Renderizar el botón basado en el estado */}
+                    {user.active ? (
+                        <button className="button" onClick={() => { inactiveUser(user.email, user); }}>
+                            INACTIVAR
+                        </button>
+                    ) : (
+                        <button className="button" onClick={() => { activeUser(user.email, user); }}>
+                            ACTIVAR
+                        </button>
+                    )}
+                </div>
+            </td>
+        </tr>
+    );
+};
+
 const classifyInscriptionStatus = (status) =>{
     if(status === "ACCEPTED"){
         return "ACTIVO";
@@ -302,9 +485,30 @@ const classifyInscriptionStatus = (status) =>{
     return "N/A";
 }
 
+const classifyUserByRole = (status) =>{
+    if(status === "ROLE_SPORTSMAN"){
+        return "DEPORTISTA";
+    }else{
+        if(status === "ROLE_USER"){
+            return "USUARIO";
+        }else{
+            if(status === "ROLE_CAF_COORDINATOR"){
+                return "COORDINADOR";
+            }
+        }
+    }
+    return "N/A";
+}
+
 const Status = ({status}) => {
     const statusClass = status === "ACCEPTED" ? "status-active" : "status-inactive";
     return <span className={`status ${statusClass}`}>{classifyInscriptionStatus(status)}</span>;
 };
+
+const StatusUser = ({status}) => {
+    const statusClass = status ? "status-active" : "status-inactive";
+    return <span className={`status ${statusClass}`}>{status ? "ACTIVO" : "INACTIVO"}</span>;
+};
+
 
 export default FitnessCenterUser;

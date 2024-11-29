@@ -2,7 +2,7 @@ import React, { useState, useEffect} from "react";
 import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
 import { useRegContext } from "../../../providers/RegProvider";
-import { MessagesError, MessagesSuccess } from '../../gestion-caf/Messages';
+import { MessagesError, MessagesInfo, MessagesSuccess } from '../../gestion-caf/Messages';
 import { SERVICES_BACK } from "../../../constants/constants";
 import { Toaster, toast } from "sonner";
 import "../../styles/Register.css";
@@ -30,6 +30,8 @@ const RegisterNewCoordinator = () => {
     const [cities, setCities] = useState([]);
     const [error, setError] = useState('');
     const [storageToken, setToken] = useState('');
+    const [selectedCityToSend, setSelectedCityToSend] = useState(0);
+    const [loading, setLoading] = useState(false); // Estado de carga
 
     const {
         register,
@@ -52,7 +54,6 @@ const RegisterNewCoordinator = () => {
                     }
                 );
                 const data = await response.json();
-                console.log(data)
                 setDepartments(data);
             } catch (error) {
                 setError(error.message);
@@ -111,40 +112,102 @@ const RegisterNewCoordinator = () => {
         }));
     };
 
+    const validateEmail = (email) => {
+        // Verificar con una expresión regular
+        const regex = /^[a-zA-Z0-9._%+-]+@uptc\.edu\.co$/;
+        return regex.test(email);
+      };
+
     const handleSave = async () => {
-        console.log(formData)
-        console.log(cities)
-        // try {
-        //     const token = storageToken;
-        //     const response = await fetch(SERVICES_BACK.SAVEUSER, {
-        //         method: 'POST',
-        //         headers: {
-        //             'Authorization': `Bearer ${token}`,
-        //             'Content-Type': 'application/json',
-        //         },
-        //         body: JSON.stringify({
-        //             email: formData.email,
-        //             name: formData.name + " " + formData.lastName,
-        //             documentType: formData.documentType,
-        //             documentNumber: formData.documentNumber,
-        //             birthDate: formData.birthDate,
-        //             phoneNumber: formData.phone,
-        //             residenceAddress: formData.address,
-        //             cityId: formData.city,
-        //         })
-        //     });
-        //     if (!response.ok) {
-        //         if (response.status === 400) {
-        //             MessagesError('Hubo un problema al guardar, envie nuevamente los datos');
-        //         } else {
-        //             MessagesError('Hubo un error en el servidor');
-        //         }
-        //         return;
-        //     }
-        // } catch (error) {
-        //     MessagesError('Hubo un error en el servidor');
-        //     console.log("ERROR:" + error)
-        // }
+        setLoading(true);
+        try {
+            if (!validateEmail(formData.email)){
+                MessagesInfo("El correo ingresado no pertenece a la UPTC.");
+            }else{
+                const token = storageToken;
+                const isUserRegistered = await fetch(SERVICES_BACK.IS_USER_REGISTERED + formData.email, {
+                    method: 'GET',
+                    headers: {
+                        'Authorization': `Bearer ${token}`,
+                        'Content-Type': 'application/json',
+                    }
+                });
+                if (isUserRegistered.status === 204) {
+                    const response = await fetch(SERVICES_BACK.SAVEUSER, {
+                        method: 'POST',
+                        headers: {
+                            'Authorization': `Bearer ${token}`,
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify({
+                            email: formData.email,
+                            name: formData.name.toUpperCase() + " " + formData.lastName.toUpperCase(),
+                            documentType: formData.documentType,
+                            documentNumber: formData.documentNumber,
+                            birthDate: formData.birthDate,
+                            phoneNumber: formData.phoneNumber,
+                            residenceAddress: formData.address,
+                            cityId: selectedCityToSend,
+                            userType: "ADMINISTRATIVE"
+                        })
+                    });
+                    if (response.status !== 200) {
+                        if (response.status === 400) {
+                            MessagesError('Hubo un problema al guardar, envie nuevamente los datos');
+                            setLoading(false);
+                        } else {
+                            MessagesError('Hubo un error en el servidor');
+                            setLoading(false);
+                        }
+                        return;
+                    }else{
+                        const response = await fetch(SERVICES_BACK.CREATE_NEW_AUTH_USER, {
+                            method: 'POST',
+                            headers: {
+                                'Authorization': `Bearer ${token}`,
+                                'Content-Type': 'application/json'
+                            },
+                            body: JSON.stringify({
+                                userName: formData.email,
+                                password: formData.password,
+                                roles: [
+                                    {
+                                        roleName: "ROLE_USER"
+                                    }
+                                ]
+                            })
+                        });
+
+                        if (response.status !== 200) {
+                            if (response.status === 400) {
+                                MessagesError('Hubo un problema guardando la contraseña');
+                                setLoading(false);
+                            } else {
+                                MessagesError('Hubo un error en el servidor');
+                                setLoading(false);
+                            }
+                        }else{
+                            MessagesSuccess("Coordinador registrado satisfactoriamente.");
+                            setTimeout(() => {
+                                navigate('/'); // Redirigir a la página principal
+                            }, 3000);
+                        }
+                    }
+                }else{
+                    if (isUserRegistered.status === 200) {
+                        MessagesInfo("Ya existe un usuario con el correo electrónico ingresado.");
+                    }else{
+                        MessagesError("Hubo un error en el servidor.");
+                        setLoading(false);
+                    }
+                }
+            }
+        } catch (error) {
+            MessagesError('Hubo un error en el servidor');
+            console.log("ERROR:" + error)
+            setLoading(false);
+        }
+        setLoading(false);
     }
 
     return (
@@ -276,7 +339,15 @@ const RegisterNewCoordinator = () => {
                         <div className="form-group-Reg">
                             <label className="lbRegItem">Municipio</label>
                             <select className="sltRegItem"
-                                {...register("cityEmergencyContact", { required: true })}>
+                                {...register("cityEmergencyContact", { required: true })}
+                                    onChange={(e) => {
+                                        const selectedCityId = parseInt(e.target.value, 10); // Obtén el id del departamento seleccionado
+                                        const selectedCity = cities.find(city => city.id === selectedCityId); // Encuentra el departamento correspondiente
+                                        if (selectedCity) {
+                                            setSelectedCityToSend(selectedCityId); // Guarda las ciudades del departamento seleccionado
+                                        }
+                                    }}
+                                >
                                 <option value="">Seleccione su ciudad</option>
                                 {cities.length > 0 ? (
                                     cities.map((item, index) => (
@@ -330,7 +401,9 @@ const RegisterNewCoordinator = () => {
                             {submitted && errors.confirmPassword && <span className="error">{errors.confirmPassword}</span>}
                         </div>
                         <div className="containerButtonAdm">
-                        <button className="buttonFormAdm" onClick={handleSave}>Guardar</button>
+                        <button className="buttonFormAdm" onClick={handleSave}>
+                            {loading ? 'Procesando...' : 'Registrar Coordinador'}
+                        </button>
                         </div>
                     </form>
                 </div>

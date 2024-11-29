@@ -50,7 +50,8 @@ const FitnessCenters = () => {
                     code: user.id.toString(), // Convertir el ID a una cadena
                     fullName: user.name, // Usar el nombre completo del objeto
                     description: user.description,
-                    email: user.coordinatorEmail, // Usar el correo como email
+                    coordinatorName: user.coordinatorName,
+                    email: user.coordfinatorEmail, // Usar el correo como email
                 }));
             } else {
                 throw new Error("El formato de datos de CAF es incorrecto.");
@@ -138,10 +139,10 @@ const UserTable = ({ CAF, editCAF, viewCAF }) => (
     <table className="table">
         <thead className="table-header-head">
             <tr className="table-row">
-                <th className="table-cell">Código</th>
-                <th className="table-cell">Sede</th>
+                <th className="table-cell">Nombre</th>
                 <th className="table-cell">Descripción</th>
-                <th className="table-cell">Coordinador</th>
+                <th className="table-cell">Nombre Coordinador</th>
+                <th className="table-cell">Correo Coordinador</th>
                 <th className="table-cell">Opciones</th>
             </tr>
         </thead>
@@ -154,11 +155,11 @@ const UserTable = ({ CAF, editCAF, viewCAF }) => (
 );
 
 const UserTableRow = ({ user, editCAF, viewCAF }) => (
-    <tr className="table-row">
-        <td className="table-cell">{user.code}</td>
+    <tr className="table-row">     
         <td className="table-cell">{user.fullName}</td>
         <td className="table-cell">{user.description}</td>
-        <td className="table-cell">{user.coordinator}</td>
+        <td className="table-cell">{user.coordinatorName}</td>
+        <td className="table-cell">{user.email}</td>
         <td className="table-cell">
             <div className="button-container">
                 <button className="button" onClick={() => editCAF(user.code)}><FaEdit /></button>

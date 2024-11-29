@@ -76,9 +76,9 @@ const Information = () => {
                                 <select className="sltRegItem" {...register("estamento", { required: true })}>
                                     <option value="">Seleccione su estamento</option>
                                     <option value="STUDENT">Estudiante</option>
-                                    <option value="profesor">Profesor</option>
-                                    <option value="administrativo">Administrativo</option>
-                                    <option value="externo">Externo</option>
+                                    <option value="PROFESSOR">Profesor</option>
+                                    <option value="ADMINISTRATIVE">Administrativo</option>
+                                    <option value="EXTERN">Externo</option>
                                 </select>
                                 {errors.estamento && <span className="error">Debes seleccionar un estamento.</span>}
                             </div>
