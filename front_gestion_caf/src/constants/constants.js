@@ -8,7 +8,7 @@ export const USER_TYPE = {
 
 export const SERVICES_BACK = {
     GOOGLELOGIN: "http://localhost:9091/auth/google/login",
-    LOGINAUTH: 'http://localhost:9093/auth/login',
+    LOGINAUTH: 'https://bienestar-caf-app.online/auth/login',
     LOGOUTAUTH: 'http://localhost:9093/auth/logout ',
     USERAUTH: 'http://localhost:9093/auth/verify/user',
     PASSWORDAUTH: 'http://localhost:9093/auth/change/password',
