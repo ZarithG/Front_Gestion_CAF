@@ -88,7 +88,7 @@ const FitnessCenters = () => {
 
     const filteredCAF = CAF.filter(
         (user) =>
-            
+
             user.fullName.toLowerCase().includes(search.toLowerCase()) ||
             user.email.toLowerCase().includes(search.toLowerCase())
     );
@@ -162,8 +162,8 @@ const UserTableRow = ({ user, editCAF, viewCAF }) => (
         <td className="table-cell">{user.email}</td>
         <td className="table-cell">
             <div className="button-container">
-                <button className="button" onClick={() => editCAF(user.code)}><FaEdit /></button>
-                <button className="button" onClick={() => viewCAF(user.code)}><FaEye /></button>
+                <button className="button" onClick={() => editCAF(user.code)}><FaEdit />Editar</button>
+                <button className="button" onClick={() => viewCAF(user.code)}><FaEye />Ver</button>
 
             </div>
         </td>
