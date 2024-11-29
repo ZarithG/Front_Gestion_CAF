@@ -2,7 +2,7 @@
   "name": "front_gestion_caf",
   "version": "0.1.0",
   "private": true,
-  "proxy": "http://localhost:9093",
+  "proxy": "https://bienestar-caf-app.online",
   "dependencies": {
     "@mui/icons-material": "^6.1.4",
     "@testing-library/jest-dom": "^5.17.0",
