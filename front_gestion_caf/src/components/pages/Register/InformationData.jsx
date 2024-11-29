@@ -151,14 +151,44 @@ const InformationData = () => {
 
                         <div className="form-group-Reg">
                             <label className="lbRegItem">Número de teléfono</label>
-                            <input className="inpRegItem" type="number" {...register("phone", { required: true })} />
-                            {submitted && errors.phone && <p className="error">Este campo es obligatorio.</p>}
-                        </div>
+                            <input className="inpRegItem" type="number" {...register("phone", { 
+                                required: "Este campo es obligatorio.",
+                                pattern: {
+                                    value: /^[0-9]+$/, // Solo números
+                                    message: "Solo se permiten números."
+                                },
+                                minLength: {
+                                    value: 5,
+                                    message: "El número de teléfono debe tener al menos 5 dígitos."
+                                },
+                                maxLength: {
+                                    value: 15,
+                                    message: "El número de teléfono no debe exceder los 15 dígitos."
+                                }})} />
+                                {errors.phone && (
+                                <p className="error">{errors.phone.message}</p>
+                            )}
+                            </div>
 
                         <div className="form-group-Reg">
                             <label className="lbRegItem">Código</label>
-                            <input className="inpRegItem" type="number" {...register("code", { required: true })} />
-                            {submitted && errors.phone && <p className="error">Este campo es obligatorio.</p>}
+                            <input className="inpRegItem" type="number" {...register("code", { 
+                               required: "Este campo es obligatorio.",
+                               pattern: {
+                                   value: /^[0-9]+$/, // Solo números
+                                   message: "Solo se permiten números."
+                               },
+                               minLength: {
+                                   value: 5,
+                                   message: "El código debe tener al menos 5 dígitos."
+                               },
+                               maxLength: {
+                                   value: 15,
+                                   message: "El código no debe exceder los 15 dígitos."
+                               } })} />
+                            {errors.code && (
+                                <p className="error">{errors.code.message}</p>
+                            )}
                         </div>
 
                         <div className="form-group-Reg">
@@ -171,17 +201,38 @@ const InformationData = () => {
                             <label className="lbRegItem">Correo Electrónico</label>
                             <input
                                 type="email"
-                                {...register('email')}
                                 className="inpEmailRegItem"
                                 value={formData.email}
                                 readOnly
+                                {...register('email', 
+                                    {
+                                        required: "Este campo es obligatorio.",
+                                        pattern: {
+                                            value: /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/, // Patrón para validar correos electrónicos
+                                            message: "Ingrese un correo electrónico válido."
+                                        },
+                                        minLength: {
+                                            value: 5,
+                                            message: "El correo debe tener al menos 5 caracteres."
+                                        },
+                                        maxLength: {
+                                            value: 50,
+                                            message: "El correo no debe exceder los 50 caracteres."
+                                        }
+                                    }
+                                )
+                                }
+                                
                             />
-
+                            {errors.email && (
+                                <p className="error">{errors.email.message}</p>
+                            )}
                         </div>
 
                         <div className="form-group-Reg">
                             <label className="lbRegItem">Dirección</label>
-                            <input className="inpRegItem" type="text" {...register("address", { required: true })} />
+                            <input className="inpRegItem" type="text" {...register("address", { 
+                                required: true })} />
                             {errors.password && <p className="error">{errors.password.message}</p>}
 
                         </div>
