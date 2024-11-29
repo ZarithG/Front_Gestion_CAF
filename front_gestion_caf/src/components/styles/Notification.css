@@ -22,6 +22,26 @@
     margin: 0 auto;
 }
 
+
+/* Estilo para aceptado */
+.estado-accepted {
+    background-color: #d4edda; /* Verde claro */
+    color: #155724; /* Verde oscuro */
+}
+
+/* Estilo para pendiente */
+.estado-pending {
+    background-color: #cce5ff; /* Azul claro */
+    color: #004085; /* Azul oscuro */
+}
+
+/* Estilo para rechazado */
+.estado-rejected {
+    background-color: #f8d7da; /* Rojo claro */
+    color: #721c24; /* Rojo oscuro */
+}
+
+
 .notifications-table th {
     background-color: #f4f4f4;
     font-weight: bold;
