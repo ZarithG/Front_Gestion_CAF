@@ -191,7 +191,21 @@ const EmergencyContact = () => {
                             <input
                                 className="inpRegItem"
                                 type="text"
-                                {...register('nameEmergencyContact', { required: "Este campo es obligatorio." })}
+                                {...register('nameEmergencyContact', { 
+                                        required: "Este campo es obligatorio.",
+                                        pattern: {
+                                            value: /^[a-zA-ZÁÉÍÓÚáéíóúÑñ\s]+$/, // Patrón para validar solo texto
+                                            message: "Solo se permiten letras y espacios."
+                                        },
+                                        minLength: {
+                                            value: 2,
+                                            message: "El texto debe tener al menos 2 caracteres."
+                                        },
+                                        maxLength: {
+                                            value: 50,
+                                            message: "El texto no debe exceder los 50 caracteres."
+                                        }
+                                    })}
                             />
                             {errors.nameEmergencyContact && (
                                 <span className="error">{errors.nameEmergencyContact.message}</span>
@@ -215,7 +229,21 @@ const EmergencyContact = () => {
                             <input
                                 className="inpRegItem"
                                 type="text"
-                                {...register('phoneEmergencyContact', { required: "Este campo es obligatorio." })}
+                                {...register('phoneEmergencyContact', { 
+                                    required: "Este campo es obligatorio.",
+                                pattern: {
+                                    value: /^[0-9]+$/, // Solo números
+                                    message: "Solo se permiten números."
+                                },
+                                minLength: {
+                                    value: 5,
+                                    message: "El número de teléfono debe tener al menos 5 dígitos."
+                                },
+                                maxLength: {
+                                    value: 15,
+                                    message: "El número de teléfono no debe exceder los 15 dígitos."
+                                }
+                                 })}
                             />
                             {errors.phoneEmergencyContact && (
                                 <span className="error">{errors.phoneEmergencyContact.message}</span>
@@ -227,7 +255,20 @@ const EmergencyContact = () => {
                             <input
                                 className="inpRegItem"
                                 type="email"
-                                {...register('emailEmergencyContact', { required: "Este campo es obligatorio." })}
+                                {...register('emailEmergencyContact', { 
+                                    required: "Este campo es obligatorio.",
+                                    pattern: {
+                                        value: /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/, // Patrón para validar correos electrónicos
+                                        message: "Ingrese un correo electrónico válido."
+                                    },
+                                    minLength: {
+                                        value: 5,
+                                        message: "El correo debe tener al menos 5 caracteres."
+                                    },
+                                    maxLength: {
+                                        value: 50,
+                                        message: "El correo no debe exceder los 50 caracteres."
+                                    } })}
                             />
                             {errors.emailEmergencyContact && (
                                 <span className="error">{errors.emailEmergencyContact.message}</span>
