@@ -26,6 +26,8 @@ const ScheduleShift = () => {
     maxDate.setDate(today.getDate());
 
     useEffect(() => {
+        
+
         const fetchUserInscriptionToCAF = async () => {
             try {
 
@@ -69,6 +71,20 @@ const ScheduleShift = () => {
                             status: "" // Estado de la inscripción
                         }));
                         setOneCAFOptions(processedInscriptions);
+                        // if(oneCAFOptions.length != 0){
+                        //     console.log("Mayor a 0 arriba")
+                        //     const hasPending = oneCAFOptions.some(
+                        //         (inscription) =>
+                        //             inscription.status === "Pendiente" && inscription.code === selectedCaf.code
+                        //     );
+                        //     if(hasPending){
+                        //         console.log("Pendiente")
+                        //         MessagesWarning("Tu inscripción al CAF aún está siento revisada, pronto te notificaremos.");
+                        //     }
+                        // }else{
+                        //     MessagesWarning("Para acceder a los serivicios del CAF, primero debes completar tu inscripción.");
+                        // }
+                       
 
                     } else {
                         setError("El formato de datos de CAF es incorrecto.");
@@ -106,8 +122,23 @@ const ScheduleShift = () => {
                             inscriptionDate: new Date(item.inscriptionDate).toLocaleString(), // Fecha de inscripción
                             status: item.inscriptionStatus === "ACCEPTED" ? "Aceptado" : "Pendiente", // Estado de la inscripción
                         }));
+
                         setOneCAFOptions(processedInscriptions);
 
+                        // if(oneCAFOptions.length != 0){
+                        //     console.log("Mayor a 0")
+                        //     const hasPending = oneCAFOptions.some(
+                        //         (inscription) =>
+                        //             inscription.status === "Pendiente" && inscription.code === selectedCaf.code
+                        //     );
+                        //     if(hasPending){
+                        //         console.log("Pendiente")
+                        //         MessagesWarning("Tu inscripción al CAF aún está siento revisada, pronto te notificaremos.");
+                        //     }
+                        // }else{
+                        //     MessagesWarning("Para acceder a los serivicios del CAF, primero debes completar tu inscripción.");
+                        // }
+                        
                     } else {
                         setError("El formato de datos de CAF es incorrecto.");
                     }
@@ -131,6 +162,8 @@ const ScheduleShift = () => {
         fetchuser()
         
     }, []);
+
+    
 
     useEffect(() => {
         const fetchShifts = async () => {
