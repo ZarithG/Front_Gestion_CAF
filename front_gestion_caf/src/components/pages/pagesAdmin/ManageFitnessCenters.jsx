@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { showToastPromise } from "../../gestion-caf/Messages"; // Asegúrate de importar correctamente
 import { IoMdSearch } from "react-icons/io";
 import "./styles/FormAdm.css";
@@ -10,9 +10,11 @@ const initialUsers = [
 ];
 
 const ManageFitnessCenters = () => {
+    const location = useLocation();
     const [users, setUsers] = useState(initialUsers);
     const [search, setSearch] = useState("");
     const [error, setError] = useState("");
+    const { cafCode } = location.state || {}; 
     const navigate = useNavigate();
     const [formData, setFormData] = useState({
         name: "",

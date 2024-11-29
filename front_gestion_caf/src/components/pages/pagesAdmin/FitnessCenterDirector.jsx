@@ -19,7 +19,8 @@ const ManageCenterDirector = () => {
     const [search, setSearch] = useState("");
     const [token, setToken] = useState("");
     const [error, setError] = useState("");
-    const [show, setShow] = useState(false)
+    const [show, setShow] = useState(false);
+    const [director, setDirector] = useState("");
 
     useEffect(() => {
         const fetchCUserAll = async () => {
@@ -46,6 +47,10 @@ const ManageCenterDirector = () => {
                         user.active && !user.roles.includes("ROLE_WELLBEING_DIRECTOR")  // Filtra usuarios activos cuyo rol no contiene "ROLE_WELLBEING_DIRECTOR"
                     );
     
+                    setDirector(data.filter(user => 
+                        user.roles.includes("ROLE_WELLBEING_DIRECTOR")  // Filtra usuarios activos cuyo rol no contiene "ROLE_WELLBEING_DIRECTOR"
+                    ));
+
                     // Procesar los datos al formato deseado
                     return activeUsers.map((user) => ({
                         code: user.id.toString(),       // Convertir el ID a una cadena
@@ -82,42 +87,33 @@ const ManageCenterDirector = () => {
 
 
     const assignCoordinador = async (user) => {
-        swal({
-            title: "Asignar director",
-            text:`Desea cambiar el director por el usuario: ${user.name}`,
-            icon: "warning",
-            buttons: ["No","Si"]
-        }).then(response =>{
-            if(response){
-                toast.promise(
-                    (async () => {
-                        const token = localStorage.getItem("authToken");
-                        const response = await fetch(SERVICES_BACK.POST_CHANGE_DIRECTOR, {
-                            method: "POST",
-                            headers: {
-                                'Authorization': `Bearer ${token}`,
-                                credentials: "include",
-                                'Content-Type': 'application/json'
-                            },
-                            body:JSON.stringify({
-                                userName: user.email
-                            })
-                        });
-    
-                        if(response.status === 200){
-                            MessagesSuccess("Director cambiado satisfactoriamente");
-                        }else{
-                            MessagesError("No se pudo cambiar el director.");
-                        }
-                    })(),
-                    {
-                        loading: 'Asignando director...',
-                        success: <b>Director asignado correctamente.</b>,
-                        error: <b>No se pudo asignar el nuevo director.</b>,
-                    }
-                );
+        toast.promise(
+            (async () => {
+                const token = localStorage.getItem("authToken");
+                const response = await fetch(SERVICES_BACK.POST_CHANGE_DIRECTOR, {
+                    method: "POST",
+                    headers: {
+                        'Authorization': `Bearer ${token}`,
+                        credentials: "include",
+                        'Content-Type': 'application/json'
+                    },
+                    body:JSON.stringify({
+                        userName: user.email
+                    })
+                });
+
+                if(response.status === 200){
+                    MessagesSuccess("Director cambiado satisfactoriamente");
+                }else{
+                    MessagesError("No se pudo cambiar el director.");
+                }
+            })(),
+            {
+                loading: 'Asignando director...',
+                success: <b>Director asignado correctamente.</b>,
+                error: <b>No se pudo asignar el nuevo director.</b>,
             }
-        })            
+        );      
     };
 
     const newDirector = () =>{
@@ -142,6 +138,10 @@ const ManageCenterDirector = () => {
                 richColors
             />
             <h1>Asignar Director de Bienestar</h1>
+                {console.log(director)}
+                <div>
+                    <h2>{`Director actual: ${director.length > 0 ? director[0].name : "No asignado"}`}
+                    </h2></div>
             <div className="body-containerBody">
                 <SearchBar search={search} handleSearch={handleSearch} newDirector={newDirector} />
                 <div className="table-content">

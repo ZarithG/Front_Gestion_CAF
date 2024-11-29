@@ -316,8 +316,6 @@ const FitnessCenterUser = () => {
                 ) : localStorage.getItem("roleName") !== "ROLE_CAF_COORDINATOR" ? (
                     <UserTableForDirectorAndAdmin users={filteredUsers} activeUser={activeUser} inactiveUser={inactiveUser} editUser={editUser}/>
                 ) : null}
-                    
-                   
                 </div>
             </div>
         </div>
@@ -414,17 +412,15 @@ const UserTableRow = ({ user, index, editUser, inactiveInscription, activeInscri
             </td>
             <td className="table-cell">
                 <div className="button-container">
-                    <button className="button" onClick={() => editUser(index)}>
-                        <FiEdit />
-                    </button>
+                    
                     {/* Renderizar el botón basado en el estado */}
                     {isAccepted ? (
                         <button className="button" onClick={() => {inactiveInscription(index)}}>
-                            ❌
+                            Inactivar ❌
                         </button>
                     ) : isInactive ? (
                         <button className="button" onClick={() => {activeInscription(index)}}>
-                            ✅
+                            Activar ✅
                         </button>
                     ) : null}
                 </div>

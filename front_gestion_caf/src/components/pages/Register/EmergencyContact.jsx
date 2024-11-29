@@ -19,9 +19,7 @@ const EmergencyContact = () => {
 
 
     const {
-        register,
-        handleSubmit,
-        formState: { errors, isValid, },
+        formState: { isValid, },
     } = useForm({ mode: "onChange" });
 
     useEffect(() => {
@@ -54,7 +52,7 @@ const EmergencyContact = () => {
         fetchDeparments();
 
     }, []);
-
+    const { register, handleSubmit, formState: { errors } } = useForm({ mode: "onBlur" });
     const {
         information,
         estate,

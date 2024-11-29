@@ -42,17 +42,18 @@ const FitnessCenters = () => {
             }
 
             const data = await response.json();
-
+            console.log(data)
             if (Array.isArray(data)) {
                 // Filtrar y procesar los datos al formato deseado
-                const specificRole = "ROLE_CAF_COORDINATOR"; // Rol específico a filtrar
+                
                 return data.map((user) => ({
                     code: user.id, // Convertir el ID a una cadena
                     fullName: user.name, // Usar el nombre completo del objeto
                     description: user.description,
                     coordinatorName: user.coordinatorName,
-                    email: user.coordfinatorEmail, // Usar el correo como email
+                    email: user.coordinatorEmail, // Usar el correo como email
                 }));
+
             } else {
                 throw new Error("El formato de datos de CAF es incorrecto.");
             }
@@ -74,8 +75,8 @@ const FitnessCenters = () => {
         fetchCAFAll();
     }, []);
 
-    const editCAF = (index) => {
-        navigate("/admin/fitnessCenters/manage");
+    const editCAF = (cafCode) => {
+        navigate("/admin/fitnessCenters/manage", { state: { cafCode } });
     };
 
     const viewCAF = (index) => {
@@ -108,7 +109,7 @@ const FitnessCenters = () => {
                 <div className="table-content">
                     <UserTable
                         CAF={filteredCAF}
-                        editCAF={editCAF}
+                        editCAF={editCAF()}
                         viewCAF={viewCAF}
                     />
                 </div>
@@ -141,7 +142,6 @@ const UserTable = ({ CAF, editCAF, viewCAF }) => (
             <tr className="table-row">
                 <th className="table-cell">Nombre</th>
                 <th className="table-cell">Descripción</th>
-                <th className="table-cell">Nombre Coordinador</th>
                 <th className="table-cell">Correo Coordinador</th>
                 <th className="table-cell">Opciones</th>
             </tr>
@@ -158,11 +158,12 @@ const UserTableRow = ({ user, editCAF, viewCAF }) => (
     <tr className="table-row">     
         <td className="table-cell">{user.fullName}</td>
         <td className="table-cell">{user.description}</td>
-        <td className="table-cell">{user.coordinatorName}</td>
         <td className="table-cell">{user.email}</td>
         <td className="table-cell">
             <div className="button-container">
-                <button className="button" onClick={() => editCAF(user.code)}><FaEdit />Editar</button>
+            <button className="button" onClick={() => editCAF(user.code)}>
+                    <FaEdit /> Editar
+                </button>
                 <button className="button" onClick={() => viewCAF(user.code)}><FaEye />Ver</button>
 
             </div>
