@@ -88,7 +88,7 @@ const FitnessCenters = () => {
 
     const filteredCAF = CAF.filter(
         (user) =>
-            user.code.toLowerCase().includes(search.toLowerCase()) ||
+            
             user.fullName.toLowerCase().includes(search.toLowerCase()) ||
             user.email.toLowerCase().includes(search.toLowerCase())
     );

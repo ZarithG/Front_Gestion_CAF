@@ -90,6 +90,7 @@ const Notifications = () => {
                         headers: {
                             Authorization: `Bearer ${token}`,
                         },
+
                     }
                 );
 
@@ -97,7 +98,8 @@ const Notifications = () => {
 
                 if (response.ok) {
                     setShift(data); // Actualiza el estado
-                    console.log("inscripción", shift);
+                } else if (response.status === 204) {
+                    MessagesWarning("No hay reservaciones agendadas")
                 } else {
                     console.error("Error al cargar turnos:", data.message || "Error desconocido");
                 }
@@ -113,12 +115,21 @@ const Notifications = () => {
 
     const handleShiftCancel = (index) => {
         const shiftCancel = shift[index];
-        console.log("Cancelar",shiftCancel)
+        console.log("Cancelar", shiftCancel)
         fetchRegisterAttendance(shiftCancel);
     }
 
     const fetchRegisterAttendance = async (userReservation) => {
         try {
+            console.log(userReservation)
+            console.log(JSON.stringify({
+                id: userReservation.id,  // ID de la reservación
+                idShiftInstance: userReservation.shiftInstance.id,  // ID de la instancia de turno
+                idDayAssignment: 0,  // ID del día asignado (puedes ajustarlo si es diferente)
+                userId: userReservation.userId,  // ID del usuario
+                dateReservation: userReservation.dateReservation,
+                reservationEnum: "SCHEDULED",  // Estado de la reservación (ajustalo según tu lógica)
+            }))
             const token = localStorage.getItem("authToken");
             const response = await fetch(SERVICES_BACK.POST_SHIFTS_CANCEL, {
                 method: "POST",
@@ -130,18 +141,19 @@ const Notifications = () => {
                 body: JSON.stringify({
                     id: userReservation.id,  // ID de la reservación
                     idShiftInstance: userReservation.shiftInstance.id,  // ID de la instancia de turno
-                    idDayAssignment: "",  // ID del día asignado (puedes ajustarlo si es diferente)
-                    userId: "",  // ID del usuario
-                    dateReservation: null,
+                    idDayAssignment: 0,  // ID del día asignado (puedes ajustarlo si es diferente)
+                    userId: userReservation.userId,  // ID del usuario
+                    dateReservation: userReservation.dateReservation,
                     reservationEnum: "SCHEDULED",  // Estado de la reservación (ajustalo según tu lógica)
                 })
             });
-
+            console.log(response.status)
             const data = await response.json();
+
             console.log("Respuesta de la cancelación del turno:", data);
             if (data.id) {
                 MessagesSuccess("Turno cancelado correctamente.");
-                window.location.reload()
+                window.location.reload();
             } else {
                 throw new Error("Error en el formato de la respuesta.");
             }
@@ -185,7 +197,7 @@ const Notifications = () => {
             <div className="containerTitle">
                 <h1> Usuario {username}</h1>
             </div>
-            
+
             <div className="ntContainer">
                 <div className="notifications-container">
                     <table className="notifications-table">
@@ -200,14 +212,20 @@ const Notifications = () => {
                         <tbody>
                             {inscription.length > 0 ? (
                                 inscription.map((item) => (
-                                    <tr key={item.id}>
+                                    <tr
+                                        key={item.id}
+                                        className={`estado-${item.inscriptionStatus.toLowerCase()}`} // Añade clase dinámica
+                                    >
                                         <td>{item.id}</td>
                                         <td>{item.fitnessCenterDTO.name}</td>
                                         <td>{item.fitnessCenterDTO.description}</td>
                                         <td>
-                                            {item.inscriptionStatus === 'ACCEPTED' ? "Aceptado" : "Pendiente"}
+                                            {item.inscriptionStatus === "ACCEPTED"
+                                                ? "Aceptado"
+                                                : item.inscriptionStatus === "PENDING"
+                                                    ? "Pendiente"
+                                                    : "Rechazado"}
                                         </td>
-
                                     </tr>
                                 ))
                             ) : (
@@ -216,6 +234,7 @@ const Notifications = () => {
                                 </tr>
                             )}
                         </tbody>
+
                     </table>
                 </div>
 
@@ -242,7 +261,7 @@ const Notifications = () => {
                                             ${formatTime(item.shiftInstance.shift.endTime)}`}
                                             </td>
                                             <td>
-                                                <button onClick={() =>handleShiftCancel(index)}>Cancelar</button>
+                                                <button onClick={() => handleShiftCancel(index)}>Cancelar</button>
                                             </td>
                                         </tr>
                                     ))
