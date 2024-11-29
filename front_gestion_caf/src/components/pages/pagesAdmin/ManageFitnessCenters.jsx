@@ -61,49 +61,49 @@ const ManageFitnessCenters = () => {
     };
 
     useEffect(() => {
-        const fetchCUserAll = async () => {
-            const token = localStorage.getItem("authToken");
+        // const fetchCUserAll = async () => {
+        //     const token = localStorage.getItem("authToken");
 
-            const fetchUsers = async () => {
-                const response = await fetch(SERVICES_BACK.GET_USER_ALL, {
-                    method: "GET",
-                    headers: {
-                        Authorization: `Bearer ${token}`,
-                        credentials: "include",
-                    },
-                });
+        //     const fetchUsers = async () => {
+        //         const response = await fetch(SERVICES_BACK.GET_USER_ALL, {
+        //             method: "GET",
+        //             headers: {
+        //                 Authorization: `Bearer ${token}`,
+        //                 credentials: "include",
+        //             },
+        //         });
 
-                if (!response.ok) {
-                    throw new Error("Error al obtener los datos de los usuarios");
-                }
+        //         if (!response.ok) {
+        //             throw new Error("Error al obtener los datos de los usuarios");
+        //         }
 
-                const data = await response.json();
-                console.log(data)
-                if (Array.isArray(data)) {
-                    // Procesar los datos al formato deseado
-                    return data.map((user) => ({
-                        code: user.id.toString(), // Convertir el ID a una cadena
-                        fullName: user.name, // Usar el nombre completo del objeto
-                        email: user.userName, // Usar el correo como email
-                        status: user.active ? "Activo" : "Inactivo", // Convertir boolean a texto
-                    }));
-                } else {
-                    throw new Error("El formato de datos de CAF es incorrecto.");
-                }
-            };
+        //         const data = await response.json();
+        //         console.log(data)
+        //         if (Array.isArray(data)) {
+        //             // Procesar los datos al formato deseado
+        //             return data.map((user) => ({
+        //                 code: user.id.toString(), // Convertir el ID a una cadena
+        //                 fullName: user.name, // Usar el nombre completo del objeto
+        //                 email: user.userName, // Usar el correo como email
+        //                 status: user.active ? "Activo" : "Inactivo", // Convertir boolean a texto
+        //             }));
+        //         } else {
+        //             throw new Error("El formato de datos de CAF es incorrecto.");
+        //         }
+        //     };
 
-            try {
-                await showToastPromise(
-                    fetchUsers().then((processedUsers) => setUsers(processedUsers)),
-                    "Datos cargados correctamente",
-                    "Error al cargar los datos"
-                );
-            } catch (error) {
-                setError(error.message);
-            }
-        };
+        //     try {
+        //         await showToastPromise(
+        //             fetchUsers().then((processedUsers) => setUsers(processedUsers)),
+        //             "Datos cargados correctamente",
+        //             "Error al cargar los datos"
+        //         );
+        //     } catch (error) {
+        //         setError(error.message);
+        //     }
+        // };
 
-        fetchCUserAll();
+        // fetchCUserAll();
     }, []); // Dependencias vacías para ejecutar solo al montar
 
     const handleSubmit = async (e) => {
@@ -215,12 +215,12 @@ const ManageFitnessCenters = () => {
                         <button onClick={handleChangeCoordinador}>Cambiar Coordinador</button>
                     </div>
                     {/* Más campos... */}
-                    <div className="body-containerBody">
+                    {/* <div className="body-containerBody">
                         <SearchBar search={search} handleSearch={handleSearch} />
                         <div className="table-content">
                             <UserTable users={filteredUsers} />
                         </div>
-                    </div>
+                    </div> */}
                 </div>
             </div>
         </div >

@@ -19,6 +19,16 @@ const ModifyUserData = () => {
     // Estado inicial para indicar si está activo o inactivo
     const [isActive, setIsActive] = useState(true);
 
+    // useEffect(() => {
+    //     const userRole = localStorage.getItem("roleName");
+
+    //     if (userRole === "ROLE_WELLBEING_DIRECTOR" || userRole === "ROLE_ADMIN"){
+    //         fetchAllUsers();
+    //     }else{
+    //         fetchCAFActiveInscriptions(); // Llama a la función al cargar el componente
+    //     }
+    //   }, []);
+
     // Función para alternar el estado entre activo e inactivo
     const toggleActiveState = () => {
         setIsActive((prevState) => !prevState);

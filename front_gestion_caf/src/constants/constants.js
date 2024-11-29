@@ -64,8 +64,14 @@ export const SERVICES_BACK = {
     GET_ALL_CAF_ACTIVE_INSCRIPTIONS: "http://localhost:9093/caf/inscription/all-active/coordinator-email/",
     GET_SHIFT_INTANCE_ACT: 'http://localhost:9093/shift/shift-instances/actShift/',
 
-    POST_CHANGE_DIRECTOR: "http://localhost:9093/auth/change-wellbeing-director"
+    POST_CHANGE_DIRECTOR: "http://localhost:9093/auth/change-wellbeing-director",
 
+    ACTIVE_USER: "http://localhost:9093/auth/active-user/",
+    INACTIVE_USER: "http://localhost:9093/auth/inactive-user/",
+    CREATE_NEW_AUTH_USER: 'http://localhost:9093/auth/create',
+    IS_USER_REGISTERED: 'http://localhost:9093/auth/user/is-registered/',
+    GET_ALL_CAF_COORDINATORS: 'http://localhost:9093/auth/user/caf/all',
+    COUNT_INSCRIPTIONS_CAF_ID: 'http://localhost:9093/caf/count-inscriptions/'
 }
 
 export const STATUS = {

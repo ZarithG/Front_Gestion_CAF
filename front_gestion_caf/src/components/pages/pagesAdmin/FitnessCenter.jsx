@@ -47,7 +47,7 @@ const FitnessCenters = () => {
                 // Filtrar y procesar los datos al formato deseado
                 const specificRole = "ROLE_CAF_COORDINATOR"; // Rol específico a filtrar
                 return data.map((user) => ({
-                    code: user.id.toString(), // Convertir el ID a una cadena
+                    code: user.id, // Convertir el ID a una cadena
                     fullName: user.name, // Usar el nombre completo del objeto
                     description: user.description,
                     coordinatorName: user.coordinatorName,
