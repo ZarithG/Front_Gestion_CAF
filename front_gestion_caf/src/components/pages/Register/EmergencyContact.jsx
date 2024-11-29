@@ -249,7 +249,7 @@ const EmergencyContact = () => {
                         <div className="form-group-Reg">
                             <label className="lbRegItem">Parentesco</label>
                             <select
-                                className="sltRegItem"
+                                className="sltRegisItem"
                                 {...register("relationshipEmergencyContact", { required: "Debes seleccionar un parentesco." })}
                             >
                                 <option value="">Seleccione su parentesco</option>
@@ -265,7 +265,7 @@ const EmergencyContact = () => {
                         </div>
                         <div className="form-group-Reg">
                             <label className="lbRegItem">Departamento</label>
-                            <select className="sltRegItem"
+                            <select className="sltRegisItem"
                                 {...register("departmentEmergencyContact", { required: true })}
                                 onChange={(e) => {
                                     const selectedDepartmentId = parseInt(e.target.value, 10); // Obtén el id del departamento seleccionado
@@ -286,7 +286,7 @@ const EmergencyContact = () => {
                         </div>
                         <div className="form-group-Reg">
                             <label className="lbRegItem">Municipio</label>
-                            <select className="sltRegItem"
+                            <select className="sltRegisItem"
                                 {...register("cityEmergencyContact", { required: true })}>
                                 <option value="">Seleccione su ciudad</option>
                                 {cities.length > 0 ? (

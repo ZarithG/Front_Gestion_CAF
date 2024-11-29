@@ -2,7 +2,7 @@ import React, { useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
 import { useRegFormContext } from "../../../providers/RegFormProvider";
-import { MessagesError } from "../../gestion-caf/Messages";
+import { MessagesError, MessagesWarning } from "../../gestion-caf/Messages";
 import "./styles/TermsConditions.css";
 import { SERVICES_BACK } from "../../../constants/constants";
 import { toast,Toaster } from "sonner";
@@ -27,7 +27,7 @@ const TermsConditions = () => {
             dispatch({ type: "SET_TERMS_CONDITIONS", data: values });
             navigate('/registration/regulation');
         } else {
-            MessagesError("Debes aceptar los términos y condiciones para continuar.")
+            MessagesWarning("Debes aceptar los términos y condiciones para continuar.")
         }
     };
 
@@ -98,18 +98,18 @@ const TermsConditions = () => {
                                 <input className="rInput"
                                     {...register("termsAccepted", { required: true })}
                                     type="radio"
-                                    value={true}
-                                />
-                                <label className="rLabel">Si</label>
-                            </div>
-                            <div className="ItemRegCont">
-                                <input className="rInput"
-                                    {...register("termsAccepted", { required: true })}
-                                    type="radio"
                                     value={false}
                                     checked
                                 />
                                 <label className="rLabel">No</label>
+                            <div className="ItemRegCont">
+                                <input className="rInput"
+                                    {...register("termsAccepted", { required: true })}
+                                    type="radio"
+                                    value={true}
+                                />
+                                <label className="rLabel">Si</label>
+                            </div>
                             </div>
                             <button type="submit" disabled={!isValid}>
                                 Siguiente

@@ -1,0 +1,102 @@
+.notifications-container {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 2rem;
+    font-family: Arial, sans-serif;
+}
+
+.notifications-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 1rem;
+    text-align: left;
+}
+
+.notifications-table th,
+.notifications-table td {
+    padding: 12px 16px;
+    border: 1px solid #ddd;
+}
+
+.notifications-table button {
+    margin: 0 auto;
+}
+
+.notifications-table th {
+    background-color: #f4f4f4;
+    font-weight: bold;
+}
+
+.notifications-table tr:nth-child(even) {
+    background-color: #f9f9f9;
+}
+
+.estado-badge {
+    display: inline-block;
+    padding: 4px 8px;
+    border-radius: 12px;
+    color: white;
+    font-size: 0.875rem;
+    font-weight: bold;
+    text-align: center;
+}
+
+.id{
+    width: 10px;
+}
+
+.notifications-container {
+    max-width: 900px;
+    padding-top: 0;
+    margin: 0 auto;
+    padding-left: 2rem;
+    font-family: Arial, sans-serif;
+}
+
+.notifications-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 1rem;
+    text-align: left;
+}
+
+.notifications-table th,
+.notifications-table td {
+    padding: 12px 16px;
+    border: 1px solid #ddd;
+}
+
+.notifications-table th {
+    background-color: #f4f4f4;
+    font-weight: bold;
+}
+
+.notifications-table tr:nth-child(even) {
+    background-color: #f9f9f9;
+}
+
+.estado-badge {
+    display: inline-block;
+    padding: 4px 8px;
+    border-radius: 12px;
+    color: white;
+    font-size: 0.875rem;
+    font-weight: bold;
+    text-align: center;
+}
+
+.containerTurnos h1{
+    padding-left: 5vh;
+    padding-bottom: 0;
+}
+
+.containerTitle{
+    margin: 0;
+    padding: 0;
+}
+.containerTitle h1{
+    margin-top: 5vh;
+    margin-left: 2vh;
+    margin-bottom: 0;
+    padding: 0;
+}

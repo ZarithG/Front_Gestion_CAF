@@ -62,6 +62,10 @@
   width: 2%;
 }
 
+.button{
+  width: 100px;
+}
+
 .thAsSh{
   padding: 8px;
   text-align: center;

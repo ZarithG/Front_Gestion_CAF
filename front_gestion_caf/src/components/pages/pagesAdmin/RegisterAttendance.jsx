@@ -4,12 +4,13 @@ import "./styles/PagesAdmin.css";
 import "./styles/FitnessCenterCordinator.css";
 import { IoMdSearch } from "react-icons/io";
 import { SERVICES_BACK } from "../../../constants/constants";
-import { MessagesError, MessagesInfo, MessagesSuccess, showToastPromise } from "../../gestion-caf/Messages";
+import { MessagesError, MessagesInfo, MessagesSuccess, MessagesWarning, showToastPromise } from "../../gestion-caf/Messages";
+import { Toaster } from "sonner";
 
 const RegisterAttendance = () => {
     const location = useLocation();
     const navigate = useNavigate();
-    const [cafId ,setCafId] = useState(0);
+    const [cafId, setCafId] = useState(0);
     const [shiftReservations, setShiftReservations] = useState([]);
     const [shift, setShift] = useState([]);
     const [search, setSearch] = useState("");
@@ -20,17 +21,10 @@ const RegisterAttendance = () => {
         startTime: "",
         endTime: "", // Fecha del turno
         placeAvailable: "",
-        status:0,
-        shiftInstanceId:0
+        status: 0,
+        shiftInstanceId: 0
     });
-    const [reservation, setReservation] = useState({
-        id: 0, // ID de la reservación
-        idShiftInstance: 0, // ID de la instancia de turno
-        idDayAssignment: 0, // ID del día asignado
-        userId: 0, // ID del usuario
-        dateReservation: null, // Fecha y hora de la reservación
-        reservationEnum: '', // Estado de la reservación (puede ser un string o un valor predeterminado)
-      });
+
     const token = localStorage.getItem("authToken");
 
     useEffect(() => {
@@ -38,11 +32,11 @@ const RegisterAttendance = () => {
         if (cafId > 0) {
             console.log("CAF ID recibido:", cafId);
             handleViewShift();
-            //handleShift();
+
             fetchShiftReservations();
         } else {
-            console.error("No se recibió cafId");
-            MessagesError("Seleccione un CAF.");
+            console.log("No se recibió cafId");
+
         }
     }, [cafId]);
 
@@ -56,10 +50,14 @@ const RegisterAttendance = () => {
                     credentials: "include"
                 },
             });
-            
+            console.log("respuesta", response);
+            if (response.status === 204) {
+                MessagesWarning("No hay un turno actual.");
+                return;
+            }
             if (response.ok) {
                 const data = await response.json();
-                console.log("ACTUAL"+data);
+                console.log("ACTUAL", data);
                 setShiftActual({
                     id: data.id, // ID del turno
                     dayAssignment: data.dayAssignment,
@@ -70,40 +68,39 @@ const RegisterAttendance = () => {
                     shiftInstanceId: data.shiftInstanceId
                 });
                 setShiftSchedule(`${formatTime(data.startTime)} a ${formatTime(data.endTime)}`);
-            } else if(response.status === 204){
-                MessagesInfo("No hay un turno actual.");
+            } else if (response.status === 204) {
+                MessagesWarning("No hay un turno actual.");
                 return;
-            } else if(response.status === 404){
+            } else if (response.status === 404) {
                 MessagesError("Error en el servidor");
                 return;
             }
         } catch (error) {
-            console.error("Error al cargar el turno:", error);
             MessagesError("Error al cargar el turno.");
+            console.error("Error al cargar el turno:", error);
         }
     };
 
     //Método par aobtener el id del CAF de un coodinador
     const getCafId = async () => {
-        
-            try {
-                const token = localStorage.getItem("authToken");
-                const response = await fetch(SERVICES_BACK.GET_IDCAF_BY_USER_EMAIL + localStorage.getItem('userName'), {
-                    method: 'GET',
-                    headers: {
-                        'Authorization': `Bearer ${token}`,
-                        credentials: 'include',
-                    },
-                });
-                const data = await response.json();
-                console.log(data)
-                setCafId(data);
-    
-            } catch (error) {
-                console.error("Error al obtener id del fitnessCenter:", error);
-                MessagesError("Error al obtener id del CAF.");
-            }
-        
+
+        try {
+            const token = localStorage.getItem("authToken");
+            const response = await fetch(SERVICES_BACK.GET_IDCAF_BY_USER_EMAIL + localStorage.getItem('userName'), {
+                method: 'GET',
+                headers: {
+                    'Authorization': `Bearer ${token}`,
+                    credentials: 'include',
+                },
+            });
+            const data = await response.json();
+            setCafId(data);
+
+        } catch (error) {
+            console.error("Error al obtener id del fitnessCenter:", error);
+            MessagesError("Error al obtener id del CAF.");
+        }
+
     };
 
 
@@ -119,44 +116,45 @@ const RegisterAttendance = () => {
                 },
             });
             const data = await response.json();
-            
+
             console.log("Datos del turno:", data);
-            setShift({data})
+            setShift({ data })
         } catch (error) {
             console.error("Error al obtener usuarios del turno:", error);
             MessagesError("Error al obtener usuarios del turno.");
         }
     };
 
-    const fetchShiftReservations  = async () => {
-        if(shiftActual.shiftInstanceId != 0){
+    const fetchShiftReservations = async () => {
+        if (shiftActual.shiftInstanceId != 0) {
             const token = localStorage.getItem("authToken");
-        const response = await fetch(SERVICES_BACK.GET_RESERVE_BY_SHIFT + shiftActual.shiftInstanceId, {
-            method: 'GET',
+            const response = await fetch(SERVICES_BACK.GET_RESERVE_BY_SHIFT + shiftActual.shiftInstanceId, {
+                method: 'GET',
                 headers: {
                     'Authorization': `Bearer ${token}`,
                     credentials: 'include',
                 },
-        });
-
-        if (response.ok) {
-            const data = await response.json();
-            if(Array.isArray(data))
-                setShiftReservations(data);
-            else
-                MessagesError("Ocurrió un error")
+            });
             
-        }else if(response.status === 204){
+            console.log(response.status)
+            if (response.status === 200) {   
+                const data = await response.json();
+                if (Array.isArray(data))
+                    setShiftReservations(data);
+                else
+                    MessagesError("Ocurrió un error")
+
+            } else if (response.status === 204) {
                 MessagesInfo("No se encontraron reservaciones para el turno actual.")
                 return;
-        }else{
-            MessagesError("Error en el servidor al cargar las reserevaciones del turno actual.")
-            return;
-        }
+            } else{
+                MessagesError("Error en el servidor al cargar las reserevaciones del turno actual.")
+                return;
+            }
         }
     };
 
-    const fetchRegisterAttendance = async () => {
+    const fetchRegisterAttendance = async (userReservation) => {
         try {
             const token = localStorage.getItem("authToken");
             const response = await fetch(SERVICES_BACK.POST_REGISTRY_ATTENDED_RESERVE, {
@@ -166,32 +164,33 @@ const RegisterAttendance = () => {
                     credentials: "include",
                     'Content-Type': 'application/json'
                 },
-                body:JSON.stringify({
-                    reservation
+                body: JSON.stringify({
+                    id: userReservation.idReservation,  // ID de la reservación
+                    idShiftInstance: userReservation.idShiftInstance,  // ID de la instancia de turno
+                    idDayAssignment: shiftActual.dayAssignment,  // ID del día asignado (puedes ajustarlo si es diferente)
+                    userId: userReservation.userBasicDTO.id,  // ID del usuario
+                    dateReservation: null,
+                    reservationEnum: "SCHEDULED",  // Estado de la reservación (ajustalo según tu lógica)
                 })
             });
+            
             const data = await response.json();
+            console.log("Respuesta del registro de asistencia:", data);
             if (data.id) {
-                // setShiftActual({
-                //     id: data.id, // ID del turno
-                //     state: data.state, // Estado del turno
-                //     shift: data.shift, // Número del turno
-                //     date: data.date, // Fecha del turno
-                //     placeAvailable: data.placeAvailable, // Lugares disponibles
-                // });
-                
+                MessagesSuccess("Asistencia registrada correctamente.");
+                window.location.reload()
             } else {
-                throw new Error("El formato de datos de CAF es incorrecto.");
+                throw new Error("Error en el formato de la respuesta.");
             }
         } catch (error) {
-            console.error("Error al cargar el turno:", error);
-            MessagesError("Error al cargar el turno.");
+            console.error("Error al registrar la asistencia:", error);
+            MessagesError("Error al registrar la asistencia.");
         }
     };
 
     const fetchFinishShiftInstanceActual = async () => {
-        if(shiftActual.id != 0){
-            console.log("ID ACTUAL"+shiftActual.id );
+        if (shiftActual.id != 0) {
+            console.log("ID ACTUAL" + shiftActual.id);
             try {
                 const token = localStorage.getItem("authToken");
                 const response = await fetch(SERVICES_BACK.POST_FINISH_INSTANCE_ACT + shiftActual, {
@@ -201,26 +200,26 @@ const RegisterAttendance = () => {
                         credentials: "include"
                     }
                 });
-    
+
                 if (response.status !== 200) {
-                    if(response.status === 204){
+                    if (response.status === 204) {
                         MessagesInfo("No fue posible finalizar el turno actual, por favor intente de nuevo.");
                         return;
-                    }else{
+                    } else {
                         MessagesInfo("Error al finalizar el turno actual");
                         return;
-                        
+
                     }
-                }else{
+                } else {
                     const data = await response.json();
                     MessagesSuccess("Se finalizó exitosamente el turno actual.");
                 }
-                
+
             } catch (error) {
                 console.error("Error al cargar el turno:", error);
                 MessagesError("Error al cargar el turno.");
             }
-        }else{
+        } else {
             MessagesInfo("No hay un turno actual.");
         }
     };
@@ -228,29 +227,36 @@ const RegisterAttendance = () => {
 
     const filteredshiftReservations = shiftReservations.filter(
         (reservation) =>
-            reservation.userBasicDTO.universityCode.toLowerCase().includes(search.toLowerCase()) ||
             reservation.userBasicDTO.name.toLowerCase().includes(search.toLowerCase()) ||
             reservation.userBasicDTO.documentNumber.toLowerCase().includes(search.toLowerCase())
     );
 
     const registerAttendance = (index) => {
-        fetchRegisterAttendance();
-        //alert(`Coordinador asignado: ${shiftReservations[index].name} ${shiftReservations[index].lastname}`);
+        // Enviar el objeto específico del usuario a la función
+        const userReservation = shiftReservations[index];
+        fetchRegisterAttendance(userReservation);
     };
 
     return (
         <div className="containerBody">
+            <Toaster
+                position="top-center"
+                dir="auto"
+                duration={2000}
+                visibleToasts={4}
+                richColors
+            />
             <h1>Registrar asistencia</h1>
             <div className="body-containerBody">
                 <div className="Turn-Shift">
-                <div className="containerViewShift">
-                    <h1>Turno actual</h1>
-                    {typeof shiftSchedule === 'string' ? (
-                        <p>Horario: {shiftSchedule}</p>
-                    ) : (
-                        <p>No se pudo cargar el horario</p>
-                    )}
-                </div>
+                    <div className="containerViewShift">
+                        <h1>Turno actual</h1>
+                        {typeof shiftSchedule === 'string' ? (
+                            <p>Horario: {shiftSchedule}</p>
+                        ) : (
+                            <p>No se pudo cargar el horario</p>
+                        )}
+                    </div>
                     <SearchBar search={search} handleSearch={handleSearch} />
                 </div>
                 <div className="table-content">
@@ -273,7 +279,7 @@ const formatTime = (time24) => {
 
     // Convertir la hora de 24 horas a 12 horas
     const hour12 = hours % 12 || 12; // Si la hora es 0 (medianoche), se muestra como 12.
-    
+
     // Determinar AM o PM
     const ampm = hours >= 12 ? "pm" : "am";
 
@@ -327,17 +333,15 @@ const ReservationTable = ({ shiftReservations, registerAttendance }) => (
 
 const ReservationTableRow = ({ reservation, index, registerAttendance }) => (
     <tr className="table-row">
-        <td className="table-cell">{reservation.userBasicDTOuniversityCode}</td>
+        <td className="table-cell">{reservation.universityCode}</td>
         <td className="table-cell">{reservation.userBasicDTO.documentNumber}</td>
         <td className="table-cell">{reservation.userBasicDTO.name}</td>
         <td className="table-cell">{reservation.userBasicDTO.email}</td>
         <td className="table-cell">
             <div className="button-container">
-                {reservation.status.toLowerCase() !== "asistencia" && (
-                    <button className="button" onClick={() => registerAttendance(index)}>
-                        Registrar
-                    </button>
-                )}
+                <button className="button" onClick={() => registerAttendance(index)} type="submit">
+                    Registrar
+                </button>
             </div>
         </td>
     </tr>

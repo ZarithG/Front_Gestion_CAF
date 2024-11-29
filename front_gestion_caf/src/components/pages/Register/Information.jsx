@@ -73,7 +73,7 @@ const Information = () => {
 
                             <div className="form-group-Reg">
                                 <label className="lbRegItem">Estamento</label>
-                                <select className="sltRegItem" {...register("estamento", { required: true })}>
+                                <select className="sltRegisItem" {...register("estamento", { required: true })}>
                                     <option value="">Seleccione su estamento</option>
                                     <option value="STUDENT">Estudiante</option>
                                     <option value="profesor">Profesor</option>
@@ -92,7 +92,7 @@ const Information = () => {
                             <div className="form-group-Reg">
                                 <label className="lbRegItem">Nombre del programa</label>
                                 <select
-                                    className="sltRegItem"
+                                    className="sltRegisItem"
                                     {...register("programName", { required: "Seleccione un programa." })}
                                     onChange={(e) => {
                                         const selectedProgram = programs.find((p) => p.id === parseInt(e.target.value, 10));
@@ -111,7 +111,7 @@ const Information = () => {
 
                             <div className="form-group-Reg">
                                 <label className="lbRegItem">Facultad</label>
-                                <select className="sltRegItem" {...register("faculty", { required: true })}>
+                                <select className="sltRegisItem" {...register("faculty", { required: true })}>
                                     <option value="">Seleccione su Facultad</option>
                                     {/* Verifica si faculty está disponible y muestra el nombre de la facultad */}
                                     {faculty && faculty.facultyName ? (
@@ -136,7 +136,7 @@ const Information = () => {
 
                             <div className="form-group-Reg">
                                 <label className="lbRegItem">Grupo sanguíneo RH</label>
-                                <select className="sltRegItem" {...register("bloodType", { required: true })}>
+                                <select className="sltRegisItem" {...register("bloodType", { required: true })}>
                                     <option value="">Seleccione su grupo sanguíneo</option>
                                     <option value="O-">O-</option>
                                     <option value="O+">O+</option>
